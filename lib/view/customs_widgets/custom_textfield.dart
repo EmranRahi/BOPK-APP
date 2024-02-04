@@ -26,7 +26,6 @@ class CustomTextFormFieldWidget extends StatefulWidget {
   }) : super(key: key);
 
   final String? hint;
-
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final bool? fillColor;
@@ -45,9 +44,6 @@ class CustomTextFormFieldWidget extends StatefulWidget {
   final BorderSide? borderSide;
 
 
-
-
-
   @override
   State<CustomTextFormFieldWidget> createState() => _CustomTextFormFieldWidgetState();
 }
@@ -56,31 +52,28 @@ class _CustomTextFormFieldWidgetState extends State<CustomTextFormFieldWidget> {
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.h),
-      child: TextFormField(
-        key: _formKey,
-        controller: widget.controller,
-        maxLines: widget.maxLines,
-        onChanged: widget.onChanged,
-        obscureText: widget.obscureText,
-        focusNode: widget.focusNode,
-        keyboardType: widget.keyboardType,
-        inputFormatters: widget.inputFormatters,
-        validator:widget.validator, // Set the validator function
-        decoration: InputDecoration(
-          contentPadding: widget.contentPadding,
-              // ?? EdgeInsets.fromLTRB(10, 10, 10, 0), // Use the provided contentPadding or default value
-          fillColor: widget.color,
-          filled: widget.fillColor,
-          hintText: widget.hint,
-          prefixIcon: widget.prefixIcon,
-          suffixIcon: widget.suffixIcon,
-          counterText: widget.counterText,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.r),
-            borderSide: widget.borderSide!, // Use the borderSide parameter
-          ),
+    return TextFormField(
+      key: _formKey,
+      controller: widget.controller,
+      maxLines: widget.maxLines,
+      onChanged: widget.onChanged,
+      obscureText: widget.obscureText,
+      focusNode: widget.focusNode,
+      keyboardType: widget.keyboardType,
+      inputFormatters: widget.inputFormatters,
+      validator:widget.validator, // Set the validator function
+      decoration: InputDecoration(
+        contentPadding: widget.contentPadding,
+            // ?? EdgeInsets.fromLTRB(10, 10, 10, 0), // Use the provided contentPadding or default value
+        fillColor: widget.color,
+        filled: widget.fillColor,
+        hintText: widget.hint,
+        prefixIcon: widget.prefixIcon,
+        suffixIcon: widget.suffixIcon,
+        counterText: widget.counterText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.r),
+          borderSide: widget.borderSide!, // Use the borderSide parameter
         ),
       ),
     );

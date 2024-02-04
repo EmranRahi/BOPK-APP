@@ -47,6 +47,11 @@ dependencies:
   shared_preferences: ^2.0.13
   app_settings: ^4.1.8
   intl: any
+  cached_network_image:
+  http: any
+  url_launcher: any
+  drop_down_list: ^0.0.6
+
 
 
 
@@ -78,6 +83,7 @@ flutter:
   assets:
      - assets/images/
      - assets/media/
+     - assets/newbopkpic/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

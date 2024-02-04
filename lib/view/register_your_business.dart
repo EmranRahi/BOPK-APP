@@ -110,14 +110,15 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
     String defaultValue = '10:00AM'; // Set your default value
     return Scaffold(
       appBar: customAppBar1(
+        elevation: 0,
         centerTitle: false,
         title: CustomText(
           title: 'Mobile Shops',
-          color: grayColor,
+          color: greenColor2,
         ),
         leading: Icon(
           Icons.arrow_back,
-          color: tealColor,
+          color: greenColor2,
           size: 30,
         ),
         action: Column(
@@ -194,7 +195,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> MobileShops()));
+                      // Navigator.push(context, MaterialPageRoute(builder: (context)=> MobileShops()));
                     },
                     value: 8,
                     child: CustomText(title: "Mobile Shops", fontStyle: FontStyle.italic),
@@ -254,7 +255,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                         onPressed: () {},
                         child: CustomText(
                           title: "How to Register business?",
-                          color: blueColor,
+                          color: greenColor2,
                           decoration: TextDecoration.underline,
                         ))),
                 Align(
@@ -265,9 +266,10 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                       fontWeight: FontWeight.bold,
                       fontSize: 20.sp,
                     ),),
-                SizedBox(height: 20.h),
+                 SizedBox(height: 10.h),
                 CustomText(
                     title: "Business title *", fontWeight: FontWeight.bold),
+
                 CustomTextFormFieldWidget(
                   hint: 'Enter Your Business Title',
                   borderRadius: 10,
@@ -278,6 +280,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                 ),
                 CustomText(
                     title: "Business Category *", fontWeight: FontWeight.bold),
+                SizedBox(height: 10,),
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
@@ -286,12 +289,17 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextField(
-                        controller: categoryController,
-                        readOnly: true,
-                        onTap: () {
-                          _showCategoryList(context);
-                        },
+                      Padding(
+                        padding: const EdgeInsets.only(left: 6),
+                        child: TextField(
+                          controller: categoryController,
+                          style: TextStyle(color: grayColor),
+                          maxLines: 2,
+                          readOnly: true,
+                          onTap: () {
+                            _showCategoryList(context);
+                          },
+                        ),
                       ),
                     ],
                   ),

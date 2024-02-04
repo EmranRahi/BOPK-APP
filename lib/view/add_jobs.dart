@@ -119,7 +119,7 @@ class _AddJobsState extends State<AddJobs> {
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> MobileShops()));
+                      // Navigator.push(context, MaterialPageRoute(builder: (context)=> MobileShops()));
                     },
                     value: 8,
                     child: CustomText(title: "Mobile Shops", fontStyle: FontStyle.italic),

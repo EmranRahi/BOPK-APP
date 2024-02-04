@@ -20,18 +20,27 @@ class _MenuLoginState extends State<MenuLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: whiteColor,
       appBar: customAppBar1(
         elevation: 0,
         centerTitle: false,
-        title: Image.asset(
-          'assets/images/bsns.png',
-          scale: 2,
+        title: CustomText(
+          title: 'Business',
+          color: grayColor,
+          fontSize: 20,
+          googleFont: "Jost",
+          fontWeight: FontWeight.w700,
         ),
-        // leading: Icon(
-        //   Icons.arrow_back,
-        //   color: tealColor,
-        //   size: 30,
-        // ),
+        leading: IconButton(
+          onPressed: (){
+            Navigator.pop(context);
+          },icon:
+        Icon(
+          Icons.arrow_back,
+          color: greenColor2,
+          size: 25,
+        ),
+        ),
         action: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -114,6 +123,7 @@ class _MenuLoginState extends State<MenuLogin> {
                     child: CustomText(
                       title: "LOGIN TO MANAGE BUSINESS",
                       color: greenColor2,
+                      googleFont: "Jost",
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
                     )),
@@ -121,63 +131,120 @@ class _MenuLoginState extends State<MenuLogin> {
                   height: ScreenUtil().setHeight(20),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 10.w),
+                  padding: EdgeInsets.only(left: 2.w),
                   child: CustomText(
                     title: "User Name:",
                     fontWeight: FontWeight.bold,
-                    fontStyle: FontStyle.italic,
+                    googleFont: "Jost",
+                    fontSize: 16,
+
                   ),
                 ),
-                CustomTextFormFieldWidget(
-                  hint: 'Enter User name',
-                  borderRadius: 6,
-                  borderSide: BorderSide(color: greenColor2),
+                SizedBox(
+                  height: ScreenUtil().setHeight(2),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(6),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        spreadRadius: 1,
+                        blurRadius: 7,
+                        offset: Offset(0, 0),
+                      ),
+                    ],
+                  ),
+                  child: CustomTextFormFieldWidget(
+                    hint: 'Enter User Name',
+                    borderRadius: 6,
+                    borderSide: BorderSide.none,
+
+                  ),
                 ),
                 SizedBox(
                   height: ScreenUtil().setHeight(20),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: 10.w),
+                  padding: EdgeInsets.only(left: 2.w),
                   child: CustomText(
                     title: "Password:",
                     fontWeight: FontWeight.bold,
-                    fontStyle: FontStyle.italic,
+                    googleFont: "Jost",
+                    fontSize: 16,
                   ),
                 ),
-                CustomTextFormFieldWidget(
-                  hint: 'Enter Your Password',
-                  borderRadius: 6,
-                  borderSide: BorderSide(color: greenColor2, width: 2),
-                ),
                 SizedBox(
-                  height: ScreenUtil().setHeight(20),
+                  height: ScreenUtil().setHeight(2),
                 ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(6),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        spreadRadius: 1,
+                        blurRadius: 7,
+                        offset: Offset(0, 0),
+                      ),
+                    ],
+                  ),
+                  child: CustomTextFormFieldWidget(
+                    hint: 'Enter Your Password',
+                    borderRadius: 6,
+                    borderSide: BorderSide.none,
+
+                  ),
+                ),
+                // SizedBox(height: ScreenUtil().setHeight(20)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Custom_Button_Widget(
-                        ontap: () {},
-                        rd: 6,
-                        color: Colors.transparent,
-                        child: CustomText(
-                          title: "Forgot Password?",
-                          decoration: TextDecoration.underline,
-                          color: blueColor1,
-                          fontSize: 16.sp,
-                        ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 35),
+                    child: Custom_Button_Widget(
+                      ontap: () {},
+                      rd: 6,
+                      color: Colors.transparent,
+                      child: CustomText(
+                        title: "Forgot Password?",
+                        googleFont: "Jost",
+                        decoration: TextDecoration.underline,
+                        color: blueColor1,
+                        fontSize: 18.sp,
+                      ),
                     ),
-                    Custom_Button_Widget(
-                        ontap: () {},
-                        rd: 6,
-                        color: greenColor2,
-                        child: CustomText(
-                          title: "Sign In",
-                          color: whiteColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.sp,
-                        ),),
-                  ],
-                )
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(6),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          spreadRadius: 1,
+                          blurRadius: 7,
+                          offset: Offset(0, 0),
+                        )
+                      ]
+                    ),
+                    child: Custom_Button_Widget(
+                      ontap: () {},
+                      rd: 6,
+                      color: greenColor2,
+                      child: CustomText(
+                        title: "Sign In",
+                        googleFont: "Jost",
+                        color: whiteColor,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20.sp,
+                      ),
+                    ),
+                  ),
+                ],)
+
               ],
             ),
           ),

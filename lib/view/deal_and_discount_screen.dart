@@ -112,7 +112,7 @@ class _DealAndDisCountState extends State<DealAndDisCount> {
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> MobileShops()));
+                      // Navigator.push(context, MaterialPageRoute(builder: (context)=> MobileShops()));
                     },
                     value: 8,
                     child: CustomText(title: "Mobile Shops", fontStyle: FontStyle.italic),

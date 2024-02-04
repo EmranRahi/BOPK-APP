@@ -6,6 +6,7 @@ const Color whiteColor = Color(0xffFFFFFF);
 const Color grayColor = Color(0xff808080);
 const Color grayColor2 = Color(0xffD9D9D9);
 const Color greenColor2 = Color(0xff006400);
+// const Color greenColor2 = Color(0xff006400);
 const Color blueColor1 = Color(0xff21A6F1);
 const Color tealColor = Color(0xff008080);
 const Color tealColor1 = Color(0xff0B6162);

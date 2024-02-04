@@ -128,7 +128,7 @@ class _BusinessForSaleState extends State<BusinessForSale> {
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> MobileShops()));
+                      // Navigator.push(context, MaterialPageRoute(builder: (context)=> MobileShops()));
                     },
                     value: 8,
                     child: CustomText(title: "Mobile Shops", fontStyle: FontStyle.italic),
@@ -258,10 +258,13 @@ class _BusinessForSaleState extends State<BusinessForSale> {
                                 width: ScreenUtil().setWidth(110.w),
                                 height: 30.h,
                                 color: greenColor2,
-                                border: Border.all(),
+                                // border: Border.all(),
                                 child: Row(
                                   children: [
-                                    Image.asset('assets/images/whtsapp.png',scale: 5),
+                                    Padding(
+                                      padding:  EdgeInsets.only(left: 3),
+                                      child: Image.asset('assets/images/whtsapp.png',scale: 7),
+                                    ),
                                     SizedBox(width: 7,),
                                     CustomText(
                                         title: "whatsApp",
@@ -273,7 +276,7 @@ class _BusinessForSaleState extends State<BusinessForSale> {
                               Custom_Button_Widget(
                                 ontap: () {},
                                 rd: 7.r,
-                                border: Border.all(),
+                                border: Border.all(color: grayColor2),
                                 color: whiteColor,
                                 width: ScreenUtil().setWidth(100.w),
                                 height: 30.h,
