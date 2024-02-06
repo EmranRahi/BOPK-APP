@@ -487,6 +487,14 @@ class _MobileShopsState extends State<MobileShops> {
                               ),
                             ),
                             Positioned(
+                              right:10,
+                              top: 30,
+                              child: data?[index].isVerified==true?Image.asset(
+                                "assets/images/verified.png",scale: 3,width: 50,height: 50,
+                                fit: BoxFit.cover,
+                              ):SizedBox.shrink(),
+                            ),
+                            Positioned(
                               left:MediaQuery.of(context).size.width * 0.39,
                               top: 10,
                               child: CustomText(
