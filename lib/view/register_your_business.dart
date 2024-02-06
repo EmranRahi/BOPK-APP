@@ -76,7 +76,6 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
   bool val4 = false;
   bool val5 = false;
   bool val6 = false;
-
   String selectedCategory = 'Select business category';
   // List<Widget> textFields = [];
 
@@ -94,7 +93,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
   // }
 
   TextEditingController categoryController = TextEditingController();
-  TextEditingController searchController = TextEditingController();
+   TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -109,6 +108,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
   Widget build(BuildContext context) {
     String defaultValue = '10:00AM'; // Set your default value
     return Scaffold(
+      backgroundColor: whiteColor,
       appBar: customAppBar1(
         elevation: 0,
         centerTitle: false,

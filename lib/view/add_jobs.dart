@@ -34,7 +34,9 @@ class _AddJobsState extends State<AddJobs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: customAppBar1(
+         elevation: 0,
         centerTitle: false,
         title: CustomText(
           title: 'Mobile Shops',

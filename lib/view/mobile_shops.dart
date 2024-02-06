@@ -515,10 +515,7 @@ class _MobileShopsState extends State<MobileShops> {
                                     Icons.location_on,
                                     color: greenColor2,
                                   ),
-                                  SizedBox(
-                                      width: ScreenUtil()
-                                          .screenWidth /
-                                          40),
+                                  SizedBox(width: ScreenUtil().screenWidth / 40),
                                   CustomText(
                                     title:
                                     "0.01 KM away",
@@ -539,10 +536,7 @@ class _MobileShopsState extends State<MobileShops> {
                                     Icons.access_time_rounded,
                                     color: greenColor2,
                                   ),
-                                  SizedBox(
-                                      width: ScreenUtil()
-                                          .screenWidth /
-                                          40),
+                                  SizedBox(width: ScreenUtil().screenWidth / 40),
                                   CustomText(
                                     title: "Open Now",
                                     googleFont: "Jost",
