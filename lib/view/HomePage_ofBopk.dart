@@ -171,14 +171,6 @@ class _HomePageState extends State<HomePage> {
                             PopupMenuDivider(),
                             PopupMenuItem<int>(
                               onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage()));
-                              },
-                              value: 2,
-                              child: CustomText(title: "BOPK Home", fontStyle: FontStyle.italic),
-                            ),
-                            PopupMenuDivider(),
-                            PopupMenuItem<int>(
-                              onTap: (){
                                 Navigator.push(context, MaterialPageRoute(builder: (context)=> VerifyDownLoadScreen()));
                               },
                               value: 3,
@@ -215,14 +207,6 @@ class _HomePageState extends State<HomePage> {
                               },
                               value: 7,
                               child: CustomText(title: "Deal And Discount ", fontStyle: FontStyle.italic),
-                            ),
-                            PopupMenuDivider(),
-                            PopupMenuItem<int>(
-                              onTap: (){
-                                // Navigator.push(context, MaterialPageRoute(builder: (context)=> MobileShops()));
-                              },
-                              value: 8,
-                              child: CustomText(title: "Mobile Shops", fontStyle: FontStyle.italic),
                             ),
                             PopupMenuDivider(),
                             PopupMenuItem<int>(
@@ -294,7 +278,7 @@ class _HomePageState extends State<HomePage> {
                               return MobileShops(_searchByKey.text.toString(),0);
                             },),);
                           }, icon: Icon(Icons.search)),
-                          prefixIcon: IconButton(onPressed: (){}, icon: Icon(Icons.location_on,color: greenColor2,),),
+                          // prefixIcon: IconButton(onPressed: (){}, icon: Icon(Icons.location_on,color: greenColor2,),),
                           contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                         ),
                       ),
@@ -328,194 +312,7 @@ class _HomePageState extends State<HomePage> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          // SizedBox(
-                          //   height: 90,
-                          //   child: controller.categories[index].categories?.length!=null? ListView.builder(
-                          //     scrollDirection: Axis.horizontal,
-                          //     keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                          //     itemCount:controller.categories[index].categories?.length??0,
-                          //     itemBuilder: (context, index1) {
-                          //       print("${"http://bopk.psea.pk/Images/icons/"}${controller.categories[index].categories![index1].categoryName}.png");
-                          //       // String? subCategoryName = _categoryList[index]["subCategories"][index1]["subCategoryName"];
-                          //       return GestureDetector(
-                          //         onTap: () {
-                          //           print("Tapped on subcategory at index: $index1");
-                          //           // Add your navigation logic or other functionality here
-                          //           // For example:
-                          //           print(controller.categories[index].categories![index1].categoryId!);
-                          //          Globle.subCategoryId= controller.categories[index].categories![index1].categoryId!;
-                          //          Globle.subCategoryName= controller.categories[index].categories![index1].categoryName!;
-                          //           Navigator.push(context,
-                          //             MaterialPageRoute(builder: (context) => MobileShops(controller.categories[index].categories![index1].categoryName,controller.categories[index].categories![index1].categoryId)),
-                          //           );
-                          //         },
-                          //         child: Container(
-                          //           width: 80,
-                          //           child: Card(
-                          //             elevation: 8,
-                          //             shadowColor: const Color.fromRGBO(0, 66, 37, 0.9),
-                          //             shape: OutlineInputBorder(
-                          //               borderRadius: BorderRadius.circular(10),
-                          //               borderSide: const BorderSide(
-                          //                 color: Colors.green,
-                          //                 width: 1,
-                          //               ),
-                          //             ),
-                          //             child: Column(
-                          //               children: [
-                          //                 Padding(
-                          //                   padding: const EdgeInsets.all(4.0),
-                          //                   child: Container(
-                          //                     height: 30,
-                          //                     width: 30,
-                          //                     decoration: BoxDecoration(
-                          //                       image: DecorationImage(
-                          //                         fit: BoxFit.cover,
-                          //                         image: NetworkImage("${"http://bopk.psea.pk/Images/icons/"}${controller.categories[index].categories![index1].categoryName}.png"
-                          //                         ),
-                          //                         // image: NetworkImage(
-                          //                         //   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwGew7kiO-3fKN_s-G3Aauz9csC64n6e6al1Vd1cqGiw&s",
-                          //                         // ),
-                          //                       ),
-                          //                       borderRadius: BorderRadius.circular(10),
-                          //                     ),
-                          //                   ),
-                          //                 ),
-                          //                 SizedBox(height: 14.0),
-                          //                 // belo this container is used for text green container
-                          //                 Container(
-                          //                   width: 80,
-                          //                   height: 30,
-                          //                   decoration: BoxDecoration(
-                          //                     color: greenColor2,
-                          //                     borderRadius: BorderRadius.only(
-                          //                       bottomRight: const Radius.circular(10.0),
-                          //                       bottomLeft: const Radius.circular(10.0),
-                          //                     ),
-                          //                   ),
-                          //                   child: Center(
-                          //                     child: CustomText(
-                          //                       title:
-                          //                       controller.categories[index].categories?[index1].categoryName ?? "ddd",
-                          //                         googleFont: "Jost",
-                          //                         fontSize: 8,
-                          //                         color: Colors.white,
-                          //                       fontWeight: FontWeight.w600,
-                          //                       ),
-                          //                     ),
-                          //                   ),
-                          //
-                          //               ],
-                          //             ),
-                          //           ),
-                          //         ),
-                          //       );
-                          //     },
-                          //   ):Center(
-                          //     child: CircularProgressIndicator(),
-                          //   ),
-                          // ),
 
-                          ///Old Code ListView
-                          // SizedBox(
-                          //   height: 90,
-                          //   child: controller.categories[index].categories == null
-                          //       ? Center(
-                          //     child: CircularProgressIndicator(),
-                          //   )
-                          //       : ListView.builder(
-                          //     scrollDirection: Axis.horizontal,
-                          //     keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                          //     itemCount: controller.categories[index].categories!.length,
-                          //     itemBuilder: (context, index1) {
-                          //       print(
-                          //           "${"http://bopk.psea.pk/Images/icons/"}${controller.categories[index].categories![index1].categoryName}.png");
-                          //       // String? subCategoryName = _categoryList[index]["subCategories"][index1]["subCategoryName"];
-                          //       return GestureDetector(
-                          //         onTap: () {
-                          //           print("Tapped on subcategory at index: $index1");
-                          //           // Add your navigation logic or other functionality here
-                          //           // For example:
-                          //           print(controller.categories[index]
-                          //               .categories![index1].categoryId!);
-                          //           Globle.subCategoryId =
-                          //           controller.categories[index].categories![index1].categoryId!;
-                          //           Globle.subCategoryName =
-                          //           controller.categories[index].categories![index1].categoryName!;
-                          //           Navigator.push(
-                          //             context,
-                          //             MaterialPageRoute(
-                          //               builder: (context) => MobileShops(
-                          //                 controller.categories[index]
-                          //                     .categories![index1].categoryName,
-                          //                 controller.categories[index]
-                          //                     .categories![index1].categoryId,
-                          //               ),
-                          //             ),
-                          //           );
-                          //         },
-                          //         child: Container(
-                          //           width: 80,
-                          //           child: Card(
-                          //             elevation: 8,
-                          //             shadowColor: const Color.fromRGBO(0, 66, 37, 0.9),
-                          //             shape: OutlineInputBorder(
-                          //               borderRadius: BorderRadius.circular(10),
-                          //               borderSide: const BorderSide(
-                          //                 color: Colors.green,
-                          //                 width: 1,
-                          //               ),
-                          //             ),
-                          //             child: Column(
-                          //               children: [
-                          //                 Padding(
-                          //                   padding: const EdgeInsets.all(4.0),
-                          //                   child: Container(
-                          //                     height: 30,
-                          //                     width: 30,
-                          //                     decoration: BoxDecoration(
-                          //                       image: DecorationImage(
-                          //                         fit: BoxFit.cover,
-                          //                         image: NetworkImage(
-                          //                           "${"http://bopk.psea.pk/Images/icons/"}${controller.categories[index].categories![index1].categoryName}.png",
-                          //                         ),
-                          //                       ),
-                          //                       borderRadius: BorderRadius.circular(10),
-                          //                     ),
-                          //                   ),
-                          //                 ),
-                          //                 SizedBox(height: 14.0),
-                          //                 // Below this container is used for text green container
-                          //                 Container(
-                          //                   width: 80,
-                          //                   height: 30,
-                          //                   decoration: BoxDecoration(
-                          //                     color: greenColor2,
-                          //                     borderRadius: BorderRadius.only(
-                          //                       bottomRight: const Radius.circular(10.0),
-                          //                       bottomLeft: const Radius.circular(10.0),
-                          //                     ),
-                          //                   ),
-                          //                   child: Center(
-                          //                     child: CustomText(
-                          //                       title: controller.categories[index]
-                          //                           .categories![index1].categoryName ??
-                          //                           "ddd",
-                          //                       googleFont: "Jost",
-                          //                       fontSize: 8,
-                          //                       color: Colors.white,
-                          //                       fontWeight: FontWeight.w600,
-                          //                     ),
-                          //                   ),
-                          //                 ),
-                          //               ],
-                          //             ),
-                          //           ),
-                          //         ),
-                          //       );
-                          //     },
-                          //   ),
-                          // ),
                           SizedBox(
                             height: 90,
                             child: controller.categories[index].categories == null

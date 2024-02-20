@@ -28,7 +28,10 @@ class _VerifyDownLoadScreenState extends State<VerifyDownLoadScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: whiteColor,
+
       appBar: customAppBar1(
+        elevation: 0,
         centerTitle: false,
         title: CustomText(
           title: 'Mobile Shops',
@@ -61,14 +64,6 @@ class _VerifyDownLoadScreenState extends State<VerifyDownLoadScreen> {
                     },
                     value: 1,
                     child: CustomText(title: "Register Your Business", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage()));
-                    },
-                    value: 2,
-                    child: CustomText(title: "BOPK Home", fontStyle: FontStyle.italic),
                   ),
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
@@ -109,14 +104,6 @@ class _VerifyDownLoadScreenState extends State<VerifyDownLoadScreen> {
                     },
                     value: 7,
                     child: CustomText(title: "Deal And Discount ", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: (){
-                      // Navigator.push(context, MaterialPageRoute(builder: (context)=> MobileShops()));
-                    },
-                    value: 8,
-                    child: CustomText(title: "Mobile Shops", fontStyle: FontStyle.italic),
                   ),
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
@@ -190,17 +177,19 @@ class _VerifyDownLoadScreenState extends State<VerifyDownLoadScreen> {
                 borderRadius: 10.r,
               ),
               SizedBox(height: ScreenUtil().screenHeight / 20),
-              Custom_Button_Widget(
-                  ontap: () {},
-                  rd: 10,
-                  color: greenColor2,
-                  width: ScreenUtil().screenHeight / 8,
-                  child: CustomText(
-                    title: "Submit",
-                    color: whiteColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-              ),
+
+              /// comment For play Store
+              // Custom_Button_Widget(
+              //     ontap: () {},
+              //     rd: 10,
+              //     color: greenColor2,
+              //     width: ScreenUtil().screenHeight / 8,
+              //     child: CustomText(
+              //       title: "Submit",
+              //       color: whiteColor,
+              //       fontWeight: FontWeight.bold,
+              //     ),
+              // ),
             ],
           ),
         )

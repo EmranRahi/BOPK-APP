@@ -2,12 +2,21 @@ import 'package:businessonlinepk/view/customs_widgets/custom_appbar.dart';
 import 'package:businessonlinepk/view/customs_widgets/custom_button.dart';
 import 'package:businessonlinepk/view/customs_widgets/custom_containers_design.dart';
 import 'package:businessonlinepk/view/customs_widgets/custom_textfield.dart';
+import 'package:businessonlinepk/view/pay_now_screen.dart';
+import 'package:businessonlinepk/view/register_your_business.dart';
+import 'package:businessonlinepk/view/verify_download.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'HomePage_ofBopk.dart';
+import 'add_jobs.dart';
+import 'business_for_sale.dart';
 import 'customs_widgets/constant_color.dart';
 import 'customs_widgets/custom_text.dart';
+import 'deal_and_discount_screen.dart';
+import 'get_discount_card_screeen.dart';
+import 'get_your_business_now.dart';
 
 class MenuLogin extends StatefulWidget {
   const MenuLogin({super.key});
@@ -50,12 +59,22 @@ class _MenuLoginState extends State<MenuLogin> {
               itemBuilder: (BuildContext context) {
                 return <PopupMenuEntry<int>>[
                   PopupMenuItem<int>(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => MenuLogin()));
+                    },
                     value: 0,
                     child: CustomText(
                         title: "Login ", fontStyle: FontStyle.italic),
                   ),
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RegisterYourBusiness()));
+                    },
                     value: 1,
                     child: CustomText(
                         title: "Register Your Business",
@@ -63,28 +82,89 @@ class _MenuLoginState extends State<MenuLogin> {
                   ),
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
-                    value: 2,
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => VerifyDownLoadScreen()));
+                    },
+                    value: 3,
                     child: CustomText(
-                        title: "BOPK Home", fontStyle: FontStyle.italic),
+                        title: "Verify Download", fontStyle: FontStyle.italic),
                   ),
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
-                    value: 3,
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PayNowScreen()));
+                    },
+                    value: 4,
+                    child: CustomText(
+                        title: "Pay Now", fontStyle: FontStyle.italic),
+                  ),
+                  PopupMenuDivider(),
+                  PopupMenuItem<int>(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => GetDisCountCard()));
+                    },
+                    value: 5,
+                    child: CustomText(
+                        title: "Get Discount Card",
+                        fontStyle: FontStyle.italic),
+                  ),
+                  PopupMenuDivider(),
+                  PopupMenuItem<int>(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => GetYourBusinessNow()));
+                    },
+                    value: 6,
+                    child: CustomText(
+                        title: "Get Your Business Verify Now",
+                        fontStyle: FontStyle.italic),
+                  ),
+                  PopupMenuDivider(),
+                  PopupMenuItem<int>(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DealAndDisCount()));
+                    },
+                    value: 7,
+                    child: CustomText(
+                        title: "Deal And Discount ",
+                        fontStyle: FontStyle.italic),
+                  ),
+                  PopupMenuDivider(),
+                  PopupMenuItem<int>(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BusinessForSale()));
+                    },
+                    value: 10,
                     child: CustomText(
                         title: "Business For Sale",
                         fontStyle: FontStyle.italic),
                   ),
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
-                    value: 4,
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => AddJobs()));
+                    },
+                    value: 8,
                     child: CustomText(
-                        title: "About us", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    value: 5,
-                    child: CustomText(
-                        title: "Contact us", fontStyle: FontStyle.italic),
+                        title: "Add Jobs", fontStyle: FontStyle.italic),
                   ),
                 ];
               },
@@ -100,6 +180,10 @@ class _MenuLoginState extends State<MenuLogin> {
                 } else if (value == 4) {
                   print("About us menu is selected.");
                 } else if (value == 5) {
+                  print("Contact us menu is selected.");
+                } else if (value == 6) {
+                  print("Contact us menu is selected.");
+                } else if (value == 7) {
                   print("Contact us menu is selected.");
                 }
               },
@@ -199,51 +283,51 @@ class _MenuLoginState extends State<MenuLogin> {
                   ),
                 ),
                 // SizedBox(height: ScreenUtil().setHeight(20)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 35),
-                    child: Custom_Button_Widget(
-                      ontap: () {},
-                      rd: 6,
-                      color: Colors.transparent,
-                      child: CustomText(
-                        title: "Forgot Password?",
-                        googleFont: "Jost",
-                        decoration: TextDecoration.underline,
-                        color: blueColor1,
-                        fontSize: 18.sp,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(6),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          spreadRadius: 1,
-                          blurRadius: 7,
-                          offset: Offset(0, 0),
-                        )
-                      ]
-                    ),
-                    child: Custom_Button_Widget(
-                      ontap: () {},
-                      rd: 6,
-                      color: greenColor2,
-                      child: CustomText(
-                        title: "Sign In",
-                        googleFont: "Jost",
-                        color: whiteColor,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20.sp,
-                      ),
-                    ),
-                  ),
-                ],)
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //   Padding(
+                //     padding: const EdgeInsets.only(top: 35),
+                //     child: Custom_Button_Widget(
+                //       ontap: () {},
+                //       rd: 6,
+                //       color: Colors.transparent,
+                //       child: CustomText(
+                //         title: "Forgot Password?",
+                //         googleFont: "Jost",
+                //         decoration: TextDecoration.underline,
+                //         color: blueColor1,
+                //         fontSize: 18.sp,
+                //       ),
+                //     ),
+                //   ),
+                //   Container(
+                //     decoration: BoxDecoration(
+                //         color: Colors.white,
+                //         borderRadius: BorderRadius.circular(6),
+                //       boxShadow: [
+                //         BoxShadow(
+                //           color: Colors.black.withOpacity(0.2),
+                //           spreadRadius: 1,
+                //           blurRadius: 7,
+                //           offset: Offset(0, 0),
+                //         )
+                //       ]
+                //     ),
+                //     child: Custom_Button_Widget(
+                //       ontap: () {},
+                //       rd: 6,
+                //       color: greenColor2,
+                //       child: CustomText(
+                //         title: "Sign In",
+                //         googleFont: "Jost",
+                //         color: whiteColor,
+                //         fontWeight: FontWeight.w700,
+                //         fontSize: 20.sp,
+                //       ),
+                //     ),
+                //   ),
+                // ],)
 
               ],
             ),

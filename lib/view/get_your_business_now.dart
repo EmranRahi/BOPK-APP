@@ -26,7 +26,9 @@ class _GetYourBusinessNowState extends State<GetYourBusinessNow> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: whiteColor,
       appBar: customAppBar1(
+        elevation: 0,
         centerTitle: false,
         title: CustomText(
           title: 'Mobile Shops',
@@ -59,14 +61,6 @@ class _GetYourBusinessNowState extends State<GetYourBusinessNow> {
                     },
                     value: 1,
                     child: CustomText(title: "Register Your Business", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage()));
-                    },
-                    value: 2,
-                    child: CustomText(title: "BOPK Home", fontStyle: FontStyle.italic),
                   ),
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
@@ -108,14 +102,7 @@ class _GetYourBusinessNowState extends State<GetYourBusinessNow> {
                     value: 7,
                     child: CustomText(title: "Deal And Discount ", fontStyle: FontStyle.italic),
                   ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: (){
-                      // Navigator.push(context, MaterialPageRoute(builder: (context)=> MobileShops()));
-                    },
-                    value: 8,
-                    child: CustomText(title: "Mobile Shops", fontStyle: FontStyle.italic),
-                  ),
+
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
                     onTap: (){
@@ -165,37 +152,39 @@ class _GetYourBusinessNowState extends State<GetYourBusinessNow> {
 
             Image.asset('assets/images/verify.jpg'),
            SizedBox(height: 10,),
-           Align(
-             alignment: Alignment.centerRight,
-             child: Custom_Button_Widget(
-               ontap: () {},
-               rd: 8,
-               color: greenColor2,
-               width: ScreenUtil().screenHeight / 6,
-               child: CustomText(
-                 title: "Pay Now",
-                 color: whiteColor,
-                 fontWeight: FontWeight.bold,
-               ),
-             ),
-           ),
+           ///comment for play store
+           // Align(
+           //   alignment: Alignment.centerRight,
+           //   child: Custom_Button_Widget(
+           //     ontap: () {},
+           //     rd: 8,
+           //     color: greenColor2,
+           //     width: ScreenUtil().screenHeight / 6,
+           //     child: CustomText(
+           //       title: "Pay Now",
+           //       color: whiteColor,
+           //       fontWeight: FontWeight.bold,
+           //     ),
+           //   ),
+           // ),
            SizedBox(height: 20,),
            Image.asset('assets/images/verify.jpg'),
            SizedBox(height: 10,),
-           Align(
-             alignment: Alignment.centerRight,
-             child: Custom_Button_Widget(
-               ontap: () {},
-               rd: 8,
-               color: greenColor2,
-               width: ScreenUtil().screenHeight / 4.2,
-               child: CustomText(
-                 title: "Register your Business",
-                 color: whiteColor,
-                 fontWeight: FontWeight.bold,
-               ),
-             ),
-           ),
+           /// comment for play store
+           // Align(
+           //   alignment: Alignment.centerRight,
+           //   child: Custom_Button_Widget(
+           //     ontap: () {},
+           //     rd: 8,
+           //     color: greenColor2,
+           //     width: ScreenUtil().screenHeight / 4.2,
+           //     child: CustomText(
+           //       title: "Register your Business",
+           //       color: whiteColor,
+           //       fontWeight: FontWeight.bold,
+           //     ),
+           //   ),
+           // ),
          ],),
        ),
         ],),

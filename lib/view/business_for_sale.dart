@@ -43,7 +43,9 @@ class _BusinessForSaleState extends State<BusinessForSale> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: whiteColor,
       appBar: customAppBar1(
+        elevation: 0,
         centerTitle: false,
         title: CustomText(
           title: 'Mobile Shops',
@@ -77,14 +79,7 @@ class _BusinessForSaleState extends State<BusinessForSale> {
                     value: 1,
                     child: CustomText(title: "Register Your Business", fontStyle: FontStyle.italic),
                   ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage()));
-                    },
-                    value: 2,
-                    child: CustomText(title: "BOPK Home", fontStyle: FontStyle.italic),
-                  ),
+
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
                     onTap: (){
@@ -125,14 +120,7 @@ class _BusinessForSaleState extends State<BusinessForSale> {
                     value: 7,
                     child: CustomText(title: "Deal And Discount ", fontStyle: FontStyle.italic),
                   ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: (){
-                      // Navigator.push(context, MaterialPageRoute(builder: (context)=> MobileShops()));
-                    },
-                    value: 8,
-                    child: CustomText(title: "Mobile Shops", fontStyle: FontStyle.italic),
-                  ),
+
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
                     onTap: (){
@@ -184,18 +172,19 @@ class _BusinessForSaleState extends State<BusinessForSale> {
               prefixIcon: Icon(Icons.search),
               hint: "Search Your Business",
             ),
-            Custom_Button_Widget(
-              width: MediaQuery.of(context).size.width / 1.0,
-              ontap: () {},
-              rd: 10,
-              color: greenColor2,
-              child: CustomText(
-                title: "Add Business For Sale",
-                color: whiteColor,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            /// comment for play store
+            // Custom_Button_Widget(
+            //   width: MediaQuery.of(context).size.width / 1.0,
+            //   ontap: () {},
+            //   rd: 10,
+            //   color: greenColor2,
+            //   child: CustomText(
+            //     title: "Add Business For Sale",
+            //     color: whiteColor,
+            //     fontSize: 16,
+            //     fontWeight: FontWeight.bold,
+            //   ),
+            // ),
             SizedBox(height: 10),
             CarouselSlider(
               carouselController: _carouselController,
@@ -249,43 +238,44 @@ class _BusinessForSaleState extends State<BusinessForSale> {
                             ),
                           ),
                           SizedBox(height: 10,),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Custom_Button_Widget(
-                                ontap: () {},
-                                rd: 7.r,
-                                width: ScreenUtil().setWidth(110.w),
-                                height: 30.h,
-                                color: greenColor2,
-                                // border: Border.all(),
-                                child: Row(
-                                  children: [
-                                    Padding(
-                                      padding:  EdgeInsets.only(left: 3),
-                                      child: Image.asset('assets/images/whtsapp.png',scale: 7),
-                                    ),
-                                    SizedBox(width: 7,),
-                                    CustomText(
-                                        title: "whatsApp",
-                                        color: whiteColor,
-                                        fontWeight: FontWeight.bold),
-                                  ],
-                                ),
-                              ),
-                              Custom_Button_Widget(
-                                ontap: () {},
-                                rd: 7.r,
-                                border: Border.all(color: grayColor2),
-                                color: whiteColor,
-                                width: ScreenUtil().setWidth(100.w),
-                                height: 30.h,
-                                child: CustomText(
-                                    title: "Lahore", fontWeight: FontWeight.bold),
-                              ),
-                              TextButton(onPressed: (){}, child: CustomText(title: "View More>",))
-                            ],
-                          ),
+                          /// comment for play store
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          //   children: [
+                          //     Custom_Button_Widget(
+                          //       ontap: () {},
+                          //       rd: 7.r,
+                          //       width: ScreenUtil().setWidth(110.w),
+                          //       height: 30.h,
+                          //       color: greenColor2,
+                          //       // border: Border.all(),
+                          //       child: Row(
+                          //         children: [
+                          //           Padding(
+                          //             padding:  EdgeInsets.only(left: 3),
+                          //             child: Image.asset('assets/images/whtsapp.png',scale: 7),
+                          //           ),
+                          //           SizedBox(width: 7,),
+                          //           CustomText(
+                          //               title: "whatsApp",
+                          //               color: whiteColor,
+                          //               fontWeight: FontWeight.bold),
+                          //         ],
+                          //       ),
+                          //     ),
+                          //     Custom_Button_Widget(
+                          //       ontap: () {},
+                          //       rd: 7.r,
+                          //       border: Border.all(color: grayColor2),
+                          //       color: whiteColor,
+                          //       width: ScreenUtil().setWidth(100.w),
+                          //       height: 30.h,
+                          //       child: CustomText(
+                          //           title: "Lahore", fontWeight: FontWeight.bold),
+                          //     ),
+                          //     TextButton(onPressed: (){}, child: CustomText(title: "View More>",))
+                          //   ],
+                          // ),
                           SizedBox(height: 10,),
                         ],
                       ),

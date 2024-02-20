@@ -68,18 +68,16 @@ class _MobileShopsState extends State<MobileShops> {
     }else{
       fetchData1(widget.searchKey.toString());
     }
-
-
   }
   Future<void> fetchData1(String query) async {
-    final response = await http.get(Uri.parse('http://144.91.86.203/bopkapi/Karobar/Search?search=$query'));
-    print('http://144.91.86.203/bopkapi/Karobar/Search?search=$query');
+    final response = await http.get(Uri.parse('http://144.91.86.203/bopkapi/Karobar/SearchBusiness?search=$query'));
+    print('http://144.91.86.203/bopkapi/Karobar/SearchBusiness?search=$query');
+    // print('http://144.91.86.203/bopkapi/Karobar/Search?search=$query');
     if (response.statusCode == 200) {
       // If the server returns a 200 OK response, parse the data
       List<StaticListModel> results = List<StaticListModel>.from(
         json.decode(response.body).map((x) => StaticListModel.fromJson(x)),
       );
-
       // Update the state to trigger a rebuild with the fetched data
       setState(() {
         data = results;
@@ -202,14 +200,7 @@ class _MobileShopsState extends State<MobileShops> {
                     value: 1,
                     child: CustomText(title: "Register Your Business", fontStyle: FontStyle.italic),
                   ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage()));
-                    },
-                    value: 2,
-                    child: CustomText(title: "BOPK Home", fontStyle: FontStyle.italic),
-                  ),
+
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
                     onTap: (){
@@ -249,14 +240,6 @@ class _MobileShopsState extends State<MobileShops> {
                     },
                     value: 7,
                     child: CustomText(title: "Deal And Discount ", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: (){
-                      // Navigator.push(context, MaterialPageRoute(builder: (context)=> MobileShops()));
-                    },
-                    value: 8,
-                    child: CustomText(title: "Mobile Shops", fontStyle: FontStyle.italic),
                   ),
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
@@ -332,7 +315,7 @@ class _MobileShopsState extends State<MobileShops> {
                         search();
                       }, icon: Icon(Icons.search),),
                       hint: "Search Your Business",
-                      prefixIcon: IconButton(onPressed: (){}, icon: Icon(Icons.location_on,color: greenColor2),),
+                      // prefixIcon: IconButton(onPressed: (){}, icon: Icon(Icons.location_on,color: greenColor2),),
                       // color: Colors.white,
                       // fillColor: true,
                       borderSide: BorderSide.none,
@@ -499,6 +482,7 @@ class _MobileShopsState extends State<MobileShops> {
                                   ),
                                 ],
                               ),
+                              /// comment for play store
                               // Row(
                               //   children: [
                               //     for (final image in data![index].images!)
@@ -598,101 +582,107 @@ class _MobileShopsState extends State<MobileShops> {
                                 top: 100.h,
                                 child: Row(
                                   children: [
-                                    CustomContainer(
-                                      height: 30,
-                                      width: 30,
-                                      ontap: () {},
-                                      rd: 100,
-                                      color: whiteColor,
-                                      boxShadow: true,
-                                      child: Image.asset(
-                                        'assets/images/navigation.png',),
-                                    ),
+                                    ///navigation Picture comment for play store
+                                    // CustomContainer(
+                                    //   height: 30,
+                                    //   width: 30,
+                                    //   ontap: () {},
+                                    //   rd: 100,
+                                    //   color: whiteColor,
+                                    //   boxShadow: true,
+                                    //   child: Image.asset(
+                                    //     'assets/images/navigation.png',),
+                                    // ),
                                     SizedBox(width: 10.w),
-                                    businessModel1?.contactPhone==null
-                                        ?  CustomContainer(
-                                        height: 30,
-                                        width: 30,
-                                        ontap: () {
-                                          print(businessModel1?.contactPhone);
-                                          if (businessModel1?.contactPhone != null) {
-                                            String phoneUrl = 'tel:${businessModel1!.contactPhone}';
-                                            launchUrl(Uri.parse(phoneUrl));
-                                          }
-                                        },
-                                        rd: 100,
-                                        color: whiteColor,
-                                        boxShadow: true,
-                                        child: Image.asset(
-                                            'assets/images/call1.png'))
-                                        :  CustomContainer(
-                                        height: 30,
-                                        width: 30,
-                                        ontap: () {
-                                          print(businessModel1?.contactPhone);
-                                          if (businessModel1?.contactPhone != null) {
-                                            String phoneUrl = 'tel:${businessModel1!.contactPhone}';
-                                            launchUrl(Uri.parse(phoneUrl));
-                                          }
-                                        },
-                                        rd: 100,
-                                        color: whiteColor,
-                                        boxShadow: true,
-                                        child: Image.asset(
-                                            'assets/images/call.png')),
+                                    /// Phone Image Comment felhal comment for play store
+                                    // businessModel1?.contactPhone==null
+                                    //     ?  CustomContainer(
+                                    //     height: 30,
+                                    //     width: 30,
+                                    //     ontap: () {
+                                    //       print(businessModel1?.contactPhone);
+                                    //       if (businessModel1?.contactPhone != null) {
+                                    //         String phoneUrl = 'tel:${businessModel1!.contactPhone}';
+                                    //         launchUrl(Uri.parse(phoneUrl));
+                                    //       }
+                                    //     },
+                                    //     rd: 100,
+                                    //     color: whiteColor,
+                                    //     boxShadow: true,
+                                    //     child: Image.asset(
+                                    //         'assets/images/call1.png'))
+                                    //     :  CustomContainer(
+                                    //     height: 30,
+                                    //     width: 30,
+                                    //     ontap: () {
+                                    //       print(businessModel1?.contactPhone);
+                                    //       if (businessModel1?.contactPhone != null) {
+                                    //         String phoneUrl = 'tel:${businessModel1!.contactPhone}';
+                                    //         launchUrl(Uri.parse(phoneUrl));
+                                    //       }
+                                    //     },
+                                    //     rd: 100,
+                                    //     color: whiteColor,
+                                    //     boxShadow: true,
+                                    //     child: Image.asset(
+                                    //         'assets/images/call.png')),
+                                    //
                                     SizedBox(width: 10.w),
-                                    businessModel1?.contactPhone == null ?
-
-                                    CustomContainer(
-                                        height: 30,
-                                        width: 30,
-                                        ontap: () {
-                                          print(businessModel1?.contactPhone);
-                                          if (businessModel1?.contactPhone != null) {
-                                            String whatsappUrl = 'https://wa.me/${businessModel1!.contactPhone}';
-                                            launchUrl(Uri.parse(whatsappUrl));
-                                          }
-                                        },
-                                        rd: 100,
-                                        color: whiteColor,
-                                        boxShadow: true,
-                                        child: Image.asset(
-                                            'assets/images/whtsapp.png')) :CustomContainer(
-                                        height: 30,
-                                        width: 30,
-                                        ontap: () {
-                                          print(businessModel1?.contactPhone);
-                                          if (businessModel1?.contactPhone != null) {
-                                            String whatsappUrl = 'https://wa.me/${businessModel1!.contactPhone}';
-                                            launchUrl(Uri.parse(whatsappUrl));
-                                          }
-                                        },
-                                        rd: 100,
-                                        color: whiteColor,
-                                        boxShadow: true,
-                                        child: Image.asset(
-                                            'assets/images/whtsapp.png')),
+                                    /// below WhatsApp Image Comment  comment for play store
+                                    // businessModel1?.contactPhone == null ?
+                                    // CustomContainer(
+                                    //     height: 30,
+                                    //     width: 30,
+                                    //     ontap: () {
+                                    //       print(businessModel1?.contactPhone);
+                                    //       if (businessModel1?.contactPhone != null) {
+                                    //         String whatsappUrl = 'https://wa.me/${businessModel1!.contactPhone}';
+                                    //         launchUrl(Uri.parse(whatsappUrl));
+                                    //       }
+                                    //     },
+                                    //     rd: 100,
+                                    //     color: whiteColor,
+                                    //     boxShadow: true,
+                                    //     child: Image.asset(
+                                    //         'assets/images/whtsapp.png'))
+                                    //     :CustomContainer(
+                                    //     height: 30,
+                                    //     width: 30,
+                                    //     ontap: () {
+                                    //       print(businessModel1?.contactPhone);
+                                    //       if (businessModel1?.contactPhone != null) {
+                                    //         String whatsappUrl = 'https://wa.me/${businessModel1!.contactPhone}';
+                                    //         launchUrl(Uri.parse(whatsappUrl));
+                                    //       }
+                                    //     },
+                                    //     rd: 100,
+                                    //     color: whiteColor,
+                                    //     boxShadow: true,
+                                    //     child: Image.asset(
+                                    //         'assets/images/whtsapp.png')),
                                     SizedBox(width: 10.w),
-                                    CustomContainer(
-                                        height: 30,
-                                        width: 30,
-                                        ontap: () {},
-                                        rd: 100,
-                                        color: whiteColor,
-                                        boxShadow: true,
-                                        child: Image.asset(
-                                            'assets/images/sms.png')),
+                                    /// comment for play store
+                                    // CustomContainer(
+                                    //     height: 30,
+                                    //     width: 30,
+                                    //     ontap: () {},
+                                    //     rd: 100,
+                                    //     color: whiteColor,
+                                    //     boxShadow: true,
+                                    //     child: Image.asset(
+                                    //         'assets/images/sms.png')),
                                     SizedBox(width: 10.w),
-                                    CustomContainer(
-                                      height: 30,
-                                      width: 30,
-                                      ontap: () {},
-                                      rd: 100,
-                                      color: whiteColor,
-                                      boxShadow: true,
-                                      child: Image.asset(
-                                          'assets/images/share.png'),
-                                    ),
+                                    ///  comment for play store
+                                    // CustomContainer(
+                                    //   height: 30,
+                                    //   width: 30,
+                                    //   ontap: () {},
+                                    //   rd: 100,
+                                    //   color: whiteColor,
+                                    //   boxShadow: true,
+                                    //   child: Image.asset(
+                                    //       'assets/images/share.png'),
+                                    // ),
                                   ],
                                 ),
                               ),
@@ -712,7 +702,7 @@ class _MobileShopsState extends State<MobileShops> {
                           ),
                         ),
                       );
-
+                   ///   comment for play store
                       // return Container(
                       //   // alignment: Alignment.center,
                       //   height: MediaQuery.of(context).size.height/3.9,

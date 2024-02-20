@@ -29,7 +29,9 @@ class _GetDisCountCardState extends State<GetDisCountCard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: whiteColor,
       appBar: customAppBar1(
+        elevation: 0,
         centerTitle: false,
         title: CustomText(
           title: 'Mobile Shops',
@@ -62,14 +64,6 @@ class _GetDisCountCardState extends State<GetDisCountCard> {
                     },
                     value: 1,
                     child: CustomText(title: "Register Your Business", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage()));
-                    },
-                    value: 2,
-                    child: CustomText(title: "BOPK Home", fontStyle: FontStyle.italic),
                   ),
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
@@ -110,14 +104,6 @@ class _GetDisCountCardState extends State<GetDisCountCard> {
                     },
                     value: 7,
                     child: CustomText(title: "Deal And Discount ", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: (){
-                      // Navigator.push(context, MaterialPageRoute(builder: (context)=> MobileShops()));
-                    },
-                    value: 8,
-                    child: CustomText(title: "Mobile Shops", fontStyle: FontStyle.italic),
                   ),
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
@@ -217,17 +203,18 @@ class _GetDisCountCardState extends State<GetDisCountCard> {
               ),
               CustomTextFormFieldWidget(hint: "your Name Here",maxLines: 4,borderRadius: 8.r),
               SizedBox(height: ScreenUtil().setHeight(20.h),),
-              Custom_Button_Widget(
-                  ontap: () {},
-                  rd: 8,
-                  color: greenColor2,
-                  width: ScreenUtil().screenWidth / 1,
-                  child: CustomText(
-                    title: "Send",
-                    fontWeight: FontWeight.bold,
-                    color: whiteColor,
-                    fontSize: 20.sp,
-                  ),),
+              /// comment for play store
+              // Custom_Button_Widget(
+              //     ontap: () {},
+              //     rd: 8,
+              //     color: greenColor2,
+              //     width: ScreenUtil().screenWidth / 1,
+              //     child: CustomText(
+              //       title: "Send",
+              //       fontWeight: FontWeight.bold,
+              //       color: whiteColor,
+              //       fontSize: 20.sp,
+              //     ),),
               SizedBox(height: 10,),
               CustomText(
                 title:
@@ -236,60 +223,61 @@ class _GetDisCountCardState extends State<GetDisCountCard> {
                 fontWeight: FontWeight.bold,
               ),
              SizedBox(height: 20,),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: greenColor2,width: 2)
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                  CustomContainer(
-                    height: 50.h,
-                    width: 50,
-                    ontap: () {},
-                    rd: 100,
-                    color: Colors.transparent,
-                    // boxShadow: true,
-                    child: Image.asset('assets/media/facebook1.png',scale: 3),
-                  ),
-                  CustomContainer(
-                    height: 50,
-                    width: 50,
-                    ontap: () {},
-                    rd: 100,
-                    color: Colors.transparent,
-                    // boxShadow: true,
-                    child: Image.asset('assets/media/instagram.png',scale: 3),),
-                  CustomContainer(
-                    height: 50,
-                    width: 50,
-                    ontap: () {},
-                    rd: 100,
-                    color: Colors.transparent,
-                    // boxShadow: true,
-                    child:  Image.asset('assets/media/twitter.png',scale: 2.5),),
-                  CustomContainer(
-                    height: 50,
-                    width: 50,
-                    ontap: () {},
-                    rd: 100,
-                    color: Colors.transparent,
-                    // boxShadow: true,
-                    child:  Image.asset('assets/media/youtube1.png',scale: 2.5,),
-                  ),
-                  CustomContainer(
-                    height: 50,
-                    width: 50,
-                    ontap: () {},
-                    rd: 100,
-                    color: Colors.transparent,
-                    // boxShadow: true,
-                    child:  Image.asset('assets/media/whatsapp.png',scale: 2.5),
-                  ),
-
-                ]),
-              ),
+              /// social media link Comment for Play Store
+              // Container(
+              //   decoration: BoxDecoration(
+              //     borderRadius: BorderRadius.circular(10),
+              //     border: Border.all(color: greenColor2,width: 2)
+              //   ),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+              //       children: [
+              //     CustomContainer(
+              //       height: 50.h,
+              //       width: 50,
+              //       ontap: () {},
+              //       rd: 100,
+              //       color: Colors.transparent,
+              //       // boxShadow: true,
+              //       child: Image.asset('assets/media/facebook1.png',scale: 3),
+              //     ),
+              //     CustomContainer(
+              //       height: 50,
+              //       width: 50,
+              //       ontap: () {},
+              //       rd: 100,
+              //       color: Colors.transparent,
+              //       // boxShadow: true,
+              //       child: Image.asset('assets/media/instagram.png',scale: 3),),
+              //     CustomContainer(
+              //       height: 50,
+              //       width: 50,
+              //       ontap: () {},
+              //       rd: 100,
+              //       color: Colors.transparent,
+              //       // boxShadow: true,
+              //       child:  Image.asset('assets/media/twitter.png',scale: 2.5),),
+              //     CustomContainer(
+              //       height: 50,
+              //       width: 50,
+              //       ontap: () {},
+              //       rd: 100,
+              //       color: Colors.transparent,
+              //       // boxShadow: true,
+              //       child:  Image.asset('assets/media/youtube1.png',scale: 2.5,),
+              //     ),
+              //     CustomContainer(
+              //       height: 50,
+              //       width: 50,
+              //       ontap: () {},
+              //       rd: 100,
+              //       color: Colors.transparent,
+              //       // boxShadow: true,
+              //       child:  Image.asset('assets/media/whatsapp.png',scale: 2.5),
+              //     ),
+              //
+              //   ]),
+              // ),
               SizedBox(height: ScreenUtil().setHeight(15.h),),
           ],),
         ),

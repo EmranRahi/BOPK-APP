@@ -156,43 +156,43 @@ class _ProductScreenState extends State<ProductScreen> {
               ],
             ),
           ),
-          Container(
-            padding: EdgeInsets.all(08),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Custom_Button_Widget(
-                  ontap: () {
-                    print("Click WhatsApp");
-                  },
-                  rd: 4.r,
-                  height: 35.h,
-                  color: greenColor2,
-                  child: CustomText(
-                    title: "WhatsApp",
-                    color: whiteColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.sp,
-                  ),
-                ),
-                Custom_Button_Widget(
-                  ontap: () {
-                    print("Click Call");
-                  },
-                  rd: 4.r,
-                  height:35.h,
-                  color: greenColor2,
-                  child: CustomText(
-                    title: "Call",
-                    color: whiteColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.sp,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // Container(
+          //   padding: EdgeInsets.all(08),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //     crossAxisAlignment: CrossAxisAlignment.end,
+          //     children: [
+          //       Custom_Button_Widget(
+          //         ontap: () {
+          //           print("Click WhatsApp");
+          //         },
+          //         rd: 4.r,
+          //         height: 35.h,
+          //         color: greenColor2,
+          //         child: CustomText(
+          //           title: "WhatsApp",
+          //           color: whiteColor,
+          //           fontWeight: FontWeight.bold,
+          //           fontSize: 16.sp,
+          //         ),
+          //       ),
+          //       Custom_Button_Widget(
+          //         ontap: () {
+          //           print("Click Call");
+          //         },
+          //         rd: 4.r,
+          //         height:35.h,
+          //         color: greenColor2,
+          //         child: CustomText(
+          //           title: "Call",
+          //           color: whiteColor,
+          //           fontWeight: FontWeight.bold,
+          //           fontSize: 16.sp,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );

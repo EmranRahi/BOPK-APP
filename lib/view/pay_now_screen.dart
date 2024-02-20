@@ -28,7 +28,9 @@ class _PayNowScreenState extends State<PayNowScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: whiteColor,
       appBar: customAppBar1(
+        elevation: 0,
         centerTitle: false,
         title: CustomText(
           title: 'Mobile Shops',
@@ -61,14 +63,6 @@ class _PayNowScreenState extends State<PayNowScreen> {
                     },
                     value: 1,
                     child: CustomText(title: "Register Your Business", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage()));
-                    },
-                    value: 2,
-                    child: CustomText(title: "BOPK Home", fontStyle: FontStyle.italic),
                   ),
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
@@ -109,14 +103,6 @@ class _PayNowScreenState extends State<PayNowScreen> {
                     },
                     value: 7,
                     child: CustomText(title: "Deal And Discount ", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: (){
-                      // Navigator.push(context, MaterialPageRoute(builder: (context)=> MobileShops()));
-                    },
-                    value: 8,
-                    child: CustomText(title: "Mobile Shops", fontStyle: FontStyle.italic),
                   ),
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
@@ -181,16 +167,17 @@ class _PayNowScreenState extends State<PayNowScreen> {
                borderRadius: 10,
              ),
              SizedBox(height: ScreenUtil().setHeight(20.h)),
-             Custom_Button_Widget(
-                 ontap: () {},
-                 rd: 10,
-                 color: greenColor2,
-                 width: ScreenUtil().screenWidth / 1,
-                 child: CustomText(
-                   title: "Pay Now",
-                   fontWeight: FontWeight.bold,
-                   color: whiteColor,
-                 )),
+             /// button Comment For Play Store
+             // Custom_Button_Widget(
+             //     ontap: () {},
+             //     rd: 10,
+             //     color: greenColor2,
+             //     width: ScreenUtil().screenWidth / 1,
+             //     child: CustomText(
+             //       title: "Pay Now",
+             //       fontWeight: FontWeight.bold,
+             //       color: whiteColor,
+             //     )),
              SizedBox(height: ScreenUtil().setHeight(20.h))
             ],
           ),

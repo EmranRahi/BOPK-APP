@@ -73,14 +73,6 @@ class _AddJobsState extends State<AddJobs> {
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage()));
-                    },
-                    value: 2,
-                    child: CustomText(title: "BOPK Home", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: (){
                       Navigator.push(context, MaterialPageRoute(builder: (context)=> VerifyDownLoadScreen()));
                     },
                     value: 3,
@@ -117,14 +109,6 @@ class _AddJobsState extends State<AddJobs> {
                     },
                     value: 7,
                     child: CustomText(title: "Deal And Discount ", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: (){
-                      // Navigator.push(context, MaterialPageRoute(builder: (context)=> MobileShops()));
-                    },
-                    value: 8,
-                    child: CustomText(title: "Mobile Shops", fontStyle: FontStyle.italic),
                   ),
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
@@ -225,11 +209,12 @@ class _AddJobsState extends State<AddJobs> {
                 CustomTextFormFieldWidget(hint: "TO",borderRadius: 08,
                 contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),),
                 SizedBox(height: 20.h),
-                Custom_Button_Widget(
-                    ontap: (){}, rd: 10,
-                    width: MediaQuery.of(context).size.width,
-                   color: greenColor2,
-                    child: CustomText(title: "Add Jobs",fontSize: 16.sp,color: whiteColor,fontWeight: FontWeight.bold,)),
+                /// comment for play store
+                // Custom_Button_Widget(
+                //     ontap: (){}, rd: 10,
+                //     width: MediaQuery.of(context).size.width,
+                //    color: greenColor2,
+                //     child: CustomText(title: "Add Jobs",fontSize: 16.sp,color: whiteColor,fontWeight: FontWeight.bold,)),
                 SizedBox(height: 10.h),
             ],
            ),

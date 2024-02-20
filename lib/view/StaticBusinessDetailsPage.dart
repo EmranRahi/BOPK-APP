@@ -238,16 +238,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
                     onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => HomePage()));
-                    },
-                    value: 2,
-                    child: CustomText(
-                        title: "BOPK Home", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -307,18 +297,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                     child: CustomText(
                         title: "Deal And Discount ",
                         fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => MobileShops()));
-                    },
-                    value: 8,
-                    child: CustomText(
-                        title: "Mobile Shops", fontStyle: FontStyle.italic),
                   ),
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
@@ -493,143 +471,145 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                     },
                   ),
                 ),
-                Positioned(
-                  top: 150.h,
-                    left: 60.w,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        businessModel?.whatsAppNumber==null
-                            ? CustomContainer(
-                      height: 40,
-                      width: 40,
-                      ontap: () {},
-                      rd: 100,
-                      color: whiteColor,
-                      boxShadow: true,
-                      child: Image.asset(
-                          'assets/images/navigation1.png'),
-                    ):CustomContainer(
-                          height: 40,
-                          width: 40,
-                          ontap: () {},
-                          rd: 100,
-                          color: whiteColor,
-                          boxShadow: true,
-                          child: Image.asset(
-                              'assets/images/navigation.png'),
-                        ),
-                    SizedBox(width: 5.w),
-                        businessModel?.contactPhone==null
-                            ?  CustomContainer(
-                        height: 40,
-                        width: 40,
-                        ontap: () {
-                          print(businessModel?.contactPhone);
-                          if (businessModel?.contactPhone != null) {
-                            String phoneUrl = 'tel:${businessModel!.contactPhone}';
-                            launchUrl(Uri.parse(phoneUrl));
-                          }
-                        },
-                        rd: 100,
-                        color: whiteColor,
-                        boxShadow: true,
-                        child:
-                        Image.asset('assets/images/call1.png')): CustomContainer(
-                            height: 40,
-                            width: 40,
-                            ontap: () {
-                              print(businessModel?.contactPhone);
-                              if (businessModel?.contactPhone != null) {
-                                String phoneUrl = 'tel:${businessModel!.contactPhone}';
-                                launchUrl(Uri.parse(phoneUrl));
-                              }
-                            },
-                            rd: 100,
-                            color: whiteColor,
-                            boxShadow: true,
-                            child:
-                            Image.asset('assets/images/call.png')),
-                    SizedBox(width: 5.w),
-                        businessModel?.whatsAppNumber==null
-                            ?  CustomContainer(
-                        height: 40,
-                        width: 40,
-                        ontap: () {},
-                        rd: 100,
-                        color: whiteColor,
-                        boxShadow: true,
-                        child:
-                        Image.asset('assets/images/sms1.png'))
-                            : CustomContainer(
-                            height: 40,
-                            width: 40,
-                            ontap: () {},
-                            rd: 100,
-                            color: whiteColor,
-                            boxShadow: true,
-                            child:
-                            Image.asset('assets/images/sms.png')),
-                    SizedBox(width: 5.w),
-                    businessModel?.contactPhone==null
-                   ? CustomContainer(
-                    height: 40,
-                    width: 40,
-                    ontap: () {
-                      print(businessModel?.contactPhone);
-                      // String whatsappUrl = 'https://wa.me/+1${businessModel!.whatsAppNumber}';
-                      if(businessModel?.contactPhone != null){
-                        String whatsappUrl = 'https://wa.me/+1${businessModel!.contactPhone}';
-                        launchUrl(Uri.parse(whatsappUrl));
-                      }
-                    },
-                    rd: 100,
-                    color: whiteColor,
-                    boxShadow: true,
-                    child: Image.asset(
-                        'assets/images/whtsapp1.png'),)
-                   : CustomContainer(
-                    height: 40,
-                    width: 40,
-                    ontap: () {
-                      print(businessModel?.contactPhone);
-                      // String whatsappUrl = 'https://wa.me/+1${businessModel!.whatsAppNumber}';
-                      if(businessModel?.contactPhone != null){
-                        String whatsappUrl = 'https://wa.me/+1${businessModel!.contactPhone}';
-                        launchUrl(Uri.parse(whatsappUrl));
-                      }
-                    },
-                    rd: 100,
-                    color: whiteColor,
-                    boxShadow: true,
-                    child: Image.asset(
-                        'assets/images/whtsapp.png')),
-                     SizedBox(width: 5.w),
-                    businessModel?.whatsAppNumber==null
-                            ?  CustomContainer(
-                  height: 40,
-                  width: 40,
-                  ontap: () {
 
-                  },
-                  rd: 100,
-                  color: whiteColor,
-                  boxShadow: true,
-                  child: Image.asset('assets/images/share2.png'),
-                )
-                            : CustomContainer(
-                          height: 40,
-                          width: 40,
-                          ontap: () {},
-                          rd: 100,
-                          color: whiteColor,
-                          boxShadow: true,
-                          child: Image.asset('assets/images/share.png')),
-              ],
-            ),
-          ),
-          // Positioned widget at the bottom
+          /// Navigation images comment for play store
+          //       Positioned(
+          //         top: 150.h,
+          //           left: 60.w,
+          //           child: Row(
+          //             mainAxisAlignment: MainAxisAlignment.end,
+          //             crossAxisAlignment: CrossAxisAlignment.end,
+          //             children: [
+          //               businessModel?.whatsAppNumber==null
+          //                   ? CustomContainer(
+          //             height: 40,
+          //             width: 40,
+          //             ontap: () {},
+          //             rd: 100,
+          //             color: whiteColor,
+          //             boxShadow: true,
+          //             child: Image.asset(
+          //                 'assets/images/navigation1.png'),
+          //           ):CustomContainer(
+          //                 height: 40,
+          //                 width: 40,
+          //                 ontap: () {},
+          //                 rd: 100,
+          //                 color: whiteColor,
+          //                 boxShadow: true,
+          //                 child: Image.asset(
+          //                     'assets/images/navigation.png'),
+          //               ),
+          //           SizedBox(width: 5.w),
+          //               businessModel?.contactPhone==null
+          //                   ?  CustomContainer(
+          //               height: 40,
+          //               width: 40,
+          //               ontap: () {
+          //                 print(businessModel?.contactPhone);
+          //                 if (businessModel?.contactPhone != null) {
+          //                   String phoneUrl = 'tel:${businessModel!.contactPhone}';
+          //                   launchUrl(Uri.parse(phoneUrl));
+          //                 }
+          //               },
+          //               rd: 100,
+          //               color: whiteColor,
+          //               boxShadow: true,
+          //               child:
+          //               Image.asset('assets/images/call1.png')): CustomContainer(
+          //                   height: 40,
+          //                   width: 40,
+          //                   ontap: () {
+          //                     print(businessModel?.contactPhone);
+          //                     if (businessModel?.contactPhone != null) {
+          //                       String phoneUrl = 'tel:${businessModel!.contactPhone}';
+          //                       launchUrl(Uri.parse(phoneUrl));
+          //                     }
+          //                   },
+          //                   rd: 100,
+          //                   color: whiteColor,
+          //                   boxShadow: true,
+          //                   child:
+          //                   Image.asset('assets/images/call.png')),
+          //           SizedBox(width: 5.w),
+          //               businessModel?.whatsAppNumber==null
+          //                   ?  CustomContainer(
+          //               height: 40,
+          //               width: 40,
+          //               ontap: () {},
+          //               rd: 100,
+          //               color: whiteColor,
+          //               boxShadow: true,
+          //               child:
+          //               Image.asset('assets/images/sms1.png'))
+          //                   : CustomContainer(
+          //                   height: 40,
+          //                   width: 40,
+          //                   ontap: () {},
+          //                   rd: 100,
+          //                   color: whiteColor,
+          //                   boxShadow: true,
+          //                   child:
+          //                   Image.asset('assets/images/sms.png')),
+          //           SizedBox(width: 5.w),
+          //           businessModel?.contactPhone==null
+          //          ? CustomContainer(
+          //           height: 40,
+          //           width: 40,
+          //           ontap: () {
+          //             print(businessModel?.contactPhone);
+          //             // String whatsappUrl = 'https://wa.me/+1${businessModel!.whatsAppNumber}';
+          //             if(businessModel?.contactPhone != null){
+          //               String whatsappUrl = 'https://wa.me/+1${businessModel!.contactPhone}';
+          //               launchUrl(Uri.parse(whatsappUrl));
+          //             }
+          //           },
+          //           rd: 100,
+          //           color: whiteColor,
+          //           boxShadow: true,
+          //           child: Image.asset(
+          //               'assets/images/whtsapp1.png'),)
+          //          : CustomContainer(
+          //           height: 40,
+          //           width: 40,
+          //           ontap: () {
+          //             print(businessModel?.contactPhone);
+          //             // String whatsappUrl = 'https://wa.me/+1${businessModel!.whatsAppNumber}';
+          //             if(businessModel?.contactPhone != null){
+          //               String whatsappUrl = 'https://wa.me/+1${businessModel!.contactPhone}';
+          //               launchUrl(Uri.parse(whatsappUrl));
+          //             }
+          //           },
+          //           rd: 100,
+          //           color: whiteColor,
+          //           boxShadow: true,
+          //           child: Image.asset(
+          //               'assets/images/whtsapp.png')),
+          //            SizedBox(width: 5.w),
+          //           businessModel?.whatsAppNumber==null
+          //                   ?  CustomContainer(
+          //         height: 40,
+          //         width: 40,
+          //         ontap: () {
+          //
+          //         },
+          //         rd: 100,
+          //         color: whiteColor,
+          //         boxShadow: true,
+          //         child: Image.asset('assets/images/share2.png'),
+          //       )
+          //                   : CustomContainer(
+          //                 height: 40,
+          //                 width: 40,
+          //                 ontap: () {},
+          //                 rd: 100,
+          //                 color: whiteColor,
+          //                 boxShadow: true,
+          //                 child: Image.asset('assets/images/share.png')),
+          //     ],
+          //   ),
+          // ),
+
         ],
       ),
       Padding(
@@ -641,16 +621,17 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(children: [
-              CustomContainer(
-                height: 50.h,
-                width: 50,
-                ontap: () {},
-                rd: 100,
-                color: Colors.transparent,
-                // boxShadow: true,
-                child: Image.asset('assets/media/gallery1.png',
-                    scale: 3),
-              ),
+              /// comment for play store
+              // CustomContainer(
+              //   height: 50.h,
+              //   width: 50,
+              //   ontap: () {},
+              //   rd: 100,
+              //   color: Colors.transparent,
+              //   // boxShadow: true,
+              //   child: Image.asset('assets/media/gallery1.png',
+              //       scale: 3),
+              // ),
               businessModel?.email == null ?
               CustomContainer(
                 height: 50,
@@ -680,17 +661,17 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                 child: Image.asset('assets/media/mesage.png',
                     scale: 2),
               ),
-
-              CustomContainer(
-                height: 50,
-                width: 50,
-                ontap: () {},
-                rd: 100,
-                color: Colors.transparent,
-                // boxShadow: true,
-                child: Image.asset('assets/media/share1.png',
-                    scale: 2),
-              ),
+         ///  comment for play store
+              // CustomContainer(
+              //   height: 50,
+              //   width: 50,
+              //   ontap: () {},
+              //   rd: 100,
+              //   color: Colors.transparent,
+              //   // boxShadow: true,
+              //   child: Image.asset('assets/media/share1.png',
+              //       scale: 2),
+              // ),
 
               /// this is the facebook URL
               businessModel?.facebookUrl == null
@@ -1066,28 +1047,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                           indent: 1,
                           endIndent: 250,
                         ),
-                        // Expanded(
-                        //   child: ListView.builder(
-                        //     physics: AlwaysScrollableScrollPhysics(),
-                        //     itemCount: 10,
-                        //
-                        //     itemBuilder: (context, index) {
-                        //       return Padding(
-                        //         padding: const EdgeInsets.symmetric(vertical: 7),
-                        //         child: Row(
-                        //           children: [
-                        //             Image.asset('assets/images/checkicon.png',scale: 30,),
-                        //             SizedBox(width: 10,),
-                        //             CustomText(
-                        //               title: "IPhone",
-                        //               color: grayColor,
-                        //             ),
-                        //           ],
-                        //         ),
-                        //       );
-                        //     },
-                        //   ),
-                        // ),
                         Expanded(
                           child: ListView.builder(
                             physics: AlwaysScrollableScrollPhysics(),
@@ -1203,48 +1162,49 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                                             color: tealColor1,
                                             fontWeight: FontWeight.bold,
                                           ),
-                                          Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment
-                                                .spaceAround,
-                                            children: [
-                                              Custom_Button_Widget(
-                                                ontap: () {
-                                                  print("Click whatsApp");
-                                                },
-                                                rd: 4.r,
-                                                height: 20.h,
-                                                width: 50.h,
-                                                color: greenColor,
-                                                child: CustomText(
-                                                  title: "whatsApp",
-                                                  color: whiteColor,
-                                                  fontWeight:
-                                                  FontWeight.bold,
-                                                  fontSize: 10,
-                                                ),
-                                              ),
-                                              // SizedBox(
-                                              //   width: 30.w,
-                                              // ),
-                                              Custom_Button_Widget(
-                                                ontap: () {
-                                                  print("Click Call");
-                                                },
-                                                rd: 4.r,
-                                                height: 20.h,
-                                                width: 50.h,
-                                                color: greenColor,
-                                                child: CustomText(
-                                                  title: "Call",
-                                                  color: whiteColor,
-                                                  fontWeight:
-                                                  FontWeight.bold,
-                                                  fontSize: 10,
-                                                ),
-                                              ),
-                                            ],
-                                          )
+                                          /// Product Screen button  comment for play store
+                                          // Row(
+                                          //   mainAxisAlignment:
+                                          //   MainAxisAlignment
+                                          //       .spaceAround,
+                                          //   children: [
+                                          //     Custom_Button_Widget(
+                                          //       ontap: () {
+                                          //         print("Click whatsApp");
+                                          //       },
+                                          //       rd: 4.r,
+                                          //       height: 20.h,
+                                          //       width: 50.h,
+                                          //       color: greenColor,
+                                          //       child: CustomText(
+                                          //         title: "whatsApp",
+                                          //         color: whiteColor,
+                                          //         fontWeight:
+                                          //         FontWeight.bold,
+                                          //         fontSize: 10,
+                                          //       ),
+                                          //     ),
+                                          //     // SizedBox(
+                                          //     //   width: 30.w,
+                                          //     // ),
+                                          //     Custom_Button_Widget(
+                                          //       ontap: () {
+                                          //         print("Click Call");
+                                          //       },
+                                          //       rd: 4.r,
+                                          //       height: 20.h,
+                                          //       width: 50.h,
+                                          //       color: greenColor,
+                                          //       child: CustomText(
+                                          //         title: "Call",
+                                          //         color: whiteColor,
+                                          //         fontWeight:
+                                          //         FontWeight.bold,
+                                          //         fontSize: 10,
+                                          //       ),
+                                          //     ),
+                                          //   ],
+                                          // )
                                         ],
                                       ),
                                     ),
@@ -1580,40 +1540,42 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                     borderRadius: 10,
                   ),
                   SizedBox(height: ScreenUtil().setHeight(10),),
-                  Custom_Button_Widget(
-                    height: ScreenUtil().setHeight(40.h),
-                    ontap: () {},
-                    rd: 10,
-                    color: greenColor2,
-                    child: CustomText(
-                      title: "Submit Review",
-                      color: whiteColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15.sp,
-                    ),
-                  ),
+                  ///  comment for play store
+                  // Custom_Button_Widget(
+                  //   height: ScreenUtil().setHeight(40.h),
+                  //   ontap: () {},
+                  //   rd: 10,
+                  //   color: greenColor2,
+                  //   child: CustomText(
+                  //     title: "Submit Review",
+                  //     color: whiteColor,
+                  //     fontWeight: FontWeight.bold,
+                  //     fontSize: 15.sp,
+                  //   ),
+                  // ),
                 ],
               ),
             ),
           ),
           SizedBox(height: 10),
-          Custom_Button_Widget(
-            ontap: () {
-              _showAlertDialog(
-                  context); // Call the function to show the alert dialog
-              print('Report');
-            },
-            rd: 10,
-            width: ScreenUtil().screenWidth / 2.2,
-            color: whiteColor,
-            border: Border.all(color: greenColor2, width: 2),
-            child: CustomText(
-              title: "Report this business",
-              color: yaleBlueColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 15.sp,
-            ),
-          ),
+          /// comment for play store
+          // Custom_Button_Widget(
+          //   ontap: () {
+          //     _showAlertDialog(
+          //         context); // Call the function to show the alert dialog
+          //     print('Report');
+          //   },
+          //   rd: 10,
+          //   width: ScreenUtil().screenWidth / 2.2,
+          //   color: whiteColor,
+          //   border: Border.all(color: greenColor2, width: 2),
+          //   child: CustomText(
+          //     title: "Report this business",
+          //     color: yaleBlueColor,
+          //     fontWeight: FontWeight.bold,
+          //     fontSize: 15.sp,
+          //   ),
+          // ),
           SizedBox(height: 20,),
           ],
           ),

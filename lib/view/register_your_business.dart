@@ -272,16 +272,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                         title: "Register Your Business",
                         fontStyle: FontStyle.italic),
                   ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => HomePage()));
-                    },
-                    value: 2,
-                    child: CustomText(
-                        title: "BOPK Home", fontStyle: FontStyle.italic),
-                  ),
+
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
                     onTap: () {
@@ -348,15 +339,6 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
                     onTap: () {
-                      // Navigator.push(context, MaterialPageRoute(builder: (context)=> MobileShops()));
-                    },
-                    value: 8,
-                    child: CustomText(
-                        title: "Mobile Shops", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -411,15 +393,16 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Align(
-                    alignment: Alignment.topRight,
-                    child: TextButton(
-                        onPressed: () {},
-                        child: CustomText(
-                          title: "How to Register business?",
-                          color: greenColor2,
-                          decoration: TextDecoration.underline,
-                        ))),
+                /// How to Register business? Button
+                // Align(
+                //     alignment: Alignment.topRight,
+                //     child: TextButton(
+                //         onPressed: () {},
+                //         child: CustomText(
+                //           title: "How to Register business?",
+                //           color: greenColor2,
+                //           decoration: TextDecoration.underline,
+                //         ))),
                 Align(
                   alignment: Alignment.center,
                   child: CustomText(
@@ -1679,80 +1662,82 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                 SizedBox(
                   height: ScreenUtil().setHeight(10.h),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey,
-                          spreadRadius: 1,
-                          blurRadius: 7,
-                          offset: Offset(0, 0),
-                        )
-                      ]),
-                      child: Custom_Button_Widget(
-                        ontap: () {
-                          registerYourBusinessModel.karobarId = 0;
-                          registerYourBusinessModel.lat = 0.0;
-                          registerYourBusinessModel.lng = 0.0;
-                          registerYourBusinessModel.location = Location();
-                          registerYourBusinessModel.location?.locationId = 0;
-                          registerYourBusinessModel.location?.locationName = "";
-                          registerYourBusinessModel.location?.locLat = 0.0;
-                          registerYourBusinessModel.location?.locLng = 0.0;
-                          APIController.RegisterBusinessPostData(
-                              registerYourBusinessModel);
-                          setState(() {});
-                        },
-                        rd: 10,
-                        color: greenColor2,
-                        width: ScreenUtil().screenWidth / 3,
-                        child: CustomText(
-                            title: "Register My Business",
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10,
-                            color: whiteColor),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey,
-                          spreadRadius: 1,
-                          blurRadius: 7,
-                          offset: Offset(0, 0),
-                        )
-                      ]),
-                      child: Custom_Button_Widget(
-                        ontap: () {},
-                        rd: 10,
-                        color: greenColor2,
-                        width: ScreenUtil().screenWidth / 3,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              CustomText(
-                                  title: "Edit Your Business",
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 10,
-                                  color: whiteColor),
-                              Icon(
-                                Icons.edit,
-                                size: 20,
-                                color: whiteColor,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+
+                /// Register Button Comment
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //   children: [
+                //     Container(
+                //       decoration: BoxDecoration(boxShadow: [
+                //         BoxShadow(
+                //           color: Colors.grey,
+                //           spreadRadius: 1,
+                //           blurRadius: 7,
+                //           offset: Offset(0, 0),
+                //         )
+                //       ]),
+                //       child: Custom_Button_Widget(
+                //         ontap: () {
+                //           registerYourBusinessModel.karobarId = 0;
+                //           registerYourBusinessModel.lat = 0.0;
+                //           registerYourBusinessModel.lng = 0.0;
+                //           registerYourBusinessModel.location = Location();
+                //           registerYourBusinessModel.location?.locationId = 0;
+                //           registerYourBusinessModel.location?.locationName = "";
+                //           registerYourBusinessModel.location?.locLat = 0.0;
+                //           registerYourBusinessModel.location?.locLng = 0.0;
+                //           APIController.RegisterBusinessPostData(
+                //               registerYourBusinessModel);
+                //           setState(() {});
+                //         },
+                //         rd: 10,
+                //         color: greenColor2,
+                //         width: ScreenUtil().screenWidth / 3,
+                //         child: CustomText(
+                //             title: "Register My Business",
+                //             fontWeight: FontWeight.bold,
+                //             fontSize: 10,
+                //             color: whiteColor),
+                //       ),
+                //     ),
+                //     SizedBox(
+                //       width: 10,
+                //     ),
+                //     Container(
+                //       decoration: BoxDecoration(boxShadow: [
+                //         BoxShadow(
+                //           color: Colors.grey,
+                //           spreadRadius: 1,
+                //           blurRadius: 7,
+                //           offset: Offset(0, 0),
+                //         )
+                //       ]),
+                //       child: Custom_Button_Widget(
+                //         ontap: () {},
+                //         rd: 10,
+                //         color: greenColor2,
+                //         width: ScreenUtil().screenWidth / 3,
+                //         child: Padding(
+                //           padding: const EdgeInsets.all(8.0),
+                //           child: Row(
+                //             children: [
+                //               CustomText(
+                //                   title: "Edit Your Business",
+                //                   fontWeight: FontWeight.bold,
+                //                   fontSize: 10,
+                //                   color: whiteColor),
+                //               Icon(
+                //                 Icons.edit,
+                //                 size: 20,
+                //                 color: whiteColor,
+                //               )
+                //             ],
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
                 SizedBox(
                   height: ScreenUtil().setHeight(30.h),
                 ),
