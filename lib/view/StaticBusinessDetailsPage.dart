@@ -11,6 +11,7 @@ import 'package:businessonlinepk/view/pay_now_screen.dart';
 import 'package:businessonlinepk/view/product_deatils_screen/product_details.dart';
 import 'package:businessonlinepk/view/register_your_business.dart';
 import 'package:businessonlinepk/view/verify_download.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -40,8 +41,10 @@ class StaticBusinessDetailsPage extends StatefulWidget {
       _StaticBusinessDetailsPageState();
 }
 
-class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> {
+class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  late TabController _tabController;
 
   // bool  checkboxValue =  false;
   List<bool> checkboxValues =
@@ -150,10 +153,20 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> {
   }
 
   @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getDetails(widget.karobarId);
+    _tabController = TabController(length: 7, vsync: this);
+  }
+  void _handleTabTap(int index) {
+    _tabController.animateTo(index);
   }
 
   Future<void> getDetails(int? karobarId) async {
@@ -163,9 +176,9 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> {
     businessModel = await controller.fetchDataDetails(karobarId);
 
     // if (businessModel != null) {
-    print('Business Title: ${businessModel!.title}');
+    // print('Business Title: ${businessModel!.title}');
     print('Business Description: ${businessModel?.description}');
-    print('Business Location: ${businessModel?.location?.locationName}');
+    // print('Business Location: ${businessModel?.location?.locationName}');
     // } else {
     // Handle the case where the data fetch was unsuccessful
     // }
@@ -395,19 +408,64 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> {
                 ),
                 // Map Image
                 // Image.asset('assets/images/map.jpg',width: double.infinity,fit: BoxFit.fitWidth,),
+                // Positioned(
+                //   top: 90.h,
+                //   left: 8.w,
+                //   child:   Row(
+                //     children: [
+                //       Padding(
+                //         padding: const EdgeInsets.all(8.0),
+                //         child: businessModel!.images![0].imageName != null && businessModel!.images![0].imageName!.isNotEmpty
+                //             ? Image.network(
+                //           "http://bopk.psea.pk/Images/Gallery/${businessModel!.karobarId}/${businessModel!.images![0].imageName}", // Assuming there's always at least one image in the first item
+                //           width: MediaQuery.of(context).size.width / 3, // Adjust the width as needed
+                //           height: MediaQuery.of(context).size.height / 3.9, // Adjust the height as needed
+                //           fit: BoxFit.cover,
+                //         )
+                //             : Image.asset(
+                //           'assets/images/bopk1.png', // Path to your default image asset
+                //           width: MediaQuery.of(context).size.width / 3, // Adjust the width as needed
+                //           height: MediaQuery.of(context).size.height / 3.9, // Adjust the height as needed
+                //           fit: BoxFit.cover,
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                //   // CircleAvatar(
+                //   //   maxRadius: 30,
+                //   //   backgroundImage: businessModel?.url != null
+                //   //       ? AssetImage(businessModel!.url.toString())
+                //   //       : AssetImage('assets/images/producimage1.png'),
+                //   // ),
+                // ),
                 Positioned(
                   top: 90.h,
                   left: 8.w,
-                  child: CircleAvatar(
-                    maxRadius: 30,
-                    backgroundImage: businessModel?.url != null
-                        ? AssetImage(businessModel!.url.toString())
-                        : AssetImage('assets/images/producimage1.png'),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: businessModel != null && businessModel!.images != null && businessModel!.images!.isNotEmpty && businessModel!.images![0].imageName != null && businessModel!.images![0].imageName!.isNotEmpty
+                            ? CircleAvatar(
+                          radius: 30, // Radius of 30
+                          backgroundImage: NetworkImage(
+                            "https://businessonline.pk/Images/Gallery/${businessModel!.karobarId}/${businessModel!.images![0].imageName}", // Assuming there's always at least one image in the first item
+                          ),
+                        )
+                            : CircleAvatar(
+                          radius: 30, // Radius of 30
+                          backgroundImage: AssetImage(
+                            'assets/images/bopk1.png', // Path to your default image asset
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+
                 Positioned(
                   top: 105,
-                  left: 70,
+                  left: 80,
                   child: CustomText(
                     title:  businessModel?.title ?? "Default Title",
                     fontWeight: FontWeight.bold,
@@ -417,7 +475,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> {
                 ),
                 Positioned(
                   top: 125,
-                  left: 70,
+                  left: 80,
                   child: RatingBar.builder(
                     itemSize: 10,
                     initialRating: 0,
@@ -435,7 +493,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> {
                     },
                   ),
                 ),
-
                 Positioned(
                   top: 150.h,
                     left: 60.w,
@@ -858,450 +915,599 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> {
               ),
             ),
           ),
+       /// Below Tab Bar View Code
           Container(
-            alignment: Alignment.center,
-            height: 250.h,
-            margin: EdgeInsets.symmetric(vertical: 8),
+            height: 30, // Adjust the height of the tab container
             decoration: BoxDecoration(
-              // color: Colors.blue,
-                border: Border.all(color: grayColor2),
-                borderRadius: BorderRadius.circular(12)),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    title: "OVERVIEW",
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: greenColor2,
-                  ),
-                  Divider(
-                    color: greenColor2,
-                    thickness: 2,
-                    indent: 1,
-                    endIndent: 250,
-                  ),
-                  CustomText(
-                    title: businessModel?.description ??
-                        'we deal in Samsung and Iphone Only',
-                    fontSize: 14,
-                    googleFont: "Jost",
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  CustomText(
-                    title: "SPECIALITIES",
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: greenColor2,
-                  ),
-                  Divider(
-                    color: greenColor2,
-                    thickness: 2,
-                    indent: 1,
-                    endIndent: 250,
-                  ),
-                  // Expanded(
-                  //   child: ListView.builder(
-                  //     physics: AlwaysScrollableScrollPhysics(),
-                  //     itemCount: 10,
-                  //
-                  //     itemBuilder: (context, index) {
-                  //       return Padding(
-                  //         padding: const EdgeInsets.symmetric(vertical: 7),
-                  //         child: Row(
-                  //           children: [
-                  //             Image.asset('assets/images/checkicon.png',scale: 30,),
-                  //             SizedBox(width: 10,),
-                  //             CustomText(
-                  //               title: "IPhone",
-                  //               color: grayColor,
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       );
-                  //     },
-                  //   ),
-                  // ),
-                  Expanded(
-                    child: ListView.builder(
-                      physics: AlwaysScrollableScrollPhysics(),
-                      itemCount: businessModel?.speciality?.split(',').length ?? 0,
-                      itemBuilder: (context, index) {
-                        List<String>? specialties = businessModel?.speciality?.split(',');
-
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 7),
-                          child: Row(
-                            children: [
-                              Image.asset('assets/images/checkicon.png', scale: 30,),
-                              SizedBox(width: 10,),
-                              CustomText(
-                                title: specialties?[index].trim() ?? "",
-                                color: grayColor,
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-
-                ],
+              // color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(
+                25.0,
               ),
             ),
-          ),
-          Container(
-            alignment: Alignment.center,
-            height: 200.h,
-            margin: EdgeInsets.symmetric(vertical: 8),
-            decoration: BoxDecoration(
-              // color: Colors.blue,
-                border: Border.all(color: grayColor2),
-                borderRadius: BorderRadius.circular(12)),
-            child: Padding(
-              padding: EdgeInsets.only(
-                  top: 10.h, left: 10.w, bottom: 10, right: 10.w),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    title: "PRODUCT",
+            child: TabBar(
+              controller: _tabController,
+              isScrollable: true,
+              indicator: BoxDecoration(
+                borderRadius: BorderRadius.circular(
+                  25.0,
+                ),
+                color: greenColor2,
+              ),
+              labelColor: Colors.white,
+              unselectedLabelColor: greenColor2,
+              tabs: [
+                Tab(
+                  child: CustomText(title:
+                  'Overview',
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
-                    color: greenColor2,
+                    // color: greenColor2,
                   ),
-                  Divider(
-                    color: greenColor2,
-                    thickness: 2,
-                    indent: 1,
-                    endIndent: 250,
-                  ),
-                  Expanded(
-                    child: GridView.builder(
-                      padding: EdgeInsets.all(0.5),
-                        gridDelegate:
-                        SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisSpacing: 3,
-                          mainAxisSpacing: 4,
-                          crossAxisCount: 2, // Number of columns
-                        ),
-                        itemCount: 9, // Number of items in the grid
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          ProductScreen()));
-                              print('GridView');
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    color: whiteColor,
-                                    borderRadius:
-                                    BorderRadius.circular(10.r),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: grayColor2,
-                                        blurRadius: 1.r,
-                                        spreadRadius: 1.r,
-                                        offset: Offset(0, 0),
-                                      ),
-                                    ]),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Center(
-                                      child: Image.asset(
-                                        'assets/images/producimage1.png',
-                                        scale: 7,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 2,
-                                    ),
-                                    CustomText(
-                                      title: 'Iphone',
-                                      color: grayColor,
-                                    ),
-                                    SizedBox(
-                                      height: 2,
-                                    ),
-                                    CustomText(
-                                      title: 'Rs.80000',
-                                      color: tealColor1,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment
-                                          .spaceAround,
-                                      children: [
-                                        Custom_Button_Widget(
-                                          ontap: () {
-                                            print("Click whatsApp");
-                                          },
-                                          rd: 4.r,
-                                          height: 20.h,
-                                          width: 50.h,
-                                          color: greenColor,
-                                          child: CustomText(
-                                            title: "whatsApp",
-                                            color: whiteColor,
-                                            fontWeight:
-                                            FontWeight.bold,
-                                            fontSize: 10,
-                                          ),
-                                        ),
-                                        // SizedBox(
-                                        //   width: 30.w,
-                                        // ),
-                                        Custom_Button_Widget(
-                                          ontap: () {
-                                            print("Click Call");
-                                          },
-                                          rd: 4.r,
-                                          height: 20.h,
-                                          width: 50.h,
-                                          color: greenColor,
-                                          child: CustomText(
-                                            title: "Call",
-                                            color: whiteColor,
-                                            fontWeight:
-                                            FontWeight.bold,
-                                            fontSize: 10,
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            alignment: Alignment.center,
-            // height: ScreenUtil().screenHeight / 2.4,
-            margin: EdgeInsets.symmetric(vertical: 8),
-            decoration: BoxDecoration(
-              // color: Colors.blue,
-                border: Border.all(color: grayColor2),
-                borderRadius: BorderRadius.circular(12)),
-            child: Padding(
-              padding: EdgeInsets.only(
-                  top: 10.h, left: 10.w, bottom: 10, right: 10.w),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    title: "GALLERY",
+                ),
+                // Tab(
+                //   child: CustomText(
+                //     title: "SPECIALITIES",
+                //     fontWeight: FontWeight.bold,
+                //     fontSize: 14,
+                //     // color: greenColor2,
+                //   ),
+                Tab(
+                  child: CustomText(
+                    title: "Products",
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
-                    color: greenColor2,
+                    // color: greenColor2,
                   ),
-                  Divider(
-                    color: greenColor2,
-                    thickness: 2,
-                    indent: 1,
-                    endIndent: 250,
+                ),
+                Tab(
+                  child: CustomText(
+                    title: "Gallery",
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    // color: greenColor2,
                   ),
-                  Image.asset('assets/images/gallery.jpg',
-                      fit: BoxFit.cover),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            alignment: Alignment.center,
-            // height: ScreenUtil().screenHeight / 2.4,
-            margin: EdgeInsets.symmetric(vertical: 8),
-            decoration: BoxDecoration(
-              // color: Colors.blue,
-                border: Border.all(color: grayColor2),
-                borderRadius: BorderRadius.circular(12)),
-            child: Padding(
-              padding: EdgeInsets.only(
-                  top: 10.h, left: 10.w, bottom: 10, right: 10.w),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+                ),
+                Tab(
+                  child: Row(
                     children: [
                       Icon(
                         Icons.access_time_rounded,
-                        color: greenColor2,
-                        size: 30,
+                        // color: greenColor2,
+                        size: 20,
                       ),
-                      SizedBox(width: 20),
+                      SizedBox(width: 10,),
                       CustomText(
-                        title: "OPENING HOURS",
+                        title: "Opening Hours",
                         fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: tealColor1,
+                        fontSize: 14.sp,
+                        // color: greenColor2,
                       ),
                     ],
                   ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: DataTable(
-                      columnSpacing: 40,
-                      columns: const [
-                        DataColumn(label: Text('Day')),
-                        DataColumn(label: Text('12:00AM')),
-                        DataColumn(label: Text('12:00PM')),
-                      ],
-                      rows: const [
-                        DataRow(
-                          selected: true,
-                          cells: <DataCell>[
-                            DataCell(Text('Monday')),
-                            DataCell(Text('10:00AM')),
-                            DataCell(Text('10:00PM')),
-                          ],
-                        ),
-                        DataRow(
-                          selected: true,
-                          cells: <DataCell>[
-                            DataCell(Text('Tuesday')),
-                            DataCell(Text('10:00AM')),
-                            DataCell(Text('10:00PM')),
-                          ],
-                        ),
-                        DataRow(
-                          selected: true,
-                          cells: <DataCell>[
-                            DataCell(
-                              Text('Wednesday'),
-                            ),
-                            DataCell(
-                              Text('10:00AM'),
-                            ),
-                            DataCell(
-                              Text('10:00PM'),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          selected: true,
-                          cells: <DataCell>[
-                            DataCell(
-                              Text('Thursday'),
-                            ),
-                            DataCell(
-                              Text('10:00AM'),
-                            ),
-                            DataCell(
-                              Text('10:00PM'),
-                            ),
-                          ],
-                        ),
-                        DataRow(
-                          selected: true,
-                          cells: <DataCell>[
-                            DataCell(Text('Friday')),
-                            DataCell(Text('10:00AM')),
-                            DataCell(Text('10:00PM')),
-                          ],
-                        ),
-                        DataRow(
-                          selected: true,
-                          cells: <DataCell>[
-                            DataCell(Text('Saturday')),
-                            DataCell(Text('10:00AM')),
-                            DataCell(Text('10:00PM')),
-                          ],
-                        ),
-                        DataRow(
-                          selected: true,
-                          cells: <DataCell>[
-                            DataCell(Text('Sunday')),
-                            DataCell(Text('10:00AM')),
-                            DataCell(Text('10:00PM')),
-                          ],
-                        ),
-
-                        // Add more rows as needed
-                      ],
-                    ),
+                ),
+                Tab(
+                  child: CustomText(
+                    title: "User Review",
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14.sp,
+                    // color: greenColor2,
                   ),
-                ],
-              ),
+                ),
+                Tab(
+                  child: CustomText(
+                    title: "Contact us",
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14.sp,
+                    // color: greenColor2,
+                  ),
+                ),
+                Tab(
+                  child: CustomText(
+                    title: "About",
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    // color: greenColor2,
+                  ),
+                ),
+              ],
+              onTap: _handleTabTap,
             ),
           ),
+
           Container(
-            alignment: Alignment.center,
-            height: ScreenUtil().screenHeight / 2.4,
-            margin: EdgeInsets.symmetric(vertical: 8),
-            decoration: BoxDecoration(
-              // color: Colors.blue,
-                border: Border.all(color: grayColor2),
-                borderRadius: BorderRadius.circular(12)),
-            child: Padding(
-              padding: EdgeInsets.only(
-                  top: 10.h, left: 10.w, bottom: 10, right: 10.w),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(
-                    title: "USER REVIEWS",
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: greenColor2,
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: 10,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            Container(
-                              alignment: Alignment.center,
-                              height:
-                              ScreenUtil().screenHeight / 8.0,
-                              margin:
-                              EdgeInsets.symmetric(vertical: 8),
-                              decoration: BoxDecoration(
-                                // color: Colors.blue,
-                                border:
-                                Border.all(color: grayColor2),
-                                // borderRadius: BorderRadius.circular(12)
-                              ),
-                              child: ListTile(
-                                title: CustomText(title: "test"),
-                                subtitle: CustomText(
-                                  title: "waw3wo3eo",
+            height: MediaQuery.of(context).size.height/1.6,
+            child: TabBarView(
+              controller: _tabController,
+              children:  [
+                Container(
+                  alignment: Alignment.center,
+                  height: 250.h,
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    // color: Colors.blue,
+                      border: Border.all(color: grayColor2),
+                      borderRadius: BorderRadius.circular(12)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomText(
+                          title: "OVERVIEW",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: greenColor2,
+                        ),
+                        Divider(
+                          color: greenColor2,
+                          thickness: 2,
+                          indent: 1,
+                          endIndent: 250,
+                        ),
+                        CustomText(
+                          title: businessModel?.description ??
+                              'we deal in Samsung and Iphone Only',
+                          fontSize: 14,
+                          googleFont: "Jost",
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        CustomText(
+                          title: "SPECIALITIES",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: greenColor2,
+                        ),
+                        Divider(
+                          color: greenColor2,
+                          thickness: 2,
+                          indent: 1,
+                          endIndent: 250,
+                        ),
+                        // Expanded(
+                        //   child: ListView.builder(
+                        //     physics: AlwaysScrollableScrollPhysics(),
+                        //     itemCount: 10,
+                        //
+                        //     itemBuilder: (context, index) {
+                        //       return Padding(
+                        //         padding: const EdgeInsets.symmetric(vertical: 7),
+                        //         child: Row(
+                        //           children: [
+                        //             Image.asset('assets/images/checkicon.png',scale: 30,),
+                        //             SizedBox(width: 10,),
+                        //             CustomText(
+                        //               title: "IPhone",
+                        //               color: grayColor,
+                        //             ),
+                        //           ],
+                        //         ),
+                        //       );
+                        //     },
+                        //   ),
+                        // ),
+                        Expanded(
+                          child: ListView.builder(
+                            physics: AlwaysScrollableScrollPhysics(),
+                            itemCount: businessModel?.speciality?.split(',').length ?? 0,
+                            itemBuilder: (context, index) {
+                              List<String>? specialties = businessModel?.speciality?.split(',');
+
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 7),
+                                child: Row(
+                                  children: [
+                                    Image.asset('assets/images/checkicon.png', scale: 30,),
+                                    SizedBox(width: 10,),
+                                    CustomText(
+                                      title: specialties?[index].trim() ?? "",
+                                      color: grayColor,
+                                    ),
+                                  ],
                                 ),
-                                trailing: CustomText(
-                                    title:
-                                    "2023-10-10T15:56:40:55"),
-                              ),
-                            )
-                          ],
-                        );
-                      },
+                              );
+                            },
+                          ),
+                        ),
+
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  height: 200.h,
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    // color: Colors.blue,
+                      border: Border.all(color: grayColor2),
+                      borderRadius: BorderRadius.circular(12)),
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: 10.h, left: 10.w, bottom: 10, right: 10.w),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomText(
+                          title: "PRODUCT",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: greenColor2,
+                        ),
+                        Divider(
+                          color: greenColor2,
+                          thickness: 2,
+                          indent: 1,
+                          endIndent: 250,
+                        ),
+                        Expanded(
+                          child: GridView.builder(
+                              padding: EdgeInsets.all(0.5),
+                              gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisSpacing: 3,
+                                mainAxisSpacing: 4,
+                                crossAxisCount: 2, // Number of columns
+                              ),
+                              itemCount: 9, // Number of items in the grid
+                              itemBuilder: (context, index) {
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ProductScreen()));
+                                    print('GridView');
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: whiteColor,
+                                          borderRadius:
+                                          BorderRadius.circular(10.r),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: grayColor2,
+                                              blurRadius: 1.r,
+                                              spreadRadius: 1.r,
+                                              offset: Offset(0, 0),
+                                            ),
+                                          ]),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Center(
+                                            child: Image.asset(
+                                              'assets/images/producimage1.png',
+                                              scale: 7,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 2,
+                                          ),
+                                          CustomText(
+                                            title: 'Iphone',
+                                            color: grayColor,
+                                          ),
+                                          SizedBox(
+                                            height: 2,
+                                          ),
+                                          CustomText(
+                                            title: 'Rs.80000',
+                                            color: tealColor1,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment
+                                                .spaceAround,
+                                            children: [
+                                              Custom_Button_Widget(
+                                                ontap: () {
+                                                  print("Click whatsApp");
+                                                },
+                                                rd: 4.r,
+                                                height: 20.h,
+                                                width: 50.h,
+                                                color: greenColor,
+                                                child: CustomText(
+                                                  title: "whatsApp",
+                                                  color: whiteColor,
+                                                  fontWeight:
+                                                  FontWeight.bold,
+                                                  fontSize: 10,
+                                                ),
+                                              ),
+                                              // SizedBox(
+                                              //   width: 30.w,
+                                              // ),
+                                              Custom_Button_Widget(
+                                                ontap: () {
+                                                  print("Click Call");
+                                                },
+                                                rd: 4.r,
+                                                height: 20.h,
+                                                width: 50.h,
+                                                color: greenColor,
+                                                child: CustomText(
+                                                  title: "Call",
+                                                  color: whiteColor,
+                                                  fontWeight:
+                                                  FontWeight.bold,
+                                                  fontSize: 10,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: grayColor2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomText(
+                          title: "GALLERY",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: greenColor2,
+                        ),
+                        Divider(
+                          color: greenColor2,
+                          thickness: 2,
+                          indent: 1,
+                          endIndent: 250,
+                        ),
+                        CarouselSlider.builder(
+                          options: CarouselOptions(
+                            viewportFraction: 1.0,
+                            enlargeCenterPage: false,
+                            autoPlay: true,
+                          ),
+                          itemCount: businessModel?.images?.length ?? 0,
+                          itemBuilder: (BuildContext context, int index, _) {
+                            if (businessModel?.images != null &&
+                                businessModel!.images!.isNotEmpty &&
+                                index < businessModel!.images!.length &&
+                                businessModel!.images![index].imageName != null &&
+                                businessModel!.images![index].imageName!.isNotEmpty) {
+                              return Container(
+                                width: MediaQuery.of(context).size.width,
+                                child: Image.network(
+                                  "https://businessonline.pk/Images/Gallery/${businessModel!.karobarId}/${businessModel!.images![index].imageName}",
+                                  fit: BoxFit.cover,
+                                ),
+                              );
+                            } else {
+                              return Image.asset(
+                                'assets/images/gallery.jpg',
+                                fit: BoxFit.cover,
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  // height: ScreenUtil().screenHeight / 2.4,
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    // color: Colors.blue,
+                      border: Border.all(color: grayColor2),
+                      borderRadius: BorderRadius.circular(12)),
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: 10.h, left: 10.w, bottom: 10, right: 10.w),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.access_time_rounded,
+                              color: greenColor2,
+                              size: 30,
+                            ),
+                            SizedBox(width: 20),
+                            CustomText(
+                              title: "OPENING HOURS",
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: tealColor1,
+                            ),
+                          ],
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: DataTable(
+                            columnSpacing: 40,
+                            columns: const [
+                              DataColumn(label: Text('Day')),
+                              DataColumn(label: Text('12:00AM')),
+                              DataColumn(label: Text('12:00PM')),
+                            ],
+                            rows: const [
+                              DataRow(
+                                selected: true,
+                                cells: <DataCell>[
+                                  DataCell(Text('Monday')),
+                                  DataCell(Text('10:00AM')),
+                                  DataCell(Text('10:00PM')),
+                                ],
+                              ),
+                              DataRow(
+                                selected: true,
+                                cells: <DataCell>[
+                                  DataCell(Text('Tuesday')),
+                                  DataCell(Text('10:00AM')),
+                                  DataCell(Text('10:00PM')),
+                                ],
+                              ),
+                              DataRow(
+                                selected: true,
+                                cells: <DataCell>[
+                                  DataCell(
+                                    Text('Wednesday'),
+                                  ),
+                                  DataCell(
+                                    Text('10:00AM'),
+                                  ),
+                                  DataCell(
+                                    Text('10:00PM'),
+                                  ),
+                                ],
+                              ),
+                              DataRow(
+                                selected: true,
+                                cells: <DataCell>[
+                                  DataCell(
+                                    Text('Thursday'),
+                                  ),
+                                  DataCell(
+                                    Text('10:00AM'),
+                                  ),
+                                  DataCell(
+                                    Text('10:00PM'),
+                                  ),
+                                ],
+                              ),
+                              DataRow(
+                                selected: true,
+                                cells: <DataCell>[
+                                  DataCell(Text('Friday')),
+                                  DataCell(Text('10:00AM')),
+                                  DataCell(Text('10:00PM')),
+                                ],
+                              ),
+                              DataRow(
+                                selected: true,
+                                cells: <DataCell>[
+                                  DataCell(Text('Saturday')),
+                                  DataCell(Text('10:00AM')),
+                                  DataCell(Text('10:00PM')),
+                                ],
+                              ),
+                              DataRow(
+                                selected: true,
+                                cells: <DataCell>[
+                                  DataCell(Text('Sunday')),
+                                  DataCell(Text('10:00AM')),
+                                  DataCell(Text('10:00PM')),
+                                ],
+                              ),
+
+                              // Add more rows as needed
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  height: ScreenUtil().screenHeight / 2.4,
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    // color: Colors.blue,
+                      border: Border.all(color: grayColor2),
+                      borderRadius: BorderRadius.circular(12)),
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: 10.h, left: 10.w, bottom: 10, right: 10.w),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomText(
+                          title: "USER REVIEWS",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: greenColor2,
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: 10,
+                            itemBuilder: (context, index) {
+                              return Column(
+                                children: [
+                                  Container(
+                                    alignment: Alignment.center,
+                                    height:
+                                    ScreenUtil().screenHeight / 8.0,
+                                    margin:
+                                    EdgeInsets.symmetric(vertical: 8),
+                                    decoration: BoxDecoration(
+                                      // color: Colors.blue,
+                                      border:
+                                      Border.all(color: grayColor2),
+                                      // borderRadius: BorderRadius.circular(12)
+                                    ),
+                                    child: ListTile(
+                                      title: CustomText(title: "test"),
+                                      subtitle: CustomText(
+                                        title: "waw3wo3eo",
+                                      ),
+                                      trailing: CustomText(
+                                          title:
+                                          "2023-10-10T15:56:40:55"),
+                                    ),
+                                  )
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    'Contact Us',
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    'About us',
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Container(
@@ -1409,10 +1615,9 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> {
             ),
           ),
           SizedBox(height: 20,),
-        ],),
-      )
-
-
+          ],
+          ),
+        ),
               ],
 
             ),

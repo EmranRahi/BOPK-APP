@@ -1,10 +1,15 @@
-
 import 'dart:convert';
-
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../model/DetailStaticBusinessModel.dart';
 import '../model/LanguageModelClass.dart';
+import '../model/RegisterYourBusinessModel.dart';
 import '../model/StaticListModelPage.dart';
 import 'package:http/http.dart' as http;
+import '../view/customs_widgets/constant_color.dart';
+import '../view/customs_widgets/custom_text.dart';
 
 
 class APIController{
@@ -129,5 +134,64 @@ class APIController{
       print('Error fetching data: $error');
       return null;
     }
+  }
+
+  /// Register Your Business Post API Controller
+
+  // Future<void> RegisterBusinessPostData(RegisterYourBusinessModel data) async {
+  //
+  //
+  //   final Uri url = Uri.parse('http://144.91.86.203/bopkapi/Karobar/Register');
+  //   final createJson = jsonEncode(data);
+  //
+  //   print(createJson);
+  //   final response = await http.post(url,
+  //     headers: <String, String>{
+  //       'Content-Type': 'application/json; charset=UTF-8',
+  //     },
+  //     body: createJson,
+  //
+  //   );
+  //        try{
+  //          print(data);
+  //          print(response.body);
+  //          print(response.statusCode);
+  //          if (response.statusCode == 200) {
+  //            // If the server returns a 200 OK response, you might parse the response if needed
+  //            // final parsedResponse = json.decode(response.body);
+  //            // Example: Print the response body
+  //            print(response.body);
+  //          } else {
+  //            // If the server did not return a 200 OK response,
+  //            // throw an exception or handle the error accordingly
+  //            throw Exception('Failed to post data: ${response.statusCode}');
+  //          }
+  //        }catch(e){}
+  // }
+  static Future<RegisterYourBusinessModel> RegisterBusinessPostData(RegisterYourBusinessModel profileScreenModel) async {
+    final createJson = jsonEncode(profileScreenModel);
+    final response = await http.post(
+      Uri.parse('http://144.91.86.203/bopkapi/Karobar/Register'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: createJson,
+    );
+    if (kDebugMode) {
+      print("updateProfile$createJson");
+    }
+    if (kDebugMode) {
+      print("updateProfileBody${response.body}");
+    }
+    if (kDebugMode) {
+      print("updateStatusProfile${response.statusCode}");
+    }
+
+    if (response.statusCode == 200) {
+      return registerYourBusinessModelFromJson(response.body);
+    } else {
+      throw Exception('Failed to create customer');
+    }
+
   }
 }

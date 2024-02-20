@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent, // Set the status bar color to transparent
       statusBarIconBrightness: Brightness.light, // Use dark icons on the status bar
-    ),
+       ),
     );
     return  MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -280,6 +280,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         width: MediaQuery.of(context).size.width - 60, // Adjust the width as needed
                         child: CustomTextFormFieldWidget(
+                          textInputAction: TextInputAction.search,
                           onChanged: (v){
                             _searchByKey.text=v;
                           },
@@ -526,8 +527,7 @@ class _HomePageState extends State<HomePage> {
                               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                               itemCount: controller.categories[index].categories!.length,
                               itemBuilder: (context, index1) {
-                                print(
-                                    "${"http://bopk.psea.pk/Images/icons/"}${controller.categories[index].categories![index1].categoryName}.png");
+                                print("${"https://businessonline.pk/images/icons/"}${controller.categories[index].categories![index1].categoryName}.png");
                                 // String? subCategoryName = _categoryList[index]["subCategories"][index1]["subCategoryName"];
                                 return GestureDetector(
                                   onTap: () {
@@ -575,7 +575,7 @@ class _HomePageState extends State<HomePage> {
                                                 image: DecorationImage(
                                                   fit: BoxFit.cover,
                                                   image: NetworkImage(
-                                                    "${"http://bopk.psea.pk/Images/icons/"}${controller.categories[index].categories![index1].categoryName}.png",
+                                                    "${"https://businessonline.pk/images/icons/"}${controller.categories[index].categories![index1].categoryName}.png",
                                                   ),
                                                 ),
                                                 borderRadius: BorderRadius.circular(10),

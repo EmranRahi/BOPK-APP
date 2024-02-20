@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart'as http;
+import 'package:businessonlinepk/model/StaticListModelPage.dart' as BusinessOnline;
 import 'package:businessonlinepk/globle_variable/globle.dart';
 import 'package:businessonlinepk/view/HomePage_ofBopk.dart';
 import 'package:businessonlinepk/view/customs_widgets/constant_color.dart';
@@ -321,6 +322,7 @@ class _MobileShopsState extends State<MobileShops> {
                       ],
                     ),
                     child: CustomTextFormFieldWidget(
+                      textInputAction: TextInputAction.search,
                       onChanged: (v){
                         searchController.text=v;
                       },
@@ -355,7 +357,8 @@ class _MobileShopsState extends State<MobileShops> {
                         PopupMenuItem<String>(
                           value: '1',
                           child: CustomText(
-                              title: 'Search by popularity', color: grayColor),
+                              title: 'Search by popularity',
+                              color: grayColor),
                         ),
                         PopupMenuItem<String>(
                           value: '2',
@@ -420,12 +423,10 @@ class _MobileShopsState extends State<MobileShops> {
                       print(data?[index].speciality);
                       String specialties = data?[index].speciality ?? "";
                       List<String> specialtyList = specialties.split(',');
-
                       // Take only the first 3 specialties
                       List<String> displaySpecialties = specialtyList.length > 3
                           ? specialtyList.sublist(0, 3)
                           : specialtyList;
-
                       List<Widget> specialtyButtons = [];
 
                       for (String specialty in displaySpecialties) {
@@ -459,187 +460,145 @@ class _MobileShopsState extends State<MobileShops> {
                           specialtyButtons.add(SizedBox(width: 8)); // Add some spacing between buttons
                         }
                       }
-
-                      return  Container(
-                        // alignment: Alignment.center,
-                        height: MediaQuery.of(context).size.height/3.9,
-                        width: MediaQuery.of(context).size.width,
-                        // padding: EdgeInsets.all(8),
-                        margin: EdgeInsets.symmetric(vertical: 8),
-                        decoration: BoxDecoration(
-                          color: whiteColor,
-                          border: Border.all(color: grayColor2),
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        child: Stack(
-                          // mainAxisAlignment: MainAxisAlignment.start,
-                          // crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            InkWell(
-                              onTap:(){
-                                /// add this area More code
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => StaticBusinessDetailsPage(data![index].karobarId,data![index].title)));
-                              },
-                              child: Image.asset('assets/images/bopk1.png',
-                                width: MediaQuery.of(context).size.width/2.9,
-                                repeat: ImageRepeat.noRepeat,
-
-                              ),
-                            ),
-                            Positioned(
-                              right:10,
-                              top: 30,
-                              child: data?[index].isVerified==true?Image.asset(
-                                "assets/images/verified.png",scale: 3,width: 50,height: 50,
-                                fit: BoxFit.cover,
-                              ):SizedBox.shrink(),
-                            ),
-                            Positioned(
-                              left:MediaQuery.of(context).size.width * 0.39,
-                              top: 10,
-                              child: CustomText(
-                                title: data?[index].title,
-                                color: greenColor2,
-                                googleFont: "Jost",
-                                fontWeight: FontWeight.bold,
-                                fontSize:
-                                MediaQuery.of(context).size.width * 0.03,
-                                textOverflow: TextOverflow.ellipsis,
-                                textOverflow1: TextOverflow.ellipsis,
-                              ),
-                            ),
-                            // CustomText(
-                            //   title: data?[index].title,
-                            //   color: greenColor2,
-                            //   fontWeight: FontWeight.bold,
-                            //   fontSize: MediaQuery.of(context).size.width* 0.03,
-                            // ),
-                            Positioned(
-                              left: 130.w,
-                              top: 35.h,
-                              child: Row(
+                      return  InkWell(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => StaticBusinessDetailsPage(data![index].karobarId,data![index].title)));
+                        },
+                        child: Container(
+                          // alignment: Alignment.center,
+                          height: MediaQuery.of(context).size.height/3.9,
+                          width: MediaQuery.of(context).size.width,
+                          // padding: EdgeInsets.all(8),
+                          margin: EdgeInsets.symmetric(vertical: 8),
+                          decoration: BoxDecoration(
+                            color: whiteColor,
+                            border: Border.all(color: grayColor2),
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                          child: Stack(
+                            // mainAxisAlignment: MainAxisAlignment.start,
+                            // crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
                                 children: [
-                                  Icon(
-                                    Icons.location_on,
-                                    color: greenColor2,
-                                  ),
-                                  SizedBox(width: ScreenUtil().screenWidth / 40),
-                                  CustomText(
-                                    title:
-                                    "0.01 KM away",
-                                    googleFont: "Jost",
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                    color: grayColor,
+                                  Padding(
+                                    padding: const EdgeInsets.all(3.0),
+                                    child: data![index].images != null && data![index].images!.isNotEmpty
+                                        ? Image.network(
+                                      "https://businessonline.pk/Images/Gallery/${data![index].karobarId}/${data![index].images![0].imageName}", // Assuming there's always at least one image in the first item
+                                      width: MediaQuery.of(context).size.width / 3, // Adjust the width as needed
+                                      height: MediaQuery.of(context).size.height / 6.9, // Adjust the height as needed
+                                       fit: BoxFit.fill,
+                                    )
+                                        : Image.asset(
+                                      'assets/images/bopk1.png', // Path to your default image asset
+                                      width: MediaQuery.of(context).size.width / 3, // Adjust the width as needed
+                                      height: MediaQuery.of(context).size.height / 5.9, // Adjust the height as needed
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
-                            Positioned(
-                              left:130.w,
-                              top: 65.h,
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.access_time_rounded,
-                                    color: greenColor2,
-                                  ),
-                                  SizedBox(width: ScreenUtil().screenWidth / 40),
-                                  CustomText(
-                                    title: "Open Now",
-                                    googleFont: "Jost",
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
-                                    color: grayColor,
-                                  )
-                                ],
+                              // Row(
+                              //   children: [
+                              //     for (final image in data![index].images!)
+                              //       Padding(
+                              //         padding: const EdgeInsets.all(8.0),
+                              //         child: Image.network(
+                              //           image.imageName ?? '',
+                              //           width: MediaQuery.of(context).size.width / 3, // Adjust the width as needed
+                              //           height: MediaQuery.of(context).size.height / 3.9, // Adjust the height as needed
+                              //           fit: BoxFit.cover,
+                              //         ),
+                              //       ),
+                              //   ],
+                              // ),
+
+                              // InkWell(
+                              //   onTap:(){
+                              //     /// add this area More code
+                              //     Navigator.push(context, MaterialPageRoute(builder: (context) => StaticBusinessDetailsPage(data![index].karobarId,data![index].title)));
+                              //   },
+                              //   child: Image.asset('assets/images/bopk1.png',
+                              //     width: MediaQuery.of(context).size.width/2.9,
+                              //     repeat: ImageRepeat.noRepeat,
+                              //
+                              //   ),
+                              // ),
+                              Positioned(
+                                right:10,
+                                top: 30,
+                                child: data?[index].isVerified==true?Image.asset(
+                                  "assets/images/verified.png",scale: 3,width: 50,height: 50,
+                                  fit: BoxFit.cover,
+                                ):SizedBox.shrink(),
                               ),
-                            ),
-                            Positioned(
-                              left: 130.w,
-                              top: 100.h,
-                              child: Row(
-                                children: [
-                                  CustomContainer(
-                                    height: 30,
-                                    width: 30,
-                                    ontap: () {
-
-                                    },
-                                    rd: 100,
-                                    color: whiteColor,
-                                    boxShadow: true,
-                                    child: Image.asset(
-                                      'assets/images/navigation.png',),
-                                  ),
-                                  SizedBox(width: 10.w),
-                                  businessModel1?.contactPhone==null
-                                      ?  CustomContainer(
-                                      height: 30,
-                                      width: 30,
-                                      ontap: () {
-                                        print(businessModel1?.contactPhone);
-                                        if (businessModel1?.contactPhone != null) {
-                                          String phoneUrl = 'tel:${businessModel1!.contactPhone}';
-                                          launchUrl(Uri.parse(phoneUrl));
-                                        }
-                                      },
-                                      rd: 100,
-                                      color: whiteColor,
-                                      boxShadow: true,
-                                      child: Image.asset(
-                                          'assets/images/call1.png'))
-                                      :  CustomContainer(
-                                      height: 30,
-                                      width: 30,
-                                      ontap: () {
-                                        print(businessModel1?.contactPhone);
-                                        if (businessModel1?.contactPhone != null) {
-                                          String phoneUrl = 'tel:${businessModel1!.contactPhone}';
-                                          launchUrl(Uri.parse(phoneUrl));
-                                        }
-                                      },
-                                      rd: 100,
-                                      color: whiteColor,
-                                      boxShadow: true,
-                                      child: Image.asset(
-                                          'assets/images/call.png')),
-
-
-                                  SizedBox(width: 10.w),
-                                  businessModel1?.contactPhone == null ?
-
-                                  CustomContainer(
-                                      height: 30,
-                                      width: 30,
-                                      ontap: () {
-                                        print(businessModel1?.contactPhone);
-                                        if (businessModel1?.contactPhone != null) {
-                                          String whatsappUrl = 'https://wa.me/${businessModel1!.contactPhone}';
-                                          launchUrl(Uri.parse(whatsappUrl));
-                                        }
-                                      },
-                                      rd: 100,
-                                      color: whiteColor,
-                                      boxShadow: true,
-                                      child: Image.asset(
-                                          'assets/images/whtsapp.png')) :CustomContainer(
-                                      height: 30,
-                                      width: 30,
-                                      ontap: () {
-                                        print(businessModel1?.contactPhone);
-                                        if (businessModel1?.contactPhone != null) {
-                                          String whatsappUrl = 'https://wa.me/${businessModel1!.contactPhone}';
-                                          launchUrl(Uri.parse(whatsappUrl));
-                                        }
-                                      },
-                                      rd: 100,
-                                      color: whiteColor,
-                                      boxShadow: true,
-                                      child: Image.asset(
-                                          'assets/images/whtsapp.png')),
-                                  SizedBox(width: 10.w),
-                                  CustomContainer(
+                              Positioned(
+                                left:MediaQuery.of(context).size.width * 0.39,
+                                top: 10,
+                                child: CustomText(
+                                  title: data?[index].title,
+                                  color: greenColor2,
+                                  googleFont: "Jost",
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: MediaQuery.of(context).size.width * 0.03,
+                                  textOverflow: TextOverflow.ellipsis,
+                                  textOverflow1: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              // CustomText(
+                              //   title: data?[index].title,
+                              //   color: greenColor2,
+                              //   fontWeight: FontWeight.bold,
+                              //   fontSize: MediaQuery.of(context).size.width* 0.03,
+                              // ),
+                              Positioned(
+                                left: 130.w,
+                                top: 35.h,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.location_on,
+                                      color: greenColor2,
+                                    ),
+                                    SizedBox(width: ScreenUtil().screenWidth / 40),
+                                    CustomText(
+                                      title:
+                                      "0.01 KM away",
+                                      googleFont: "Jost",
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                      color: grayColor,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Positioned(
+                                left:130.w,
+                                top: 65.h,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.access_time_rounded,
+                                      color: greenColor2,
+                                    ),
+                                    SizedBox(width: ScreenUtil().screenWidth / 40),
+                                    CustomText(
+                                      title: "Open Now",
+                                      googleFont: "Jost",
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                      color: grayColor,
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Positioned(
+                                left: 130.w,
+                                top: 100.h,
+                                child: Row(
+                                  children: [
+                                    CustomContainer(
                                       height: 30,
                                       width: 30,
                                       ontap: () {},
@@ -647,35 +606,110 @@ class _MobileShopsState extends State<MobileShops> {
                                       color: whiteColor,
                                       boxShadow: true,
                                       child: Image.asset(
-                                          'assets/images/sms.png')),
-                                  SizedBox(width: 10.w),
-                                  CustomContainer(
-                                    height: 30,
-                                    width: 30,
-                                    ontap: () {},
-                                    rd: 100,
-                                    color: whiteColor,
-                                    boxShadow: true,
-                                    child: Image.asset(
-                                        'assets/images/share.png'),
-                                  ),
-                                ],
-                              ),
-                            ),
+                                        'assets/images/navigation.png',),
+                                    ),
+                                    SizedBox(width: 10.w),
+                                    businessModel1?.contactPhone==null
+                                        ?  CustomContainer(
+                                        height: 30,
+                                        width: 30,
+                                        ontap: () {
+                                          print(businessModel1?.contactPhone);
+                                          if (businessModel1?.contactPhone != null) {
+                                            String phoneUrl = 'tel:${businessModel1!.contactPhone}';
+                                            launchUrl(Uri.parse(phoneUrl));
+                                          }
+                                        },
+                                        rd: 100,
+                                        color: whiteColor,
+                                        boxShadow: true,
+                                        child: Image.asset(
+                                            'assets/images/call1.png'))
+                                        :  CustomContainer(
+                                        height: 30,
+                                        width: 30,
+                                        ontap: () {
+                                          print(businessModel1?.contactPhone);
+                                          if (businessModel1?.contactPhone != null) {
+                                            String phoneUrl = 'tel:${businessModel1!.contactPhone}';
+                                            launchUrl(Uri.parse(phoneUrl));
+                                          }
+                                        },
+                                        rd: 100,
+                                        color: whiteColor,
+                                        boxShadow: true,
+                                        child: Image.asset(
+                                            'assets/images/call.png')),
+                                    SizedBox(width: 10.w),
+                                    businessModel1?.contactPhone == null ?
 
-                            Positioned(
-                              top:130.h,
-                              left:10.w,
-                              child:
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: specialtyButtons,
+                                    CustomContainer(
+                                        height: 30,
+                                        width: 30,
+                                        ontap: () {
+                                          print(businessModel1?.contactPhone);
+                                          if (businessModel1?.contactPhone != null) {
+                                            String whatsappUrl = 'https://wa.me/${businessModel1!.contactPhone}';
+                                            launchUrl(Uri.parse(whatsappUrl));
+                                          }
+                                        },
+                                        rd: 100,
+                                        color: whiteColor,
+                                        boxShadow: true,
+                                        child: Image.asset(
+                                            'assets/images/whtsapp.png')) :CustomContainer(
+                                        height: 30,
+                                        width: 30,
+                                        ontap: () {
+                                          print(businessModel1?.contactPhone);
+                                          if (businessModel1?.contactPhone != null) {
+                                            String whatsappUrl = 'https://wa.me/${businessModel1!.contactPhone}';
+                                            launchUrl(Uri.parse(whatsappUrl));
+                                          }
+                                        },
+                                        rd: 100,
+                                        color: whiteColor,
+                                        boxShadow: true,
+                                        child: Image.asset(
+                                            'assets/images/whtsapp.png')),
+                                    SizedBox(width: 10.w),
+                                    CustomContainer(
+                                        height: 30,
+                                        width: 30,
+                                        ontap: () {},
+                                        rd: 100,
+                                        color: whiteColor,
+                                        boxShadow: true,
+                                        child: Image.asset(
+                                            'assets/images/sms.png')),
+                                    SizedBox(width: 10.w),
+                                    CustomContainer(
+                                      height: 30,
+                                      width: 30,
+                                      ontap: () {},
+                                      rd: 100,
+                                      color: whiteColor,
+                                      boxShadow: true,
+                                      child: Image.asset(
+                                          'assets/images/share.png'),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ),
+                              Positioned(
+                                top:130.h,
+                                left:10.w,
+                                child:
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: specialtyButtons,
+                                  ),
+                                ),
+                              ),
 
-                          ],
+                            ],
+                          ),
                         ),
                       );
 

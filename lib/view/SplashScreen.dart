@@ -23,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // Hide status bar icons by setting the system overlay style
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent, // Set the status bar color to transparent
-      statusBarIconBrightness: Brightness.dark, // Use dark icons on the status bar
+      statusBarIconBrightness: Brightness.light, // Use dark icons on the status bar
      ),
     );
     return MaterialApp(

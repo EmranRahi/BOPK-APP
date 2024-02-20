@@ -9,7 +9,7 @@ class SplashServices{
     // Use Timer for the delay.
     Timer(Duration(seconds: 3), ()  {
       // Navigate to the Other screen.
-      Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> HomePage()));
     });
   }
 

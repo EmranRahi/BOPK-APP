@@ -52,6 +52,7 @@ dependencies:
   url_launcher: any
   drop_down_list: ^0.0.6
   upgrader: ^9.0.0
+  image_picker: any
 
 
 

@@ -22,6 +22,7 @@ class CustomTextFormFieldWidget extends StatefulWidget {
     this.validator,
     this.contentPadding, // Add a contentPadding parameter
     this.borderSide = const BorderSide(), // Add a default value
+    this.textInputAction,
 
   }) : super(key: key);
 
@@ -42,6 +43,7 @@ class CustomTextFormFieldWidget extends StatefulWidget {
   final String? Function(String?)? validator; // Define the validator function
   final EdgeInsets? contentPadding; // Add contentPadding property to the constructor
   final BorderSide? borderSide;
+  final  TextInputAction? textInputAction;
 
 
   @override
@@ -62,6 +64,7 @@ class _CustomTextFormFieldWidgetState extends State<CustomTextFormFieldWidget> {
       keyboardType: widget.keyboardType,
       inputFormatters: widget.inputFormatters,
       validator:widget.validator, // Set the validator function
+      textInputAction: widget.textInputAction,
       decoration: InputDecoration(
         contentPadding: widget.contentPadding,
             // ?? EdgeInsets.fromLTRB(10, 10, 10, 0), // Use the provided contentPadding or default value
