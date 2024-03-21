@@ -23,10 +23,10 @@ class RegisterYourBusinessModel {
   bool? isActive;
   String? password;
   String? url;
-  dynamic dated;
-  dynamic fkPartnerId;
+  DateTime? dated;
+  int? fkPartnerId;
   String? otherNumbers;
-  dynamic hits;
+  int? hits;
   String? weblink;
   String? faxNumber;
   String? androidUrl;
@@ -36,9 +36,9 @@ class RegisterYourBusinessModel {
   String? youtubeUrl;
   String? linkedInUrl;
   String? instagramUrl;
-  dynamic isVerified;
+  bool isVerified;
   String? whatsAppNumber;
-  dynamic fkCategoryId;
+  int fkCategoryId;
   Location? location;
   List<dynamic>? images;
 
@@ -60,7 +60,7 @@ class RegisterYourBusinessModel {
     this.dated,
     this.fkPartnerId = 0,
     this.otherNumbers = "",
-    this.hits = "",
+    this.hits = 0,
     this.weblink = "",
     this.faxNumber = "",
     this.androidUrl = "",
@@ -70,7 +70,7 @@ class RegisterYourBusinessModel {
     this.youtubeUrl = "",
     this.linkedInUrl = "",
     this.instagramUrl = "",
-    this.isVerified = "",
+    this.isVerified = false,
     this.whatsAppNumber = "",
     this.fkCategoryId = 1,
     this.location,
@@ -95,7 +95,7 @@ class RegisterYourBusinessModel {
     dated: json["dated"],
     fkPartnerId: json["fkPartnerId"] ?? 0,
     otherNumbers: json["otherNumbers"] ?? "",
-    hits: json["hits"] ?? "",
+    hits: json["hits"] ?? 0,
     weblink: json["weblink"] ?? "",
     faxNumber: json["faxNumber"] ?? "",
     androidUrl: json["androidUrl"] ?? "",
@@ -105,7 +105,7 @@ class RegisterYourBusinessModel {
     youtubeUrl: json["youtubeUrl"] ?? "",
     linkedInUrl: json["linkedInUrl"] ?? "",
     instagramUrl: json["instagramUrl"] ?? "",
-    isVerified: json["isVerified"] ?? "",
+    isVerified: json["isVerified"] ?? false,
     whatsAppNumber: json["whatsAppNumber"] ?? "",
     fkCategoryId: json["fkCategoryId"] ?? 1,
     location: json["location"] == null ? null : Location.fromJson(json["location"]),
