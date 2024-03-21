@@ -44,6 +44,13 @@
 //   }
 // }
 
+
+import 'dart:convert';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'model/DetailsPageProductModel.dart';
+import 'package:http/http.dart' as http;
+
 /// Tab Bar View
 // import 'package:flutter/material.dart';
 //
@@ -137,8 +144,6 @@
 //     );
 //   }
 // }
-
-
 
 /// Tab Bar View  Code
 
@@ -785,3 +790,432 @@
 //         ));
 //   }
 // }
+
+
+
+/// this Below Code  Opening and Closing hour with Of Api DropDown
+//
+// class MyDateAndTimeClass extends StatefulWidget {
+//   const MyDateAndTimeClass({super.key});
+//
+//   @override
+//   State<MyDateAndTimeClass> createState() => _MyDateAndTimeClassState();
+// }
+//
+// class _MyDateAndTimeClassState extends State<MyDateAndTimeClass> {
+//
+//   // bool val = true; // Initial state of the checkbox
+//   // bool val1 = false;
+//   // bool val2 = false;
+//   // bool val3 = false;
+//   // bool val4 = false;
+//   // bool val5 = false;
+//   // bool val6 = false;
+//
+//
+//   OpeningAndClosingTimeModel openingAndClosingTimeModel = OpeningAndClosingTimeModel();
+//   final List<String> timeList = const [
+//     '09:00AM',
+//     '10:00AM',
+//     '11:00AM',
+//     '12:00PM',
+//     '01:00PM',
+//     '02:00PM',
+//     '03:00PM',
+//     '04:00PM',
+//     '05:00PM',
+//     '06:00PM',
+//     '07:00PM',
+//     '08:00PM',
+//     '09:00PM',
+//     '10:00PM',
+//     '11:00PM',
+//     '12:00PM',
+//   ].toSet().toList(); // Remove duplicates and convert to a list
+//
+//
+//   // void updateAllCheckboxes(bool value) {
+//   //   setState(() {
+//   //     val = value;
+//   //     val1 = value;
+//   //     val2 = value;
+//   //     val3 = value;
+//   //     val4 = value;
+//   //     val5 = value;
+//   //     val6 = value;
+//   //   });
+//   // }
+//
+//
+// // Define variables to hold selected values
+//   String? selectedOpeningTime;
+//   String? selectedClosingTime;
+//   Map<String, String?> selectedOpeningTimes = {}; // Map to store selected opening times for each day
+//   Map<String, String?> selectedClosingTimes = {}; // Map to store selected closing times for each day
+//   Map<String, bool> checkBoxValues = {}; // Map to store checkbox values for each day
+//
+// // Update onChanged callback for both DropdownButtons
+//   onOpeningTimeChanged(String? value) {
+//     setState(() {
+//       selectedOpeningTime = value ?? "select";
+//     });
+//   }
+//
+//   onClosingTimeChanged(String? value) {
+//     setState(() {
+//       selectedClosingTime = value;
+//     });
+//   }
+//
+//   void sendDataToServer(List<OpeningAndClosingTimeModel> models) {
+//     if (models.isNotEmpty) {
+//       // Call the controller function to send data to the server
+//       APIController.openingAndClosingPostData(models).then((response) {
+//         // Handle the response from the server
+//         // For example, show a success message or update UI accordingly
+//       }).catchError((error) {
+//         // Handle error
+//         print('Error: $error');
+//       });
+//     } else {
+//       // Handle case when the list is empty
+//       print('No data to send.');
+//     }
+//   }
+//
+//   List<OpeningAndClosingTimeModel> modelsForAllDays = [];
+//   DateFormat formatter = DateFormat('HH:mm'); // Format for hours and minutes
+//
+//
+//   ///jhjhkjhkjhkjh
+//   @override
+//   Widget build(BuildContext context) {
+//     // String defaultValue = '10:00AM';
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text("AppBar "),
+//       ),
+//       body: SingleChildScrollView(
+//         child: Padding(
+//           padding: const EdgeInsets.all(8.0),
+//           child: Column(
+//             children: [
+//               Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                 children: [
+//                   CustomText(
+//                       title: "Set to All",
+//                       fontWeight: FontWeight.bold,
+//                       fontSize: 20.sp,
+//                       color: greenColor2
+//                   ),
+//                   GestureDetector(
+//                     onTap: () {
+//                       setState(() {
+//                         // Iterate through each day and set its checkbox value to true
+//                         for (var day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']) {
+//                           checkBoxValues[day] = checkBoxValues[day] == null ? false : !checkBoxValues[day]!;
+//                           // selectedOpeningTimes[day] = selectedOpeningTimes['Monday']; // Set opening time
+//                           // selectedClosingTimes[day] = selectedClosingTimes['Monday']; // Set closing time
+//
+//                         }
+//                       });
+//                     },
+//                     child: CustomText(
+//                         title: "Set to All",
+//                         fontWeight: FontWeight.bold,
+//                         fontSize: 20.sp,
+//                         color: greenColor2
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//
+//               SizedBox(
+//                 height: ScreenUtil().setHeight(20.h),
+//               ),
+//               for (var day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'])
+//                 Padding(
+//                   padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+//                   child: Column(
+//                     children: [
+//                       OpenHoursContainer(
+//                         isChecked: true,
+//                         customCheckbox: Checkbox(
+//                           onChanged: (value) {
+//                             setState(() {
+//                               checkBoxValues[day] = value!;
+//                               print('Checkbox value changed: $value');
+//                             });
+//                           },
+//                           value: checkBoxValues[day] ?? false,
+//                           activeColor: greenColor2,
+//                         ),
+//                         child:  CustomText(title: day),
+//                       ),
+//                       // Text(day),
+//                        SizedBox(height: 08,),
+//                       Visibility(
+//                         visible: checkBoxValues[day] ?? false,
+//                         child: Row(
+//                           mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                           children: [
+//                             Container(
+//                               width: MediaQuery.of(context).size.width/3.5,
+//                               decoration: BoxDecoration(
+//                                   color: whiteColor,
+//                                   borderRadius: BorderRadius.circular(10),
+//                                 boxShadow: const [
+//                                   BoxShadow(
+//                                     color: grayColor,
+//                                     blurRadius: 7,
+//                                     spreadRadius: 1,
+//                                     offset: Offset(0,0),
+//                                   )
+//                                 ]
+//                               ),
+//                               child: Center(
+//                                 child: DropdownButton<String>(
+//                                   borderRadius: BorderRadius.circular(10),
+//                                   underline: Text(""),
+//                                   value: selectedOpeningTimes[day] ?? timeList.first,
+//                                   items: timeList.map((String value) {
+//                                     return DropdownMenuItem<String>(
+//                                       value: value,
+//                                       child: Text(value),
+//                                     );
+//                                   }).toList(),
+//                                   onChanged: (String? value) {
+//                                     setState(() {
+//                                       selectedOpeningTimes[day] = value;
+//                                     });
+//                                   },
+//                                 ),
+//
+//                               ),
+//                             ),
+//                             Container(
+//                               width: MediaQuery.of(context).size.width/3.5,
+//                               decoration: BoxDecoration(
+//                                   color: whiteColor,
+//                                   borderRadius: BorderRadius.circular(10),
+//                                   boxShadow:const [
+//                                     BoxShadow(
+//                                       color: grayColor,
+//                                       blurRadius: 7,
+//                                       spreadRadius: 1,
+//                                       offset: Offset(0,0),
+//                                     )
+//                                   ]
+//                               ),
+//                               child: Center(
+//                                 child: DropdownButton<String>(
+//                                   borderRadius: BorderRadius.circular(10),
+//                                   underline: Text(""),
+//                                   value: selectedClosingTimes[day] ?? timeList.first,
+//                                   items: timeList.map((String value) {
+//                                     return DropdownMenuItem<String>(
+//                                       value: value,
+//                                       child: Text(value),
+//                                     );
+//                                   }).toList(),
+//                                   onChanged: (String? value) {
+//                                     setState(() {
+//                                       selectedClosingTimes[day] = value;
+//                                     });
+//                                   },
+//                                 ),
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ElevatedButton(
+//                 onPressed: () {
+//                   sendDataForAllDays();
+//                 },
+//                 child: Text('Send Data to server'),
+//               ),
+//             ],
+//           ),
+//          ),
+//         ),
+//       );
+//     }
+//
+//   void sendDataForAllDays() {
+//      List<String> daysOfWeek =
+//      ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",];
+//     List<OpeningAndClosingTimeModel> modelsForAllDays = [];
+//     for (String day in daysOfWeek) {
+//       OpeningAndClosingTimeModel model = OpeningAndClosingTimeModel(
+//         id: 0, // You may need to adjust this according to your model
+//         dayOfWeek: day,
+//         openingTime: selectedOpeningTimes[day] ?? "default open time", // Replace "" with default value if needed
+//         closingTime: selectedClosingTimes[day] ?? "default close time", // Replace "" with default value if needed
+//         isOpen:   false, // _getIsOpenForDay(day), // Checkbox value for each day
+//         fkKarobarId: 0, // You may need to adjust this according to your model
+//         is24Hour: false, // You may need to adjust this according to your model
+//       );
+//       modelsForAllDays.add(model);
+//     }
+//
+//     // Send data to the server
+//     sendDataToServer(modelsForAllDays);
+//   }
+//
+//   // bool _getIsOpenForDay(String day) {
+//   //   switch (day) {
+//   //     case "Monday":
+//   //       return val;
+//   //     case "Tuesday":
+//   //       return val1;
+//   //     case "Wednesday":
+//   //       return val2;
+//   //     case "Thursday":
+//   //       return val3;
+//   //     case "Friday":
+//   //       return val4;
+//   //     case "Saturday":
+//   //       return val5;
+//   //     case "Sunday":
+//   //       return val6;
+//   //     default:
+//   //       return false;
+//   //   }
+//   // }
+// }
+//
+
+
+/// product ya Item API
+class YourWidgetName extends StatefulWidget {
+  @override
+  _YourWidgetNameState createState() => _YourWidgetNameState();
+}
+
+class _YourWidgetNameState extends State<YourWidgetName> {
+  late Future<List<DetailsPageProductModel>> _futureProducts;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureProducts = fetchProducts();
+  }
+
+  Future<List<DetailsPageProductModel>> fetchProducts() async {
+    final response =
+    await http.get(Uri.parse("http://144.91.86.203/bopkapi/KarobarItems"));
+    print(response.body);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      List<dynamic> jsonList = json.decode(response.body);
+      List<DetailsPageProductModel> products =
+      jsonList.map((json) => DetailsPageProductModel.fromJson(json)).toList();
+      return products;
+    } else {
+      throw Exception('Failed to load products');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Your App Title'),
+      ),
+      body: Container(
+        alignment: Alignment.center,
+        margin: EdgeInsets.symmetric(vertical: 8),
+        child: FutureBuilder<List<DetailsPageProductModel>>(
+          future: _futureProducts,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator(); // Show loading indicator while fetching data
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              List<DetailsPageProductModel> products = snapshot.data!;
+              return Padding(
+                padding: EdgeInsets.all(8.0),
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 8.0,
+                    mainAxisSpacing: 8.0,
+                  ),
+                  itemCount: products.length,
+                  itemBuilder: (context, index) {
+                    print(products.length);
+                    final product = products[index];
+                    return InkWell(
+                      onTap: () {
+                        // Handle onTap event
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 1,
+                              blurRadius: 3,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Image.network(
+                            //   product.images![0], // Assuming images are URLs
+                            //   height: 100,
+                            //   width: double.infinity,
+                            //   fit: BoxFit.cover,
+                            // ),
+                            Image.asset(
+                              product.images != null && product.images!.isNotEmpty ? product.images![0] : 'assets/images/producimage1.png',
+                              scale: 7,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    product.itemName!,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.0,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4.0),
+                                  Text(
+                                    'Rs.${product.price}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                      fontSize: 14.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            }
+          },
+        ),
+      ),
+    );
+  }
+}

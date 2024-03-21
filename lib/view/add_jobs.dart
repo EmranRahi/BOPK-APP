@@ -159,7 +159,11 @@ class _AddJobsState extends State<AddJobs> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-              CustomText(title: "Job Title",fontWeight: FontWeight.bold,fontSize: 16.sp,),
+              CustomText(title: "Job Title",
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                maxLine: 1,
+              ),
               CustomTextFormFieldWidget(hint: "Job Title",borderRadius: 08,),
               CustomText(title: "Company Name ",fontWeight: FontWeight.bold,fontSize: 16.sp,),
               CustomTextFormFieldWidget(hint: "Company Name",borderRadius: 08,),

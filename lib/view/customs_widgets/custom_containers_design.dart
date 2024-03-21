@@ -41,7 +41,8 @@ class CustomContainer extends StatelessWidget {
                 spreadRadius: 2.r,
                 offset: Offset(0, 4),
               ),
-            ]),
+            ]
+        ),
         child: child,
       ),
     );

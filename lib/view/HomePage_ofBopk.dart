@@ -1,40 +1,25 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:app_settings/app_settings.dart';
 import 'package:businessonlinepk/globle_variable/globle.dart';
-import 'package:businessonlinepk/model/BannerClass.dart';
 import 'package:businessonlinepk/view/customs_widgets/constant_color.dart';
 import 'package:businessonlinepk/view/customs_widgets/custom_textfield.dart';
 import 'package:businessonlinepk/view/mobile_shops.dart';
-import 'package:businessonlinepk/view/pay_now_screen.dart';
 import 'package:businessonlinepk/view/register_your_business.dart';
-import 'package:businessonlinepk/view/verify_download.dart';
-import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:geolocator/geolocator.dart';
-
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:upgrader/upgrader.dart';
-
 import '../Controllers/BopkController.dart';
 import '../Service/ApiResponse.dart';
 import '../Service/ApiService.dart';
+import '../model/BannerApiModel.dart';
 import '../model/HomeCategory.dart';
-import 'add_jobs.dart';
-import 'business_for_sale.dart';
-import 'customs_widgets/custom_appbar.dart';
 import 'customs_widgets/custom_text.dart';
-import 'deal_and_discount_screen.dart';
-import 'get_discount_card_screeen.dart';
-import 'get_your_business_now.dart';
-import 'main_page_bopk.dart';
 import 'menu_login.dart';
 
 class HomePage extends StatefulWidget {
@@ -47,10 +32,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   ScrollController listScrollController = ScrollController();
   final TextEditingController _searchByKey = TextEditingController();
-  final CarouselController _carouselController = CarouselController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _typeAheadController = TextEditingController();
-  final TextEditingController _typeAheadController2 = TextEditingController();
   String favoriteCity = 'Unavailable';
   String? categoryName = "-";
   String? image = "-";
@@ -59,23 +40,50 @@ class _HomePageState extends State<HomePage> {
   bool haspermission = false;
   late LocationPermission permission;
   late Position position;
-  String long = "", lat = "";
+  var long =0.0;
+  var lat = 0.0;
   int? subCategoryid;
   late StreamSubscription<Position> positionStream;
   final BopkController controller = BopkController();
   String minRequiredVersion ='1.5';
-  List<BannersClass>? listbaner = [];
+  List<BannerApiModel>? listbaner = [];
   List<String> imgList = [
-    'assets/newbopkpic/b1.png',
     'assets/newbopkpic/b2.png',
+    'assets/newbopkpic/b3.png',
+    'assets/newbopkpic/b4.png',
+    'assets/newbopkpic/b5.png',
+    'assets/newbopkpic/b6.png',
+    'assets/newbopkpic/b7.png',
+    'assets/newbopkpic/b8.png',
   ];
   @override
   void initState() {
     checkGps();
+    checkLocationPermission();
     getBanners();
+    getLocation();
     // Call the fetchHomePageCategories method when the widget initializes
     super.initState();
     fetch();
+  }
+
+  Future<void> checkLocationPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.deniedForever) {
+        // Permissions are denied forever, handle appropriately.
+        return;
+      }
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, handle appropriately.
+        return;
+      }
+    }
+    if (permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse) {
+      getLocation();
+    }
   }
 
   @override
@@ -92,62 +100,70 @@ class _HomePageState extends State<HomePage> {
         child: Scaffold(
           body: Column(
             children: [
-              Container(
+              SizedBox(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height / 3.1,
-                // color: Colors.orange,
+                height: MediaQuery.of(context).size.height / 3.0,
                 child: Stack(
                   children: [
                     // Positioned CarouselSlider covering the entire screen
-                    CarouselSlider(
-                      options: CarouselOptions(
-                        // height: MediaQuery.of(context).size.height/3,
-                        viewportFraction: 1.0, // Occupy full width
-                        enlargeCenterPage: false,
-                        autoPlay: true,
-                      ),
-                      items: imgList.map((item) {
-                        return Container(
-                          width: MediaQuery.of(context).size.width,
-                          child: Image.asset(
-                            item,
-                            fit: BoxFit.fill,
-                          ),
-                        );
-                      }).toList(),
-                    ),
                     // CarouselSlider(
-                    //   carouselController: _carouselController,
                     //   options: CarouselOptions(
+                    //     // height: MediaQuery.of(context).size.height/3,
+                    //     viewportFraction: 1.0, // Occupy full width
+                    //     enlargeCenterPage: false,
                     //     autoPlay: true,
                     //   ),
                     //   items: imgList.map((item) {
                     //     return Container(
-                    //       width: MediaQuery.of(context).size.width, // Set image width to the screen width
-                    //       decoration: BoxDecoration(
-                    //         color: Colors.transparent, // You can set a background color if needed
-                    //       ),
+                    //       width: MediaQuery.of(context).size.width,
                     //       child: Image.asset(
                     //         item,
-                    //         fit: BoxFit.cover,
+                    //         fit: BoxFit.fill,
                     //       ),
                     //     );
                     //   }).toList(),
                     // ),
-
-                    // Image.asset('assets/newbopkpic/b1.png', fit: BoxFit.cover),
+                    CarouselSlider(
+                      options: CarouselOptions(
+                        aspectRatio: 16 / 9,
+                        viewportFraction: 1.0,
+                        autoPlay: true,
+                        autoPlayInterval: Duration(seconds: 5),
+                        autoPlayAnimationDuration: Duration(milliseconds: 800),
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        enlargeCenterPage: true,
+                      ),
+                      items: (listbaner != null && listbaner!.isNotEmpty)
+                          ? listbaner!.map((banner) {
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return Container(
+                              margin: EdgeInsets.symmetric(horizontal: 5.0),
+                              child: Image.network(
+                                banner.webBanner!,
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          },
+                        );
+                      }).toList()
+                          : imgList.map((assetPath) {
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return Container(
+                              // margin: EdgeInsets.symmetric(horizontal: 5.0),
+                              child: Image.asset(
+                                assetPath,
+                                fit: BoxFit.fill,
+                              )
+                                );
+                          },
+                        );
+                      }).toList(),
+                    ),
                     Positioned(
-                        top: 40,
-                        left: 20,
-                        child: Image.asset('assets/newbopkpic/p2.png',scale: 3,)),
-                    Positioned(
-                        top: 50,
-                        left: 60,
-                        child: CustomText(title: "Business",color: Colors.white,fontSize: 14.sp,fontWeight: FontWeight.bold)),
-
-                    Positioned(
-                      top: 25, // Adjust the top position for the menu button
-                      right: 5, // Adjust the right position for the menu button
+                      top: ScreenUtil().setHeight(20),
+                      right: ScreenUtil().setWidth(5),
                       child:  PopupMenuButton<int>(
                         icon: Icon(Icons.menu, color: Colors.white,size: 30),
                         color: whiteColor,
@@ -169,61 +185,63 @@ class _HomePageState extends State<HomePage> {
                               child: CustomText(title: "Register Your Business", fontStyle: FontStyle.italic),
                             ),
                             PopupMenuDivider(),
-                            PopupMenuItem<int>(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=> VerifyDownLoadScreen()));
-                              },
-                              value: 3,
-                              child: CustomText(title: "Verify Download", fontStyle: FontStyle.italic),
-                            ),
-                            PopupMenuDivider(),
-                            PopupMenuItem<int>(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=> PayNowScreen()));
-                              },
-                              value: 4,
-                              child: CustomText(title: "Pay Now", fontStyle: FontStyle.italic),
-                            ),
-                            PopupMenuDivider(),
-                            PopupMenuItem<int>(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=> GetDisCountCard()));
-                              },
-                              value: 5,
-                              child: CustomText(title: "Get Discount Card", fontStyle: FontStyle.italic),
-                            ),
-                            PopupMenuDivider(),
-                            PopupMenuItem<int>(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=> GetYourBusinessNow()));
-                              },
-                              value: 6,
-                              child: CustomText(title: "Get Your Business Verify Now", fontStyle: FontStyle.italic),
-                            ),
-                            PopupMenuDivider(),
-                            PopupMenuItem<int>(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=> DealAndDisCount()));
-                              },
-                              value: 7,
-                              child: CustomText(title: "Deal And Discount ", fontStyle: FontStyle.italic),
-                            ),
-                            PopupMenuDivider(),
-                            PopupMenuItem<int>(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=> BusinessForSale()));
-                              },
-                              value: 10,
-                              child: CustomText(title: "Business For Sale", fontStyle: FontStyle.italic),
-                            ),
-                            PopupMenuDivider(),
-                            PopupMenuItem<int>(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=> AddJobs()));
-                              },
-                              value: 8,
-                              child: CustomText(title: "Add Jobs", fontStyle: FontStyle.italic),
-                            ),
+                            /// ye code meny felhal comment kia hai.
+                            // PopupMenuDivider(),
+                            // PopupMenuItem<int>(
+                            //   onTap: (){
+                            //     Navigator.push(context, MaterialPageRoute(builder: (context)=> VerifyDownLoadScreen()));
+                            //   },
+                            //   value: 3,
+                            //   child: CustomText(title: "Verify Download", fontStyle: FontStyle.italic),
+                            // ),
+                            // PopupMenuDivider(),
+                            // PopupMenuItem<int>(
+                            //   onTap: (){
+                            //     Navigator.push(context, MaterialPageRoute(builder: (context)=> PayNowScreen()));
+                            //   },
+                            //   value: 4,
+                            //   child: CustomText(title: "Pay Now", fontStyle: FontStyle.italic),
+                            // ),
+                            // PopupMenuDivider(),
+                            // PopupMenuItem<int>(
+                            //   onTap: (){
+                            //     Navigator.push(context, MaterialPageRoute(builder: (context)=> GetDisCountCard()));
+                            //   },
+                            //   value: 5,
+                            //   child: CustomText(title: "Get Discount Card", fontStyle: FontStyle.italic),
+                            // ),
+                            // PopupMenuDivider(),
+                            // PopupMenuItem<int>(
+                            //   onTap: (){
+                            //     Navigator.push(context, MaterialPageRoute(builder: (context)=> GetYourBusinessNow()));
+                            //   },
+                            //   value: 6,
+                            //   child: CustomText(title: "Get Your Business Verify Now", fontStyle: FontStyle.italic),
+                            // ),
+                            // PopupMenuDivider(),
+                            // PopupMenuItem<int>(
+                            //   onTap: (){
+                            //     Navigator.push(context, MaterialPageRoute(builder: (context)=> DealAndDisCount()));
+                            //   },
+                            //   value: 7,
+                            //   child: CustomText(title: "Deal And Discount ", fontStyle: FontStyle.italic),
+                            // ),
+                            // PopupMenuDivider(),
+                            // PopupMenuItem<int>(
+                            //   onTap: (){
+                            //     Navigator.push(context, MaterialPageRoute(builder: (context)=> BusinessForSale()));
+                            //   },
+                            //   value: 10,
+                            //   child: CustomText(title: "Business For Sale", fontStyle: FontStyle.italic),
+                            // ),
+                            // PopupMenuDivider(),
+                            // PopupMenuItem<int>(
+                            //   onTap: (){
+                            //     Navigator.push(context, MaterialPageRoute(builder: (context)=> AddJobs()));
+                            //   },
+                            //   value: 8,
+                            //   child: CustomText(title: "Add Jobs", fontStyle: FontStyle.italic),
+                            // ),
                           ];
                         },
                         onSelected: (int value) {
@@ -248,9 +266,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     Positioned(
-                      bottom: 10, // Adjust the bottom position for the text field
-                      left: 50, // Adjust the left position for the text field
-                      right: 50,
+                      bottom: ScreenUtil().setHeight(24.h),
+                      left:  ScreenUtil().setWidth(50.w),
+                      right: ScreenUtil().setWidth(50.w),
                       child: Container(
                         decoration: BoxDecoration(
                           boxShadow: [
@@ -267,6 +285,8 @@ class _HomePageState extends State<HomePage> {
                           textInputAction: TextInputAction.search,
                           onChanged: (v){
                             _searchByKey.text=v;
+                            print("off"+lat.toString());
+                            print("on"+long.toString());
                           },
                           hint: "Search by Business",
                           color: Colors.white,
@@ -275,7 +295,7 @@ class _HomePageState extends State<HomePage> {
                           borderSide: BorderSide.none,
                           suffixIcon: IconButton(onPressed: (){
                             Navigator.push(context, MaterialPageRoute(builder: (context){
-                              return MobileShops(_searchByKey.text.toString(),0);
+                              return MobileShops(_searchByKey.text.toString(),0, lat,long);
                             },),);
                           }, icon: Icon(Icons.search)),
                           // prefixIcon: IconButton(onPressed: (){}, icon: Icon(Icons.location_on,color: greenColor2,),),
@@ -283,10 +303,124 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
+                    Positioned(
+                        bottom: -14, // Adjust the bottom position for the text field
+                        // left: 50, // Adjust the left position for the text field
+                        right: 5,
+                        child: TextButton(onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> RegisterYourBusiness()));
+                        },child: Row(children: [
+                      Icon(Icons.edit,size: 15,),
+                      CustomText(title: "Register Your Business",
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,)
+                    ]),)),
+
                   ],
                 ),
               ),
 
+              /// New
+              // Container(
+              //   // width: MediaQuery.of(context).size.width,
+              //   height:  MediaQuery.of(context).size.height /3.0,
+              //   // color: Colors.red,
+              //   child: Stack(
+              //     children: [
+              //       CarouselSlider(
+              //         options: CarouselOptions(
+              //           viewportFraction: 1.0,
+              //           enlargeCenterPage: false,
+              //           autoPlay: true,
+              //         ),
+              //         items: imgList.map((item) {
+              //           return Container(
+              //             width: MediaQuery.of(context).size.width,
+              //             child: Image.asset(
+              //               item,
+              //               fit: BoxFit.fill,
+              //             ),
+              //           );
+              //         }).toList(),
+              //       ),
+              //       Positioned(
+              //         top: ScreenUtil().setHeight(10),
+              //         right: ScreenUtil().setWidth(5),
+              //         child: PopupMenuButton<int>(
+              //           icon: Icon(Icons.menu, color: Colors.white, size: ScreenUtil().setWidth(30)),
+              //           color: whiteColor,
+              //           itemBuilder: (BuildContext context) {
+              //             return <PopupMenuEntry<int>>[
+              //               // Your PopupMenuItems
+              //             ];
+              //           },
+              //           onSelected: (int value) {
+              //             // Handle menu selection
+              //           },
+              //         ),
+              //       ),
+              //       Positioned(
+              //         // bottom: ScreenUtil().setHeight(25),
+              //         top: ScreenUtil().screenHeight/4.5,
+              //         left: ScreenUtil().setWidth(50),
+              //         right: ScreenUtil().setWidth(50),
+              //         child:Container(
+              //                     decoration: BoxDecoration(
+              //                       boxShadow: [
+              //                         BoxShadow(
+              //                           color: Colors.black.withOpacity(0.2),
+              //                           spreadRadius: 0,
+              //                           blurRadius: 30,
+              //                           offset: Offset(0, 0), // changes position of shadow
+              //                         ),
+              //                       ],
+              //                     ),
+              //                     width: MediaQuery.of(context).size.width - 60, // Adjust the width as needed
+              //                     child: CustomTextFormFieldWidget(
+              //                       textInputAction: TextInputAction.search,
+              //                       onChanged: (v){
+              //                         _searchByKey.text=v;
+              //                       },
+              //                       hint: "Search by Business",
+              //                       color: Colors.white,
+              //                       fillColor: true,
+              //                       borderRadius: 80.r,
+              //                       borderSide: BorderSide.none,
+              //                       suffixIcon: IconButton(onPressed: (){
+              //                         Navigator.push(context, MaterialPageRoute(builder: (context){
+              //                           return MobileShops(_searchByKey.text.toString(),0);
+              //                         },),);
+              //                       }, icon: Icon(Icons.search)),
+              //                       // prefixIcon: IconButton(onPressed: (){}, icon: Icon(Icons.location_on,color: greenColor2,),),
+              //                       contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+              //                     ),
+              //                   ),
+              //                 ),
+              //
+              //       Positioned(
+              //         bottom: ScreenUtil().setHeight(-14),
+              //         right: ScreenUtil().setWidth(5),
+              //         child: TextButton(
+              //           onPressed: () {
+              //             Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterYourBusiness()));
+              //           },
+              //           child: Row(
+              //             children: [
+              //               Icon(Icons.edit, size: ScreenUtil().setWidth(15)),
+              //               CustomText(
+              //                 title: "Register Your Business",
+              //                 fontSize: ScreenUtil().setSp(10),
+              //                 fontWeight: FontWeight.bold,
+              //                 decoration: TextDecoration.underline,
+              //               ),
+              //             ],
+              //           ),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
 
               Flexible(
                 child: SingleChildScrollView(
@@ -307,12 +441,12 @@ class _HomePageState extends State<HomePage> {
                             child: CustomText( title:
                             controller.categories[index].mainCategoryName.toString() ?? "NO ",
                               googleFont: 'Jost',
+                              // fontSize: 18,
                               fontSize: 18,
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-
                           SizedBox(
                             height: 90,
                             child: controller.categories[index].categories == null
@@ -345,10 +479,13 @@ class _HomePageState extends State<HomePage> {
                                               .categories![index1].categoryName,
                                           controller.categories[index]
                                               .categories![index1].categoryId,
+                                          lat,long
                                         ),
                                       ),
                                     );
                                   },
+                                  // Replace the image loading code inside the GestureDetector's child with this:
+                                  // Replace the image loading code inside the GestureDetector's child with this:
                                   child: Container(
                                     width: 80,
                                     child: Card(
@@ -369,13 +506,19 @@ class _HomePageState extends State<HomePage> {
                                               height: 30,
                                               width: 30,
                                               decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                  fit: BoxFit.cover,
-                                                  image: NetworkImage(
-                                                    "${"https://businessonline.pk/images/icons/"}${controller.categories[index].categories![index1].categoryName}.png",
-                                                  ),
-                                                ),
                                                 borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              // Use the Image widget here with errorBuilder
+                                              child: Image.network(
+                                                "${"https://businessonline.pk/images/icons/"}${controller.categories[index].categories![index1].categoryName}.png",
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (context, error, stackTrace) {
+                                                  // Display a default image if the network image fails to load
+                                                  return Image.asset(
+                                                    'assets/images/producimage1.png', // Provide the path to your default image asset
+                                                    fit: BoxFit.cover,
+                                                  );
+                                                },
                                               ),
                                             ),
                                           ),
@@ -392,14 +535,21 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                             ),
                                             child: Center(
-                                              child: CustomText(
-                                                title: controller.categories[index]
-                                                    .categories![index1].categoryName ??
-                                                    "ddd",
-                                                googleFont: "Jost",
-                                                fontSize: 8,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w600,
+                                              child: LayoutBuilder(
+                                                builder: (context, constraints) {
+                                                  return FittedBox(
+                                                    fit: BoxFit.scaleDown,
+                                                    child: CustomText(
+                                                      title: controller.categories[index].categories![index1].categoryName ?? "ddd",
+                                                      googleFont: "Inter",
+                                                      fontSize: 08,
+                                                      color: Colors.white,
+                                                      maxLine: 3,
+                                                      textOverflow: TextOverflow.ellipsis,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  );
+                                                },
                                               ),
                                             ),
                                           ),
@@ -407,24 +557,90 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                   ),
-                                );
-                              },
-                            ),
-                          ),
 
 
+                               /// Old Code
 
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+                                  // Container(
+                                  //   width: 80,
+                                  //   child: Card(
+                                  //     elevation: 8,
+                                  //     shadowColor: const Color.fromRGBO(0, 66, 37, 0.9),
+                                  //     shape: OutlineInputBorder(
+                                  //       borderRadius: BorderRadius.circular(10),
+                                  //       borderSide: const BorderSide(
+                                  //         color: Colors.green,
+                                  //         width: 1,
+                                  //       ),
+                                  //     ),
+                                  //     child: Column(
+                                  //       children: [
+                                  //         Padding(
+                                  //           padding: const EdgeInsets.all(4.0),
+                                  //           child: Container(
+                                  //             height: 30,
+                                  //             width: 30,
+                                  //             decoration: BoxDecoration(
+                                  //               image: DecorationImage(
+                                  //                 fit: BoxFit.cover,
+                                  //                 image: NetworkImage(
+                                  //                   "${"https://businessonline.pk/images/icons/"}${controller.categories[index].categories![index1].categoryName}.png",
+                                  //                 ),
+                                  //               ),
+                                  //               borderRadius: BorderRadius.circular(10),
+                                  //             ),
+                                  //           ),
+                                  //         ),
+                                  //         SizedBox(height: 14.0),
+                                  //         // Below this container is used for text green container
+                                  //         Container(
+                                  //           width: 80,
+                                  //           height: 30,
+                                  //           decoration: BoxDecoration(
+                                  //             color: greenColor2,
+                                  //             borderRadius: BorderRadius.only(
+                                  //               bottomRight: const Radius.circular(10.0),
+                                  //               bottomLeft: const Radius.circular(10.0),
+                                  //             ),
+                                  //           ),
+                                  //           child: Center(
+                                  //             child: LayoutBuilder(
+                                  //               builder: (context, constraints) {
+                                  //                 return FittedBox(
+                                  //                   fit: BoxFit.scaleDown,
+                                  //                   child: CustomText(
+                                  //                     title: controller.categories[index].categories![index1].categoryName ?? "ddd",
+                                  //                     googleFont: "Inter",
+                                  //                     fontSize: 08,
+                                  //                     color: Colors.white,
+                                  //                     maxLine: 3,
+                                  //                     textOverflow: TextOverflow.ellipsis,
+                                  //                     fontWeight: FontWeight.bold,
+                                  //                   ),
+                                  //                 );
+                                  //               },
+                                  //             ),
+                                  //           ),
+                                  //         ),
+                                  //       ],
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                 );
+                               },
+                             ),
+                           ),
+                         ],
+                       );
+                     },
+                   ),
+                 ),
+               ),
+             ],
+           ),
+         ),
+       ),
+     );
   }
 
   Future<List<HomeCategory>> gettListCategory() async {
@@ -519,32 +735,15 @@ class _HomePageState extends State<HomePage> {
     print(position.longitude); //Output: 80.24599079
     print(position.latitude); //Output: 29.6593457
 
-    long = position.longitude.toString();
-    lat = position.latitude.toString();
+    lat = position.latitude;
+    long = position.longitude;
+
 
     setState(() {
       //refresh UI
     });
 
-    LocationSettings locationSettings = LocationSettings(
-      accuracy: LocationAccuracy.high, //accuracy of the location data
-      distanceFilter: 100, //minimum distance (measured in meters) a
-      //device must move horizontally before an update event is generated;
-    );
 
-    StreamSubscription<Position> positionStream =
-        Geolocator.getPositionStream(locationSettings: locationSettings)
-            .listen((Position position) {
-      print(position.longitude); //Output: 80.24599079
-      print(position.latitude); //Output: 29.6593457
-
-      long = position.longitude.toString();
-      lat = position.latitude.toString();
-
-      setState(() {
-        //refresh UI on update
-      });
-    });
   }
 
   void showAlertDialogeGPS() {
@@ -577,28 +776,29 @@ class _HomePageState extends State<HomePage> {
             ));
   }
 
-  Future<List<BannersClass>> getBanners() async {
-    List<BannersClass> list = [];
+  Future<List<BannerApiModel>> getBanners() async {
+    List<BannerApiModel> list = [];
     ApiResponse res = ApiResponse();
     ApiService apiService = ApiService();
-    res = await apiService.GetData(
-        "http://144.91.86.203/boukapi/api/Banners/allBanners");
+    res = await apiService.GetData("http://144.91.86.203/bopkapi/api/KarobarBanner");
     print(res.StatusCode);
     if (res.StatusCode == 0) {
+      // Handle error case
     } else if (res.StatusCode == 200) {
       List data = res.Response;
       print(data.toString());
       setState(() {});
       print("xxxxxxxxxxxxxx"+data.toString());
 
-      return listbaner = data
-          .map<BannersClass>((json) => BannersClass.fromJson(json))
-          .toList();
+      // Assuming BannersClass is the class representing your API response
+      // Convert data from BannersClass to BannerApiModel
+      list = data.map<BannerApiModel>((json) => BannerApiModel.fromJson(json)).toList();
     } else {
-      // SendToLoginScreen();
+      // Handle error case
     }
     return list;
   }
+
 
   Future<void> fetch() async {
     await controller.fetchHomePageCategories();
@@ -644,151 +844,4 @@ class CitiesService {
   }
 }
 
-//App Bar
-// appBar: PreferredSize(
-//   preferredSize:  Size.fromHeight(200),
-//   child: AppBar(
-//    flexibleSpace:Container(
-//      decoration:BoxDecoration(
-//        image: DecorationImage(
-//          image:  AssetImage("assets/newbopkpic/b1.png"),
-//          fit: BoxFit.fill,
-//        ),
-//      ),
-//    ),
-//   ),
-// ),
 
-// backgroundColor: Colors.white,
-// drawer: NavBar(),
-// appBar: customAppBar1(
-//   elevation: 0,
-//   centerTitle: false,
-//   title: CustomText(
-//     title: 'Business',
-//     color: grayColor,
-//     fontWeight: FontWeight.bold,
-//   ),
-//
-//   action: Column(
-//     mainAxisAlignment: MainAxisAlignment.center,
-//     children: [
-//
-//       // PopupMenuButton<int>(
-//       //   icon: Icon(Icons.menu, color: greenColor2,size: 30),
-//       //   color: whiteColor,
-//       //   itemBuilder: (BuildContext context) {
-//       //     return <PopupMenuEntry<int>>[
-//       //
-//       //       PopupMenuItem<int>(
-//       //         onTap: (){
-//       //           Navigator.push(context, MaterialPageRoute(builder: (context)=> MenuLogin()));
-//       //         },
-//       //         value: 0,
-//       //         child: CustomText(title: "Login", fontStyle: FontStyle.italic),
-//       //       ),
-//       //       PopupMenuDivider(),
-//       //       PopupMenuItem<int>(
-//       //         onTap: (){
-//       //           Navigator.push(context, MaterialPageRoute(builder: (context)=> RegisterYourBusiness()));
-//       //         },
-//       //         value: 1,
-//       //         child: CustomText(title: "Register Your Business", fontStyle: FontStyle.italic),
-//       //       ),
-//       //       PopupMenuDivider(),
-//       //       PopupMenuItem<int>(
-//       //         onTap: (){
-//       //           Navigator.push(context, MaterialPageRoute(builder: (context)=> HomePage()));
-//       //         },
-//       //         value: 2,
-//       //         child: CustomText(title: "BOPK Home", fontStyle: FontStyle.italic),
-//       //       ),
-//       //       PopupMenuDivider(),
-//       //       PopupMenuItem<int>(
-//       //         onTap: (){
-//       //           Navigator.push(context, MaterialPageRoute(builder: (context)=> VerifyDownLoadScreen()));
-//       //         },
-//       //         value: 3,
-//       //         child: CustomText(title: "Verify Download", fontStyle: FontStyle.italic),
-//       //       ),
-//       //       PopupMenuDivider(),
-//       //       PopupMenuItem<int>(
-//       //         onTap: (){
-//       //           Navigator.push(context, MaterialPageRoute(builder: (context)=> PayNowScreen()));
-//       //         },
-//       //         value: 4,
-//       //         child: CustomText(title: "Pay Now", fontStyle: FontStyle.italic),
-//       //       ),
-//       //       PopupMenuDivider(),
-//       //       PopupMenuItem<int>(
-//       //         onTap: (){
-//       //           Navigator.push(context, MaterialPageRoute(builder: (context)=> GetDisCountCard()));
-//       //         },
-//       //         value: 5,
-//       //         child: CustomText(title: "Get Discount Card", fontStyle: FontStyle.italic),
-//       //       ),
-//       //       PopupMenuDivider(),
-//       //       PopupMenuItem<int>(
-//       //         onTap: (){
-//       //           Navigator.push(context, MaterialPageRoute(builder: (context)=> GetYourBusinessNow()));
-//       //         },
-//       //         value: 6,
-//       //         child: CustomText(title: "Get Your Business Verify Now", fontStyle: FontStyle.italic),
-//       //       ),
-//       //       PopupMenuDivider(),
-//       //       PopupMenuItem<int>(
-//       //         onTap: (){
-//       //           Navigator.push(context, MaterialPageRoute(builder: (context)=> DealAndDisCount()));
-//       //         },
-//       //         value: 7,
-//       //         child: CustomText(title: "Deal And Discount ", fontStyle: FontStyle.italic),
-//       //       ),
-//       //       PopupMenuDivider(),
-//       //       PopupMenuItem<int>(
-//       //         onTap: (){
-//       //           Navigator.push(context, MaterialPageRoute(builder: (context)=> MobileShops()));
-//       //         },
-//       //         value: 8,
-//       //         child: CustomText(title: "Mobile Shops", fontStyle: FontStyle.italic),
-//       //       ),
-//       //       PopupMenuDivider(),
-//       //       PopupMenuItem<int>(
-//       //         onTap: (){
-//       //           Navigator.push(context, MaterialPageRoute(builder: (context)=> BusinessForSale()));
-//       //         },
-//       //         value: 10,
-//       //         child: CustomText(title: "Business For Sale", fontStyle: FontStyle.italic),
-//       //       ),
-//       //       PopupMenuDivider(),
-//       //       PopupMenuItem<int>(
-//       //         onTap: (){
-//       //           Navigator.push(context, MaterialPageRoute(builder: (context)=> AddJobs()));
-//       //         },
-//       //         value: 8,
-//       //         child: CustomText(title: "Add Jobs", fontStyle: FontStyle.italic),
-//       //       ),
-//       //
-//       //     ];
-//       //   },
-//       //   onSelected: (int value) {
-//       //     if (value == 0) {
-//       //       print("Login menu is selected.");
-//       //     } else if (value == 1) {
-//       //       print("Register Your Business menu is selected.");
-//       //     } else if (value == 2) {
-//       //       print("BOPK Home menu is selected.");
-//       //     } else if (value == 3) {
-//       //       print("Business For Sale menu is selected.");
-//       //     } else if (value == 4) {
-//       //       print("About us menu is selected.");
-//       //     } else if (value == 5) {
-//       //       print("Contact us menu is selected.");
-//       //     }else if (value == 6) {
-//       //       print("Contact us menu is selected.");
-//       //     }else if (value == 7) {
-//       //       print("Contact us menu is selected.");
-//       //     }
-//       //   },
-//       // ),
-//     ],
-//   ),

@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
 import '../model/HomePageMainCategory.dart';
 
 class BopkController {
+
   List<HomePageMainCategory> categories = [];
   bool isLoading = false;
 

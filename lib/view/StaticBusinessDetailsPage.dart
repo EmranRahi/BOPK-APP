@@ -1,4 +1,7 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:businessonlinepk/Controllers/Api_Controller.dart';
+import 'package:businessonlinepk/model/ContactUs_Model.dart';
+import 'package:businessonlinepk/model/RegisterReviewRattingModel.dart';
 import 'package:businessonlinepk/test_dialouge.dart';
 import 'package:businessonlinepk/view/customs_widgets/constant_color.dart';
 import 'package:businessonlinepk/view/customs_widgets/custom_appbar.dart';
@@ -12,14 +15,17 @@ import 'package:businessonlinepk/view/product_deatils_screen/product_details.dar
 import 'package:businessonlinepk/view/register_your_business.dart';
 import 'package:businessonlinepk/view/verify_download.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:group_button/group_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../model/DetailStaticBusinessModel.dart';
-import 'HomePage_ofBopk.dart';
+import '../model/DetailsPageProductModel.dart';
 import 'add_jobs.dart';
 import 'business_for_sale.dart';
 import 'deal_and_discount_screen.dart';
@@ -30,10 +36,11 @@ import 'menu_login.dart';
 import 'mobile_shops.dart';
 
 class StaticBusinessDetailsPage extends StatefulWidget {
-  StaticBusinessDetailsPage(this.karobarId, this.title);
+  StaticBusinessDetailsPage(this.karobarId, this.title,);
 
   int? karobarId = 0;
   String? title = "";
+
 
 
   @override
@@ -43,6 +50,30 @@ class StaticBusinessDetailsPage extends StatefulWidget {
 
 class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  ContactUsModel contactUsModel = ContactUsModel(user: User());
+  RegisterReviewModel _reviewModel =RegisterReviewModel();
+  InAppWebViewController? webViewController; // Add this
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  /// contact us Controller
+  TextEditingController nameForContactus = TextEditingController();
+  TextEditingController emailForContactus = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController messageController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+
+
+
+  late Future<List<DetailsPageProductModel>> _futureProducts;
+  Future<List<DetailsPageProductModel>> _fetchProducts() async {
+    try {
+      return APIController.fetchProducts(); // Call fetchProducts from ProductFetcher class
+    } catch (e) {
+      throw Exception('Failed to load products: $e');
+    }
+  }
+
+
 
   late TabController _tabController;
 
@@ -58,99 +89,99 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
   ];
   String selectedValue = 'Select report category';
 
-  void _showAlertDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          scrollable: true,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          title: CustomText(
-              title: "Report Business",
-              fontSize: 20,
-              color: greenColor2,
-              fontWeight: FontWeight.bold),
-          content: SingleChildScrollView(
-            child: Container(
-              height: ScreenUtil().screenHeight / 2.6,
-              child: ListView(
-                children: [
-                  CustomText(
-                    title: "MOBILE SHOP (RS 5000)",
-                    color: grayColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  SizedBox(height: 20),
-                  DropdownButton<String>(
-                    elevation: 0,
-                    items: items.map((String item) {
-                      return DropdownMenuItem<String>(
-                        value: item,
-                        child: Text(item),
-                      );
-                    }).toList(),
-                    value: selectedValue,
-                    onChanged: (value) {
-                      selectedValue = value!;
-                    },
-                  ),
-                  SizedBox(height: 20.h),
-                  CustomText(
-                    title: "Your review here:",
-                    color: grayColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  CustomTextFormFieldWidget(
-                      maxLines: 3,
-                      borderRadius: 10,
-                      color: greenColor2), // Adjust maxLines as needed
-                  SizedBox(height: 10.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Custom_Button_Widget(
-                        ontap: () {
-                          Navigator.pop(context);
-                          print("Click Cancel");
-                        },
-                        rd: 4.r,
-                        height: 30.h,
-                        width: 70.h,
-                        color: greenColor,
-                        child: CustomText(
-                          title: "Cancel",
-                          color: whiteColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
-                      Custom_Button_Widget(
-                        ontap: () {
-                          print("Click report");
-                        },
-                        rd: 4.r,
-                        height: 30.h,
-                        width: 70.h,
-                        color: greenColor,
-                        child: CustomText(
-                          title: "Report",
-                          color: whiteColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
+  // void _showAlertDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         scrollable: true,
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(10.0),
+  //         ),
+  //         title: CustomText(
+  //             title: "Report Business",
+  //             fontSize: 20,
+  //             color: greenColor2,
+  //             fontWeight: FontWeight.bold),
+  //         content: SingleChildScrollView(
+  //           child: Container(
+  //             height: ScreenUtil().screenHeight / 2.6,
+  //             child: ListView(
+  //               children: [
+  //                 CustomText(
+  //                   title: "MOBILE SHOP (RS 5000)",
+  //                   color: grayColor,
+  //                   fontWeight: FontWeight.bold,
+  //                 ),
+  //                 SizedBox(height: 20),
+  //                 DropdownButton<String>(
+  //                   elevation: 0,
+  //                   items: items.map((String item) {
+  //                     return DropdownMenuItem<String>(
+  //                       value: item,
+  //                       child: Text(item),
+  //                     );
+  //                   }).toList(),
+  //                   value: selectedValue,
+  //                   onChanged: (value) {
+  //                     selectedValue = value!;
+  //                   },
+  //                 ),
+  //                 SizedBox(height: 20.h),
+  //                 CustomText(
+  //                   title: "Your review here:",
+  //                   color: grayColor,
+  //                   fontWeight: FontWeight.bold,
+  //                 ),
+  //                 CustomTextFormFieldWidget(
+  //                     maxLines: 3,
+  //                     borderRadius: 10,
+  //                     color: greenColor2), // Adjust maxLines as needed
+  //                 SizedBox(height: 10.h),
+  //                 Row(
+  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                   children: [
+  //                     Custom_Button_Widget(
+  //                       ontap: () {
+  //                         Navigator.pop(context);
+  //                         print("Click Cancel");
+  //                       },
+  //                       rd: 4.r,
+  //                       height: 30.h,
+  //                       width: 70.h,
+  //                       color: greenColor,
+  //                       child: CustomText(
+  //                         title: "Cancel",
+  //                         color: whiteColor,
+  //                         fontWeight: FontWeight.bold,
+  //                         fontSize: 14,
+  //                       ),
+  //                     ),
+  //                     Custom_Button_Widget(
+  //                       ontap: () {
+  //                         print("Click report");
+  //                       },
+  //                       rd: 4.r,
+  //                       height: 30.h,
+  //                       width: 70.h,
+  //                       color: greenColor,
+  //                       child: CustomText(
+  //                         title: "Report",
+  //                         color: whiteColor,
+  //                         fontWeight: FontWeight.bold,
+  //                         fontSize: 14,
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   void dispose() {
@@ -164,9 +195,16 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
     super.initState();
     getDetails(widget.karobarId);
     _tabController = TabController(length: 7, vsync: this);
+    _futureProducts = _fetchProducts();
+
   }
-  void _handleTabTap(int index) {
-    _tabController.animateTo(index);
+  bool _isAboutTabSelected = false;
+   _handleTabTap(int index) {
+    // _tabController.animateTo(index);
+     setState(() {
+       _isAboutTabSelected = _tabController.index == 6;
+     });
+
   }
 
   Future<void> getDetails(int? karobarId) async {
@@ -189,6 +227,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
 
   @override
   Widget build(BuildContext context) {
+    // contactUsModel.user=User();
     print('work');
     return Scaffold(
       key: _scaffoldKey,
@@ -236,91 +275,92 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                         fontStyle: FontStyle.italic),
                   ),
                   PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => VerifyDownLoadScreen()));
-                    },
-                    value: 3,
-                    child: CustomText(
-                        title: "Verify Download", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PayNowScreen()));
-                    },
-                    value: 4,
-                    child: CustomText(
-                        title: "Pay Now", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => GetDisCountCard()));
-                    },
-                    value: 5,
-                    child: CustomText(
-                        title: "Get Discount Card",
-                        fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => GetYourBusinessNow()));
-                    },
-                    value: 6,
-                    child: CustomText(
-                        title: "Get Your Business Verify Now",
-                        fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DealAndDisCount()));
-                    },
-                    value: 7,
-                    child: CustomText(
-                        title: "Deal And Discount ",
-                        fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BusinessForSale()));
-                    },
-                    value: 10,
-                    child: CustomText(
-                        title: "Business For Sale",
-                        fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => AddJobs()));
-                    },
-                    value: 8,
-                    child: CustomText(
-                        title: "Add Jobs", fontStyle: FontStyle.italic),
-                  ),
+                  /// ye code meny felhal comment kia hai.
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => VerifyDownLoadScreen()));
+                  //   },
+                  //   value: 3,
+                  //   child: CustomText(
+                  //       title: "Verify Download", fontStyle: FontStyle.italic),
+                  // ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => PayNowScreen()));
+                  //   },
+                  //   value: 4,
+                  //   child: CustomText(
+                  //       title: "Pay Now", fontStyle: FontStyle.italic),
+                  // ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => GetDisCountCard()));
+                  //   },
+                  //   value: 5,
+                  //   child: CustomText(
+                  //       title: "Get Discount Card",
+                  //       fontStyle: FontStyle.italic),
+                  // ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => GetYourBusinessNow()));
+                  //   },
+                  //   value: 6,
+                  //   child: CustomText(
+                  //       title: "Get Your Business Verify Now",
+                  //       fontStyle: FontStyle.italic),
+                  // ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => DealAndDisCount()));
+                  //   },
+                  //   value: 7,
+                  //   child: CustomText(
+                  //       title: "Deal And Discount ",
+                  //       fontStyle: FontStyle.italic),
+                  // ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => BusinessForSale()));
+                  //   },
+                  //   value: 10,
+                  //   child: CustomText(
+                  //       title: "Business For Sale",
+                  //       fontStyle: FontStyle.italic),
+                  // ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(context,
+                  //         MaterialPageRoute(builder: (context) => AddJobs()));
+                  //   },
+                  //   value: 8,
+                  //   child: CustomText(
+                  //       title: "Add Jobs", fontStyle: FontStyle.italic),
+                  // ),
                 ];
               },
               onSelected: (int value) {
@@ -347,8 +387,8 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
         ),
       ),
       body: ListView(
-         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        physics: AlwaysScrollableScrollPhysics(),
+         // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        // physics: AlwaysScrollableScrollPhysics(),
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 0),
@@ -359,7 +399,10 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
               padding:  EdgeInsets.symmetric(horizontal: 10.w),
               child: Custom_Button_Widget(
                 width: MediaQuery.of(context).size.width / 1.0,
-                ontap: () {},
+                ontap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context)=> MenuLogin()));
+                },
                 rd: 7,
                 color: greenColor2,
                 child: CustomText(
@@ -379,7 +422,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                   child: Align(
                     alignment: Alignment.topCenter,
                     child: Image.asset(
-                      'assets/images/map1.png',
+                      'assets/images/bopk1.png',
                       fit: BoxFit.fill,
                     ),
                   ),
@@ -701,7 +744,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                         'https://www.facebook.com/${businessModel!.facebookUrl}';
                     launchUrl(Uri.parse(facebookUrl));
                   }
-
                 },
                 rd: 100,
                 color: Colors.transparent,
@@ -710,7 +752,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                   'assets/media/facebook.png',
                 ),
               ),
-
               /// this is the YouTube URl
               businessModel?.youtubeUrl == null
                   ? CustomContainer(
@@ -864,14 +905,13 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomText(
-                    title: businessModel?.contactPhone ?? "+92 333,786,830,8",
+                    title:businessModel?.contactPhone?.replaceAll(',', '') ?? "+92 333,786,830,8",
                     color: grayColor,
                     googleFont: "Jost",
                   ),
-
                   SizedBox(height: 10.h),
                   CustomText(
-                      title: businessModel?.title ?? "businessName",
+                      title: businessModel?.title?.replaceAll(',', '') ?? "businessName",
                       fontWeight: FontWeight.bold,
                       googleFont: "Jost",
                       fontSize: 16.sp),
@@ -879,7 +919,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                     height: 6,
                   ),
                   CustomText(
-                    title: businessModel?.contactName ?? "Imran Khan",
+                    title: businessModel?.contactName?.replaceAll(',', '') ?? "Imran Khan",
                     fontWeight: FontWeight.bold,
                     googleFont: "Jost",
                     fontSize: 14.sp,
@@ -891,12 +931,14 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                         "Satellite Town, Rawalpindi,Punjab,Pakistan",
                     fontSize: 13.sp,
                     color: grayColor,
+                    maxLine: 2,
+                    textOverflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
             ),
           ),
-       /// Below Tab Bar View Code
+       /// Below Tab Bar View
           Container(
             height: 30, // Adjust the height of the tab container
             decoration: BoxDecoration(
@@ -994,7 +1036,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
               onTap: _handleTabTap,
             ),
           ),
-
           Container(
             height: MediaQuery.of(context).size.height/1.6,
             child: TabBarView(
@@ -1053,28 +1094,39 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                             itemCount: businessModel?.speciality?.split(',').length ?? 0,
                             itemBuilder: (context, index) {
                               List<String>? specialties = businessModel?.speciality?.split(',');
-
                               return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 7),
-                                child: Row(
-                                  children: [
-                                    Image.asset('assets/images/checkicon.png', scale: 30,),
-                                    SizedBox(width: 10,),
-                                    CustomText(
-                                      title: specialties?[index].trim() ?? "",
-                                      color: grayColor,
-                                    ),
-                                  ],
+                                padding: const EdgeInsets.only(top:7,left: 7,right: 12),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      Image.asset('assets/images/checkicon.png', scale: 30,),
+                                      SizedBox(width: 10,),
+                                      AutoSizeText(
+                                          specialties?[index].trim() ?? "",
+                                        style: TextStyle(fontSize: 12, color: grayColor),
+                                        minFontSize: 10,
+                                        stepGranularity: 10,
+                                        // maxLines: 4,
+                                        overflow: TextOverflow.ellipsis,
+                                      )
+                                      // CustomText(
+                                      //   title: specialties?[index].trim() ?? "",
+                                      //   color: grayColor,
+                                      //   fontSize: 12.sp,
+                                      // ),
+                                    ],
+                                  ),
                                 ),
                               );
                             },
                           ),
                         ),
-
                       ],
                     ),
                   ),
                 ),
+                /// product UI
                 Container(
                   alignment: Alignment.center,
                   height: 200.h,
@@ -1102,116 +1154,119 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                           indent: 1,
                           endIndent: 250,
                         ),
-                        Expanded(
-                          child: GridView.builder(
-                              padding: EdgeInsets.all(0.5),
-                              gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisSpacing: 3,
-                                mainAxisSpacing: 4,
-                                crossAxisCount: 2, // Number of columns
-                              ),
-                              itemCount: 9, // Number of items in the grid
-                              itemBuilder: (context, index) {
-                                return InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ProductScreen()));
-                                    print('GridView');
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          color: whiteColor,
-                                          borderRadius:
-                                          BorderRadius.circular(10.r),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: grayColor2,
-                                              blurRadius: 1.r,
-                                              spreadRadius: 1.r,
-                                              offset: Offset(0, 0),
-                                            ),
-                                          ]),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Center(
-                                            child: Image.asset(
-                                              'assets/images/producimage1.png',
-                                              scale: 7,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 2,
-                                          ),
-                                          CustomText(
-                                            title: 'Iphone',
-                                            color: grayColor,
-                                          ),
-                                          SizedBox(
-                                            height: 2,
-                                          ),
-                                          CustomText(
-                                            title: 'Rs.80000',
-                                            color: tealColor1,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                          /// Product Screen button  comment for play store
-                                          // Row(
-                                          //   mainAxisAlignment:
-                                          //   MainAxisAlignment
-                                          //       .spaceAround,
-                                          //   children: [
-                                          //     Custom_Button_Widget(
-                                          //       ontap: () {
-                                          //         print("Click whatsApp");
-                                          //       },
-                                          //       rd: 4.r,
-                                          //       height: 20.h,
-                                          //       width: 50.h,
-                                          //       color: greenColor,
-                                          //       child: CustomText(
-                                          //         title: "whatsApp",
-                                          //         color: whiteColor,
-                                          //         fontWeight:
-                                          //         FontWeight.bold,
-                                          //         fontSize: 10,
-                                          //       ),
-                                          //     ),
-                                          //     // SizedBox(
-                                          //     //   width: 30.w,
-                                          //     // ),
-                                          //     Custom_Button_Widget(
-                                          //       ontap: () {
-                                          //         print("Click Call");
-                                          //       },
-                                          //       rd: 4.r,
-                                          //       height: 20.h,
-                                          //       width: 50.h,
-                                          //       color: greenColor,
-                                          //       child: CustomText(
-                                          //         title: "Call",
-                                          //         color: whiteColor,
-                                          //         fontWeight:
-                                          //         FontWeight.bold,
-                                          //         fontSize: 10,
-                                          //       ),
-                                          //     ),
-                                          //   ],
-                                          // )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }),
-                        ),
+                        /// product grid view
+
+                        // Expanded(
+                        //   child: GridView.builder(
+                        //       padding: EdgeInsets.all(0.5),
+                        //       gridDelegate:
+                        //       SliverGridDelegateWithFixedCrossAxisCount(
+                        //         crossAxisSpacing: 3,
+                        //         mainAxisSpacing: 4,
+                        //         crossAxisCount: 2, // Number of columns
+                        //       ),
+                        //       itemCount: products.le, // Number of items in the grid
+                        //       itemBuilder: (context, index) {
+                        //         final product = products[index];
+                        //         return InkWell(
+                        //           onTap: () {
+                        //             Navigator.push(
+                        //                 context,
+                        //                 MaterialPageRoute(
+                        //                     builder: (context) =>
+                        //                         ProductScreen()));
+                        //             print('GridView');
+                        //           },
+                        //           child: Padding(
+                        //             padding: const EdgeInsets.all(8.0),
+                        //             child: Container(
+                        //               decoration: BoxDecoration(
+                        //                   color: whiteColor,
+                        //                   borderRadius:
+                        //                   BorderRadius.circular(10.r),
+                        //                   boxShadow: [
+                        //                     BoxShadow(
+                        //                       color: grayColor2,
+                        //                       blurRadius: 1.r,
+                        //                       spreadRadius: 1.r,
+                        //                       offset: Offset(0, 0),
+                        //                     ),
+                        //                   ]),
+                        //               child: Column(
+                        //                 mainAxisAlignment: MainAxisAlignment.start,
+                        //                 crossAxisAlignment: CrossAxisAlignment.start,
+                        //                 children: [
+                        //                   Center(
+                        //                     child: Image.asset(
+                        //                       'assets/images/producimage1.png',
+                        //                       scale: 7,
+                        //                     ),
+                        //                   ),
+                        //                   SizedBox(
+                        //                     height: 2,
+                        //                   ),
+                        //                   CustomText(
+                        //                     title: 'Iphone',
+                        //                     color: grayColor,
+                        //                   ),
+                        //                   SizedBox(
+                        //                     height: 2,
+                        //                   ),
+                        //                   CustomText(
+                        //                     title: 'Rs.80000',
+                        //                     color: tealColor1,
+                        //                     fontWeight: FontWeight.bold,
+                        //                   ),
+                        //                   /// Product Screen button  comment for play store
+                        //                   // Row(
+                        //                   //   mainAxisAlignment:
+                        //                   //   MainAxisAlignment
+                        //                   //       .spaceAround,
+                        //                   //   children: [
+                        //                   //     Custom_Button_Widget(
+                        //                   //       ontap: () {
+                        //                   //         print("Click whatsApp");
+                        //                   //       },
+                        //                   //       rd: 4.r,
+                        //                   //       height: 20.h,
+                        //                   //       width: 50.h,
+                        //                   //       color: greenColor,
+                        //                   //       child: CustomText(
+                        //                   //         title: "whatsApp",
+                        //                   //         color: whiteColor,
+                        //                   //         fontWeight:
+                        //                   //         FontWeight.bold,
+                        //                   //         fontSize: 10,
+                        //                   //       ),
+                        //                   //     ),
+                        //                   //     // SizedBox(
+                        //                   //     //   width: 30.w,
+                        //                   //     // ),
+                        //                   //     Custom_Button_Widget(
+                        //                   //       ontap: () {
+                        //                   //         print("Click Call");
+                        //                   //       },
+                        //                   //       rd: 4.r,
+                        //                   //       height: 20.h,
+                        //                   //       width: 50.h,
+                        //                   //       color: greenColor,
+                        //                   //       child: CustomText(
+                        //                   //         title: "Call",
+                        //                   //         color: whiteColor,
+                        //                   //         fontWeight:
+                        //                   //         FontWeight.bold,
+                        //                   //         fontSize: 10,
+                        //                   //       ),
+                        //                   //     ),
+                        //                   //   ],
+                        //                   // )
+                        //                 ],
+                        //               ),
+                        //             ),
+                        //           ),
+                        //         );
+                        //       }),
+                        // ),
                       ],
                     ),
                   ),
@@ -1431,13 +1486,13 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                                       // borderRadius: BorderRadius.circular(12)
                                     ),
                                     child: ListTile(
-                                      title: CustomText(title: "test"),
+                                      title: CustomText(title: "imran khan"),
                                       subtitle: CustomText(
                                         title: "waw3wo3eo",
                                       ),
                                       trailing: CustomText(
                                           title:
-                                          "2023-10-10T15:56:40:55"),
+                                          "06/02/2024"),
                                     ),
                                   )
                                 ],
@@ -1449,24 +1504,184 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                     ),
                   ),
                 ),
-                Center(
-                  child: Text(
-                    'Contact Us',
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.w600,
+                Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: grayColor2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Align(alignment: Alignment.centerLeft,
+                              child: CustomText( title: 'Name',
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: greenColor2,
+                              ),),
+                            Text("*",style: GoogleFonts.jost(color: Colors.red),),
+                          ],
+                        ),
+                        CustomTextFormFieldWidget(
+                          controller: nameForContactus,
+                          onChanged: (val) {
+                            // ownerNameController4.text=val;
+                              contactUsModel.user!.name =val;
+                          },
+                            borderRadius: 10,
+                          contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 5),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Align(alignment: Alignment.centerLeft,
+                              child: CustomText( title: 'Email',
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: greenColor2,
+                              ),),
+                            Text("*",style: GoogleFonts.jost(color: Colors.red),),
+                          ],
+                        ),
+                        CustomTextFormFieldWidget(
+                          controller: emailForContactus,
+                            onChanged: (val) {
+                              contactUsModel.user!.email = val;
+                            },
+                            borderRadius: 10,
+                          contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 5),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Align(alignment: Alignment.centerLeft,
+                              child: CustomText( title: 'Phone',
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: greenColor2,
+                              ),),
+                            Text("*",style: GoogleFonts.jost(color: Colors.red),),
+                          ],
+                        ),
+                        CustomTextFormFieldWidget(
+                          controller: phoneController,
+                           keyboardType: TextInputType.phone,
+                          onChanged: (val) {
+                            contactUsModel.user!.contact= val;
+                          },
+                          borderRadius: 10,
+                          contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 5),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Align(alignment: Alignment.centerLeft,
+                              child: CustomText( title: 'Massage',
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: greenColor2,
+                              ),),
+                            Text("*",style: GoogleFonts.jost(color: Colors.red),),
+                          ],
+                        ),
+                        CustomTextFormFieldWidget(
+                          controller: messageController,
+                            onChanged: (val) {
+                              contactUsModel.message =val;
+                            },
+                            borderRadius: 10,
+                          // contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 5),
+                           maxLines: 2,
+                        ),
+                        SizedBox(height: 20,),
+                        Center(
+                          child: Custom_Button_Widget(
+                            height: ScreenUtil().setHeight(30.h),
+                            ontap: () async{
+                              contactUsModel.contactId=0;
+                              contactUsModel.fkCityId = 0;
+                              contactUsModel.fkServiceId = 0;
+                              contactUsModel.fkProgramId =0;
+                              contactUsModel.fkCountryId=0;
+                              contactUsModel.fkPackageId=0;
+                              contactUsModel.timing="";
+                              contactUsModel.budget=0;
+                              contactUsModel.area="";
+                              contactUsModel.token="";
+                              print(contactUsModel.user!.name);
+                              APIController.contactUsPost(contactUsModel,context);
+                             nameForContactus.clear();
+                             emailForContactus.clear();
+                             phoneController.clear();
+                             messageController.clear();
+
+                            },
+                            rd: 10,
+                            color: greenColor2,
+                            child: CustomText(
+                              title: "Send",
+                              color: whiteColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15.sp,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                Center(
-                  child: Text(
-                    'About us',
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.w600,
+                Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: grayColor2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomText(
+                          title: "About Business Online",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: greenColor2,
+                        ),
+                        Divider(
+                          color: greenColor2,
+                          thickness: 2,
+                          indent: 1,
+                          endIndent: 120,
+                        ),
+                        CustomText(
+                          title: "Businessonline.pk is a product of High Performance Computing Private Limited.\n"
+                               " It is not just a normal marketing website but a platform for every small, medium and large Pakistani businesses to come together and present their products and services.\n"
+                               "Pakistani users will benefit to find closest and local businesses ranging from butchers to cobblers, stationers to pizza shops, telecom to banks at an ease of just Businessonline.pk.\n"
+                               " We Businessonline.pk are committed to covert tradition businesses in old Pakistan to latest technology in Naya Pakistan.\n"
+                               "Let’s join our hands and work together to form Naya Pakistan in our own very special way In sha Allah .\n",
+                          color: blackColor,
+                          googleFont: "Jost",
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14.sp,
+                          // minFontSize: 5,
+                          maxLine: 20,
+                          textOverflow: TextOverflow.ellipsis,
+                        ),
+
+                      ],
                     ),
                   ),
                 ),
+
               ],
             ),
           ),
@@ -1506,53 +1721,79 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                   ),
                   RatingBar.builder(
                     itemSize: 50,
-                    initialRating: 0,
+                    initialRating: _reviewModel.rating != null ? _reviewModel.rating!.toDouble() : 0.0,
                     minRating: 1,
                     direction: Axis.horizontal,
                     allowHalfRating: true,
                     itemCount: 5,
                     itemPadding:
-                    EdgeInsets.symmetric(horizontal: 6.0),
+                    EdgeInsets.symmetric(horizontal: 3.0),
                     itemBuilder: (context, _) =>
                         Icon(
                           Icons.star,
                           color: greenColor2,
                         ),
                     onRatingUpdate: (rating) {
-                      print(rating);
+                      setState(() {
+                        _reviewModel.rating = rating.toInt(); // Assuming rating is an integer
+                      });
                     },
                   ),
                   CustomTextFormFieldWidget(
+                    controller: nameController,
+                    onChanged: (val) {
+                      // whatsAppController.text=val;
+                      _reviewModel.fullName = val;
+                    },
                     hint: "User Name",
                     borderRadius: 10.r,
                     contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 5),
                   ),
                   SizedBox(height: ScreenUtil().setHeight(10),),
                   CustomTextFormFieldWidget(
+                    controller: emailController,
+                    onChanged: (val) {
+                      // whatsAppController.text=val;
+                      _reviewModel.email = val;
+                    },
                     hint: "Email",
                     borderRadius: 10.r,
                     contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 5),
                   ),
                   SizedBox(height: ScreenUtil().setHeight(10),),
                   CustomTextFormFieldWidget(
+                    controller: descriptionController,
+                    onChanged: (val) {
+                      // whatsAppController.text=val;
+                      _reviewModel.review = val;
+                    },
                     hint: "Description...",
                     maxLines: 3,
                     borderRadius: 10,
                   ),
                   SizedBox(height: ScreenUtil().setHeight(10),),
-                  ///  comment for play store
-                  // Custom_Button_Widget(
-                  //   height: ScreenUtil().setHeight(40.h),
-                  //   ontap: () {},
-                  //   rd: 10,
-                  //   color: greenColor2,
-                  //   child: CustomText(
-                  //     title: "Submit Review",
-                  //     color: whiteColor,
-                  //     fontWeight: FontWeight.bold,
-                  //     fontSize: 15.sp,
-                  //   ),
-                  // ),
+                  Custom_Button_Widget(
+                    height: ScreenUtil().setHeight(40.h),
+                    ontap: () async{
+                      _reviewModel.rating;
+                      _reviewModel.fkKarobarId =0;
+                      _reviewModel.reviewId =0;
+                      APIController.registerReviewModel(_reviewModel,context);
+                      nameController.clear();
+                      emailController.clear();
+                      descriptionController.clear();
+                      // Clear the review model
+
+                    },
+                    rd: 10,
+                    color: greenColor2,
+                    child: CustomText(
+                      title: "Submit Review",
+                      color: whiteColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15.sp,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -1576,10 +1817,10 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
           //     fontSize: 15.sp,
           //   ),
           // ),
-          SizedBox(height: 20,),
-          ],
+          SizedBox(height: 20),
+            ],
+           ),
           ),
-        ),
               ],
 
             ),
