@@ -41,11 +41,8 @@ class StaticBusinessDetailsPage extends StatefulWidget {
   int? karobarId = 0;
   String? title = "";
 
-
-
   @override
-  State<StaticBusinessDetailsPage> createState() =>
-      _StaticBusinessDetailsPageState();
+  State<StaticBusinessDetailsPage> createState() => _StaticBusinessDetailsPageState();
 }
 
 class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> with SingleTickerProviderStateMixin {
@@ -61,18 +58,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
   TextEditingController phoneController = TextEditingController();
   TextEditingController messageController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-
-
-
-  late Future<List<DetailsPageProductModel>> _futureProducts;
-  Future<List<DetailsPageProductModel>> _fetchProducts() async {
-    try {
-      return APIController.fetchProducts(); // Call fetchProducts from ProductFetcher class
-    } catch (e) {
-      throw Exception('Failed to load products: $e');
-    }
-  }
-
 
 
   late TabController _tabController;
@@ -188,6 +173,8 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
     _tabController.dispose();
     super.dispose();
   }
+ /// products List
+  late List<DetailsPageProductModel> _products = [];
 
   @override
   void initState() {
@@ -195,9 +182,24 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
     super.initState();
     getDetails(widget.karobarId);
     _tabController = TabController(length: 7, vsync: this);
-    _futureProducts = _fetchProducts();
-
+    _fetchProducts();
   }
+
+
+  Future<void> _fetchProducts() async {
+    try {
+      List<DetailsPageProductModel> products = await APIController.fetchProducts();
+      setState(() {
+        _products = products;
+      });
+    } catch (error) {
+      print('Error fetching products: $error');
+      // Handle error
+    }
+  }
+
+
+
   bool _isAboutTabSelected = false;
    _handleTabTap(int index) {
     // _tabController.animateTo(index);
@@ -206,6 +208,8 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
      });
 
   }
+
+
 
   Future<void> getDetails(int? karobarId) async {
     APIController controller = APIController();
@@ -1154,119 +1158,143 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                           indent: 1,
                           endIndent: 250,
                         ),
-                        /// product grid view
 
-                        // Expanded(
-                        //   child: GridView.builder(
-                        //       padding: EdgeInsets.all(0.5),
-                        //       gridDelegate:
-                        //       SliverGridDelegateWithFixedCrossAxisCount(
-                        //         crossAxisSpacing: 3,
-                        //         mainAxisSpacing: 4,
-                        //         crossAxisCount: 2, // Number of columns
-                        //       ),
-                        //       itemCount: products.le, // Number of items in the grid
-                        //       itemBuilder: (context, index) {
-                        //         final product = products[index];
-                        //         return InkWell(
-                        //           onTap: () {
-                        //             Navigator.push(
-                        //                 context,
-                        //                 MaterialPageRoute(
-                        //                     builder: (context) =>
-                        //                         ProductScreen()));
-                        //             print('GridView');
-                        //           },
-                        //           child: Padding(
-                        //             padding: const EdgeInsets.all(8.0),
-                        //             child: Container(
-                        //               decoration: BoxDecoration(
-                        //                   color: whiteColor,
-                        //                   borderRadius:
-                        //                   BorderRadius.circular(10.r),
-                        //                   boxShadow: [
-                        //                     BoxShadow(
-                        //                       color: grayColor2,
-                        //                       blurRadius: 1.r,
-                        //                       spreadRadius: 1.r,
-                        //                       offset: Offset(0, 0),
-                        //                     ),
-                        //                   ]),
-                        //               child: Column(
-                        //                 mainAxisAlignment: MainAxisAlignment.start,
-                        //                 crossAxisAlignment: CrossAxisAlignment.start,
-                        //                 children: [
-                        //                   Center(
-                        //                     child: Image.asset(
-                        //                       'assets/images/producimage1.png',
-                        //                       scale: 7,
-                        //                     ),
-                        //                   ),
-                        //                   SizedBox(
-                        //                     height: 2,
-                        //                   ),
-                        //                   CustomText(
-                        //                     title: 'Iphone',
-                        //                     color: grayColor,
-                        //                   ),
-                        //                   SizedBox(
-                        //                     height: 2,
-                        //                   ),
-                        //                   CustomText(
-                        //                     title: 'Rs.80000',
-                        //                     color: tealColor1,
-                        //                     fontWeight: FontWeight.bold,
-                        //                   ),
-                        //                   /// Product Screen button  comment for play store
-                        //                   // Row(
-                        //                   //   mainAxisAlignment:
-                        //                   //   MainAxisAlignment
-                        //                   //       .spaceAround,
-                        //                   //   children: [
-                        //                   //     Custom_Button_Widget(
-                        //                   //       ontap: () {
-                        //                   //         print("Click whatsApp");
-                        //                   //       },
-                        //                   //       rd: 4.r,
-                        //                   //       height: 20.h,
-                        //                   //       width: 50.h,
-                        //                   //       color: greenColor,
-                        //                   //       child: CustomText(
-                        //                   //         title: "whatsApp",
-                        //                   //         color: whiteColor,
-                        //                   //         fontWeight:
-                        //                   //         FontWeight.bold,
-                        //                   //         fontSize: 10,
-                        //                   //       ),
-                        //                   //     ),
-                        //                   //     // SizedBox(
-                        //                   //     //   width: 30.w,
-                        //                   //     // ),
-                        //                   //     Custom_Button_Widget(
-                        //                   //       ontap: () {
-                        //                   //         print("Click Call");
-                        //                   //       },
-                        //                   //       rd: 4.r,
-                        //                   //       height: 20.h,
-                        //                   //       width: 50.h,
-                        //                   //       color: greenColor,
-                        //                   //       child: CustomText(
-                        //                   //         title: "Call",
-                        //                   //         color: whiteColor,
-                        //                   //         fontWeight:
-                        //                   //         FontWeight.bold,
-                        //                   //         fontSize: 10,
-                        //                   //       ),
-                        //                   //     ),
-                        //                   //   ],
-                        //                   // )
-                        //                 ],
-                        //               ),
-                        //             ),
-                        //           ),
-                        //         );
-                        //       }),
-                        // ),
+                        /// product grid view
+                        Expanded(
+                          child: GridView.builder(
+                              padding: EdgeInsets.all(0.5),
+                              gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisSpacing: 3,
+                                mainAxisSpacing: 4,
+                                crossAxisCount: 2, // Number of columns
+                              ),
+                              itemCount: _products.length, // Number of items in the grid
+                              itemBuilder: (context, index) {
+                                final product = _products[index]; // Get the product at the current index
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ProductScreen()));
+                                    print('GridView');
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: whiteColor,
+                                          borderRadius:
+                                          BorderRadius.circular(10.r),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: grayColor2,
+                                              blurRadius: 1.r,
+                                              spreadRadius: 1.r,
+                                              offset: Offset(0, 0),
+                                            ),
+                                          ]),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Center(
+                                            child:  Image.asset(
+                                              product.images != null && product.images!.isNotEmpty ? product.images![0] : 'assets/images/producimage1.png',
+                                              scale: 7,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 2,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 10),
+                                            child: CustomText(
+                                              title: product.itemName ?? 'Iphone',
+                                              color: grayColor,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 2,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 10),
+                                            child: CustomText(
+                                              title: 'Rs.${product.price}', // Display product price,
+                                              color: tealColor1,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          /// Product Screen button  comment for play store
+                                          Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment
+                                                .spaceAround,
+                                            children: [
+                                              Custom_Button_Widget(
+                                                ontap: () {
+                                                  if (businessModel?.contactPhone != null) {
+                                                    String whatsappUrl = 'https://wa.me/+92${businessModel!.contactPhone?.replaceAll(',', '')}';
+                                                    launchUrl(Uri.parse(whatsappUrl));
+                                                  }
+                                                },
+                                                rd: 4.r,
+                                                height: 20.h,
+                                                width: 50.h,
+                                                color: greenColor,
+                                                child: CustomText(
+                                                  title: "whatsApp",
+                                                  color: whiteColor,
+                                                  fontWeight:
+                                                  FontWeight.bold,
+                                                  fontSize: 10,
+                                                ),
+                                              ),
+                                              // SizedBox(
+                                              //   width: 30.w,
+                                              // ),
+                                              Custom_Button_Widget(
+                                                ontap: () {
+
+                                                  print(businessModel?.contactPhone);
+                                                  if (businessModel?.contactPhone != null) {
+                                                    String phoneUrl = 'tel:${businessModel!.contactPhone?.replaceAll(",", ",")}';
+                                                    launchUrl(Uri.parse(phoneUrl));
+                                                  }
+                                                },
+                                                rd: 4.r,
+                                                height: 20.h,
+                                                width: 50.h,
+                                                color: greenColor,
+                                                child: CustomText(
+                                                  title: "Call",
+                                                  color: whiteColor,
+                                                  fontWeight:
+                                                  FontWeight.bold,
+                                                  fontSize: 10,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+
+
+
+                              ),
+                        ),
+
+
+
+
+
+
                       ],
                     ),
                   ),

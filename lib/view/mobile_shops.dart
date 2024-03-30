@@ -1297,11 +1297,11 @@
 // }
 //
 /// old List page Important class
+
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:businessonlinepk/model/StaticListModelPage.dart'
-    as BusinessOnline;
+import 'package:businessonlinepk/model/StaticListModelPage.dart' as BusinessOnline;
 import 'package:businessonlinepk/globle_variable/globle.dart';
 import 'package:businessonlinepk/view/HomePage_ofBopk.dart';
 import 'package:businessonlinepk/view/customs_widgets/constant_color.dart';

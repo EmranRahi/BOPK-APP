@@ -1,4 +1,4 @@
-package com.businessonline.pk.BusinessOnlinePK
+package com.bopk
 
 import io.flutter.embedding.android.FlutterActivity
 
