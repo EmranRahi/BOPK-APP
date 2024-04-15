@@ -1,24 +1,11 @@
-import 'dart:convert';
-import 'package:businessonlinepk/Controllers/Api_Controller.dart';
 import 'package:businessonlinepk/test_dialouge.dart';
-import 'package:businessonlinepk/view/HomePage_ofBopk.dart';
 import 'package:businessonlinepk/view/SplashScreen.dart';
-import 'package:businessonlinepk/view/customs_widgets/constant_color.dart';
-import 'package:businessonlinepk/view/customs_widgets/custom_text.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
-import 'Controllers/BopkController.dart';
-import 'model/HomePageMainCategory.dart';
-import 'model/OpeningAndClosingTimeModel.dart';
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 
-import 'model/RegisterReviewRattingModel.dart';
-import 'model/StaticListModelPage.dart';
 
 void main() {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive, overlays: []);
@@ -33,6 +20,7 @@ void main() {
   //     ),
   // );
 }
+
 class BopkApp extends StatelessWidget {
   const BopkApp({super.key});
   // This widget is the root of your application.

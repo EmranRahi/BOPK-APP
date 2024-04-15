@@ -26,6 +26,17 @@ class MenuLogin extends StatefulWidget {
 }
 
 class _MenuLoginState extends State<MenuLogin> {
+
+  final TextEditingController _emailController = TextEditingController();
+
+  String userAdmin = "user";
+  String userPassword = "bopk1234";
+
+  bool isColor = false;
+  bool _obscureText = true;
+  final TextEditingController _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,15 +69,15 @@ class _MenuLoginState extends State<MenuLogin> {
               color: whiteColor,
               itemBuilder: (BuildContext context) {
                 return <PopupMenuEntry<int>>[
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => MenuLogin()));
-                    },
-                    value: 0,
-                    child: CustomText(
-                        title: "Login ", fontStyle: FontStyle.italic),
-                  ),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(context,
+                  //         MaterialPageRoute(builder: (context) => MenuLogin()));
+                  //   },
+                  //   value: 0,
+                  //   child: CustomText(
+                  //       title: "Login ", fontStyle: FontStyle.italic),
+                  // ),
                   PopupMenuDivider(),
                   PopupMenuItem<int>(
                     onTap: () {
@@ -80,92 +91,96 @@ class _MenuLoginState extends State<MenuLogin> {
                         title: "Register Your Business",
                         fontStyle: FontStyle.italic),
                   ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => VerifyDownLoadScreen()));
-                    },
-                    value: 3,
-                    child: CustomText(
-                        title: "Verify Download", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PayNowScreen()));
-                    },
-                    value: 4,
-                    child: CustomText(
-                        title: "Pay Now", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => GetDisCountCard()));
-                    },
-                    value: 5,
-                    child: CustomText(
-                        title: "Get Discount Card",
-                        fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => GetYourBusinessNow()));
-                    },
-                    value: 6,
-                    child: CustomText(
-                        title: "Get Your Business Verify Now",
-                        fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DealAndDisCount()));
-                    },
-                    value: 7,
-                    child: CustomText(
-                        title: "Deal And Discount ",
-                        fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BusinessForSale()));
-                    },
-                    value: 10,
-                    child: CustomText(
-                        title: "Business For Sale",
-                        fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => AddJobs()));
-                    },
-                    value: 8,
-                    child: CustomText(
-                        title: "Add Jobs", fontStyle: FontStyle.italic),
-                  ),
+                  /// felhal Comment Menu Bar
+                  // PopupMenuDivider(),
+
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => VerifyDownLoadScreen()));
+                  //   },
+                  //   value: 3,
+                  //   child: CustomText(
+                  //       title: "Verify Download", fontStyle: FontStyle.italic),
+                  // ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => PayNowScreen()));
+                  //   },
+                  //   value: 4,
+                  //   child: CustomText(
+                  //       title: "Pay Now", fontStyle: FontStyle.italic),
+                  // ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => GetDisCountCard()));
+                  //   },
+                  //   value: 5,
+                  //   child: CustomText(
+                  //       title: "Get Discount Card",
+                  //       fontStyle: FontStyle.italic),
+                  // ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => GetYourBusinessNow()));
+                  //   },
+                  //   value: 6,
+                  //   child: CustomText(
+                  //       title: "Get Your Business Verify Now",
+                  //       fontStyle: FontStyle.italic),
+                  // ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => DealAndDisCount()));
+                  //   },
+                  //   value: 7,
+                  //   child: CustomText(
+                  //       title: "Deal And Discount ",
+                  //       fontStyle: FontStyle.italic),
+                  // ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => BusinessForSale()));
+                  //   },
+                  //   value: 10,
+                  //   child: CustomText(
+                  //       title: "Business For Sale",
+                  //       fontStyle: FontStyle.italic),
+                  // ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(context,
+                  //         MaterialPageRoute(builder: (context) => AddJobs()));
+                  //   },
+                  //   value: 8,
+                  //   child: CustomText(
+                  //       title: "Add Jobs", fontStyle: FontStyle.italic),
+                  // ),
+
+
                 ];
               },
               onSelected: (int value) {
@@ -241,9 +256,11 @@ class _MenuLoginState extends State<MenuLogin> {
                     ],
                   ),
                   child: CustomTextFormFieldWidget(
+                    controller: _emailController,
                     hint: 'Enter User Name',
                     borderRadius: 6,
                     borderSide: BorderSide.none,
+
 
                   ),
                 ),
@@ -276,58 +293,101 @@ class _MenuLoginState extends State<MenuLogin> {
                     ],
                   ),
                   child: CustomTextFormFieldWidget(
+                    controller: _passwordController,
                     hint: 'Enter Your Password',
                     borderRadius: 6,
                     borderSide: BorderSide.none,
-
+                    suffixIcon:IconButton(
+                      icon: Icon(_obscureText
+                          ? Icons.visibility_off
+                          : Icons.visibility),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                    ),
                   ),
                 ),
-                // SizedBox(height: ScreenUtil().setHeight(20)),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [
-                //   Padding(
-                //     padding: const EdgeInsets.only(top: 35),
-                //     child: Custom_Button_Widget(
-                //       ontap: () {},
-                //       rd: 6,
-                //       color: Colors.transparent,
-                //       child: CustomText(
-                //         title: "Forgot Password?",
-                //         googleFont: "Jost",
-                //         decoration: TextDecoration.underline,
-                //         color: blueColor1,
-                //         fontSize: 18.sp,
-                //       ),
-                //     ),
-                //   ),
-                //   Container(
-                //     decoration: BoxDecoration(
-                //         color: Colors.white,
-                //         borderRadius: BorderRadius.circular(6),
-                //       boxShadow: [
-                //         BoxShadow(
-                //           color: Colors.black.withOpacity(0.2),
-                //           spreadRadius: 1,
-                //           blurRadius: 7,
-                //           offset: Offset(0, 0),
-                //         )
-                //       ]
-                //     ),
-                //     child: Custom_Button_Widget(
-                //       ontap: () {},
-                //       rd: 6,
-                //       color: greenColor2,
-                //       child: CustomText(
-                //         title: "Sign In",
-                //         googleFont: "Jost",
-                //         color: whiteColor,
-                //         fontWeight: FontWeight.w700,
-                //         fontSize: 20.sp,
-                //       ),
-                //     ),
-                //   ),
-                // ],)
+                SizedBox(height: ScreenUtil().setHeight(20)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                  // Padding(
+                  //   padding: const EdgeInsets.only(top: 35),
+                  //   child: Custom_Button_Widget(
+                  //     ontap: () {
+                  //
+                  //     },
+                  //     rd: 6,
+                  //     color: Colors.transparent,
+                  //     child: CustomText(
+                  //       title: "Forgot Password?",
+                  //       googleFont: "Jost",
+                  //       decoration: TextDecoration.underline,
+                  //       color: blueColor1,
+                  //       fontSize: 18.sp,
+                  //     ),
+                  //   ),
+                  // ),
+
+
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(6),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          spreadRadius: 1,
+                          blurRadius: 7,
+                          offset: Offset(0, 0),
+                        )
+                      ]
+                    ),
+                    child: Custom_Button_Widget(
+                      ontap: () {
+
+                        // Navigator.pushNamed(context, RoutesName.OperatoreProfile);
+                        if (_emailController.text.toString() == userAdmin &&
+                                  _passwordController.text.toString() == userPassword) {
+                                // Navigate to the next screen
+                               Navigator.push(context, MaterialPageRoute(builder: (context)=> RegisterYourBusiness()));
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor:  greenColor2 ,
+                                    elevation: 0,
+                                    content: Center(child: Text('Login Success!')),
+                                  ),
+                                );
+
+                              } else {
+                                // Show a message to fill the text fields
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: isColor ? greenColor2 : redColor,
+                                    elevation: 0,
+                                    content: Center(child: Text('user and password does\'nt match')),
+                                  ),
+                                );
+                              }
+                        _emailController.clear();
+                        _passwordController.clear();
+
+                      },
+                      rd: 6,
+                      color: greenColor2,
+                      child: CustomText(
+                        title: "Log In",
+                        googleFont: "Jost",
+                        color: whiteColor,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20.sp,
+                      ),
+                    ),
+                  ),
+                ],)
 
               ],
             ),

@@ -1,4 +1,5 @@
 import 'package:businessonlinepk/view/customs_widgets/constant_color.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 class CustomContainer extends StatelessWidget {
@@ -29,17 +30,17 @@ class CustomContainer extends StatelessWidget {
         width: width ?? 20,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            color: color ?? Color(0xFF004578),
+            color: color ?? Color(0xFFE4E4E4),
             borderRadius: BorderRadius.circular(rd.r),
-             // border: Border.all(color: grayColor),
+              // border: Border.all(color: CupertinoColors.systemGrey3),
             boxShadow: [
               BoxShadow(
                 color: boxShadow == true
-                    ? Colors.grey.withOpacity(0.5)
+                    ? Color(0xffD9CDE7).withOpacity(0.3)
                     : Colors.transparent,
-                blurRadius: 4.r,
+                blurRadius: 2.r,
                 spreadRadius: 2.r,
-                offset: Offset(0, 4),
+                offset: Offset(0, 0),
               ),
             ]
         ),

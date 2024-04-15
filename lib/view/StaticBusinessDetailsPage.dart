@@ -18,7 +18,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -49,7 +48,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   ContactUsModel contactUsModel = ContactUsModel(user: User());
   RegisterReviewModel _reviewModel =RegisterReviewModel();
-  InAppWebViewController? webViewController; // Add this
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   /// contact us Controller
@@ -73,100 +71,100 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
     'False news'
   ];
   String selectedValue = 'Select report category';
-
-  // void _showAlertDialog(BuildContext context) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         scrollable: true,
-  //         shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.circular(10.0),
-  //         ),
-  //         title: CustomText(
-  //             title: "Report Business",
-  //             fontSize: 20,
-  //             color: greenColor2,
-  //             fontWeight: FontWeight.bold),
-  //         content: SingleChildScrollView(
-  //           child: Container(
-  //             height: ScreenUtil().screenHeight / 2.6,
-  //             child: ListView(
-  //               children: [
-  //                 CustomText(
-  //                   title: "MOBILE SHOP (RS 5000)",
-  //                   color: grayColor,
-  //                   fontWeight: FontWeight.bold,
-  //                 ),
-  //                 SizedBox(height: 20),
-  //                 DropdownButton<String>(
-  //                   elevation: 0,
-  //                   items: items.map((String item) {
-  //                     return DropdownMenuItem<String>(
-  //                       value: item,
-  //                       child: Text(item),
-  //                     );
-  //                   }).toList(),
-  //                   value: selectedValue,
-  //                   onChanged: (value) {
-  //                     selectedValue = value!;
-  //                   },
-  //                 ),
-  //                 SizedBox(height: 20.h),
-  //                 CustomText(
-  //                   title: "Your review here:",
-  //                   color: grayColor,
-  //                   fontWeight: FontWeight.bold,
-  //                 ),
-  //                 CustomTextFormFieldWidget(
-  //                     maxLines: 3,
-  //                     borderRadius: 10,
-  //                     color: greenColor2), // Adjust maxLines as needed
-  //                 SizedBox(height: 10.h),
-  //                 Row(
-  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                   children: [
-  //                     Custom_Button_Widget(
-  //                       ontap: () {
-  //                         Navigator.pop(context);
-  //                         print("Click Cancel");
-  //                       },
-  //                       rd: 4.r,
-  //                       height: 30.h,
-  //                       width: 70.h,
-  //                       color: greenColor,
-  //                       child: CustomText(
-  //                         title: "Cancel",
-  //                         color: whiteColor,
-  //                         fontWeight: FontWeight.bold,
-  //                         fontSize: 14,
-  //                       ),
-  //                     ),
-  //                     Custom_Button_Widget(
-  //                       ontap: () {
-  //                         print("Click report");
-  //                       },
-  //                       rd: 4.r,
-  //                       height: 30.h,
-  //                       width: 70.h,
-  //                       color: greenColor,
-  //                       child: CustomText(
-  //                         title: "Report",
-  //                         color: whiteColor,
-  //                         fontWeight: FontWeight.bold,
-  //                         fontSize: 14,
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+/// this function for Report Business
+//   void _showAlertDialog(BuildContext context) {
+//     showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return AlertDialog(
+//           scrollable: true,
+//           shape: RoundedRectangleBorder(
+//             borderRadius: BorderRadius.circular(10.0),
+//           ),
+//           title: CustomText(
+//               title: "Report Business",
+//               fontSize: 20,
+//               color: greenColor2,
+//               fontWeight: FontWeight.bold),
+//           content: SingleChildScrollView(
+//             child: Container(
+//               height: ScreenUtil().screenHeight / 2.6,
+//               child: ListView(
+//                 children: [
+//                   CustomText(
+//                     title: "MOBILE SHOP (RS 5000)",
+//                     color: grayColor,
+//                     fontWeight: FontWeight.bold,
+//                   ),
+//                   SizedBox(height: 20),
+//                   DropdownButton<String>(
+//                     elevation: 0,
+//                     items: items.map((String item) {
+//                       return DropdownMenuItem<String>(
+//                         value: item,
+//                         child: Text(item),
+//                       );
+//                     }).toList(),
+//                     value: selectedValue,
+//                     onChanged: (value) {
+//                       selectedValue = value!;
+//                     },
+//                   ),
+//                   SizedBox(height: 20.h),
+//                   CustomText(
+//                     title: "Your review here:",
+//                     color: grayColor,
+//                     fontWeight: FontWeight.bold,
+//                   ),
+//                   CustomTextFormFieldWidget(
+//                       maxLines: 3,
+//                       borderRadius: 10,
+//                       color: greenColor2), // Adjust maxLines as needed
+//                   SizedBox(height: 10.h),
+//                   Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       Custom_Button_Widget(
+//                         ontap: () {
+//                           Navigator.pop(context);
+//                           print("Click Cancel");
+//                         },
+//                         rd: 4.r,
+//                         height: 30.h,
+//                         width: 70.h,
+//                         color: greenColor,
+//                         child: CustomText(
+//                           title: "Cancel",
+//                           color: whiteColor,
+//                           fontWeight: FontWeight.bold,
+//                           fontSize: 14,
+//                         ),
+//                       ),
+//                       Custom_Button_Widget(
+//                         ontap: () {
+//                           print("Click report");
+//                         },
+//                         rd: 4.r,
+//                         height: 30.h,
+//                         width: 70.h,
+//                         color: greenColor,
+//                         child: CustomText(
+//                           title: "Report",
+//                           color: whiteColor,
+//                           fontWeight: FontWeight.bold,
+//                           fontSize: 14,
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ),
+//         );
+//       },
+//     );
+//   }
 
   @override
   void dispose() {
@@ -234,9 +232,10 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
     // contactUsModel.user=User();
     print('work');
     return Scaffold(
+      backgroundColor: Color(0xffE4E4E4),
       key: _scaffoldKey,
-      backgroundColor: whiteColor,
       appBar: customAppBar1(
+        backgroundColor: Color(0xffE4E4E4),
         elevation: 0,
         centerTitle: false,
         title: CustomText(
@@ -520,142 +519,142 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                 ),
 
           /// Navigation images comment for play store
-          //       Positioned(
-          //         top: 150.h,
-          //           left: 60.w,
-          //           child: Row(
-          //             mainAxisAlignment: MainAxisAlignment.end,
-          //             crossAxisAlignment: CrossAxisAlignment.end,
-          //             children: [
-          //               businessModel?.whatsAppNumber==null
-          //                   ? CustomContainer(
-          //             height: 40,
-          //             width: 40,
-          //             ontap: () {},
-          //             rd: 100,
-          //             color: whiteColor,
-          //             boxShadow: true,
-          //             child: Image.asset(
-          //                 'assets/images/navigation1.png'),
-          //           ):CustomContainer(
-          //                 height: 40,
-          //                 width: 40,
-          //                 ontap: () {},
-          //                 rd: 100,
-          //                 color: whiteColor,
-          //                 boxShadow: true,
-          //                 child: Image.asset(
-          //                     'assets/images/navigation.png'),
-          //               ),
-          //           SizedBox(width: 5.w),
-          //               businessModel?.contactPhone==null
-          //                   ?  CustomContainer(
-          //               height: 40,
-          //               width: 40,
-          //               ontap: () {
-          //                 print(businessModel?.contactPhone);
-          //                 if (businessModel?.contactPhone != null) {
-          //                   String phoneUrl = 'tel:${businessModel!.contactPhone}';
-          //                   launchUrl(Uri.parse(phoneUrl));
-          //                 }
-          //               },
-          //               rd: 100,
-          //               color: whiteColor,
-          //               boxShadow: true,
-          //               child:
-          //               Image.asset('assets/images/call1.png')): CustomContainer(
-          //                   height: 40,
-          //                   width: 40,
-          //                   ontap: () {
-          //                     print(businessModel?.contactPhone);
-          //                     if (businessModel?.contactPhone != null) {
-          //                       String phoneUrl = 'tel:${businessModel!.contactPhone}';
-          //                       launchUrl(Uri.parse(phoneUrl));
-          //                     }
-          //                   },
-          //                   rd: 100,
-          //                   color: whiteColor,
-          //                   boxShadow: true,
-          //                   child:
-          //                   Image.asset('assets/images/call.png')),
-          //           SizedBox(width: 5.w),
-          //               businessModel?.whatsAppNumber==null
-          //                   ?  CustomContainer(
-          //               height: 40,
-          //               width: 40,
-          //               ontap: () {},
-          //               rd: 100,
-          //               color: whiteColor,
-          //               boxShadow: true,
-          //               child:
-          //               Image.asset('assets/images/sms1.png'))
-          //                   : CustomContainer(
-          //                   height: 40,
-          //                   width: 40,
-          //                   ontap: () {},
-          //                   rd: 100,
-          //                   color: whiteColor,
-          //                   boxShadow: true,
-          //                   child:
-          //                   Image.asset('assets/images/sms.png')),
-          //           SizedBox(width: 5.w),
-          //           businessModel?.contactPhone==null
-          //          ? CustomContainer(
-          //           height: 40,
-          //           width: 40,
-          //           ontap: () {
-          //             print(businessModel?.contactPhone);
-          //             // String whatsappUrl = 'https://wa.me/+1${businessModel!.whatsAppNumber}';
-          //             if(businessModel?.contactPhone != null){
-          //               String whatsappUrl = 'https://wa.me/+1${businessModel!.contactPhone}';
-          //               launchUrl(Uri.parse(whatsappUrl));
-          //             }
-          //           },
-          //           rd: 100,
-          //           color: whiteColor,
-          //           boxShadow: true,
-          //           child: Image.asset(
-          //               'assets/images/whtsapp1.png'),)
-          //          : CustomContainer(
-          //           height: 40,
-          //           width: 40,
-          //           ontap: () {
-          //             print(businessModel?.contactPhone);
-          //             // String whatsappUrl = 'https://wa.me/+1${businessModel!.whatsAppNumber}';
-          //             if(businessModel?.contactPhone != null){
-          //               String whatsappUrl = 'https://wa.me/+1${businessModel!.contactPhone}';
-          //               launchUrl(Uri.parse(whatsappUrl));
-          //             }
-          //           },
-          //           rd: 100,
-          //           color: whiteColor,
-          //           boxShadow: true,
-          //           child: Image.asset(
-          //               'assets/images/whtsapp.png')),
-          //            SizedBox(width: 5.w),
-          //           businessModel?.whatsAppNumber==null
-          //                   ?  CustomContainer(
-          //         height: 40,
-          //         width: 40,
-          //         ontap: () {
-          //
-          //         },
-          //         rd: 100,
-          //         color: whiteColor,
-          //         boxShadow: true,
-          //         child: Image.asset('assets/images/share2.png'),
-          //       )
-          //                   : CustomContainer(
-          //                 height: 40,
-          //                 width: 40,
-          //                 ontap: () {},
-          //                 rd: 100,
-          //                 color: whiteColor,
-          //                 boxShadow: true,
-          //                 child: Image.asset('assets/images/share.png')),
-          //     ],
-          //   ),
-          // ),
+                Positioned(
+                  top: 150.h,
+                    left: 60.w,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        businessModel?.whatsAppNumber==null
+                            ? CustomContainer(
+                      height: 40,
+                      width: 40,
+                      ontap: () {},
+                      rd: 100,
+                      color: whiteColor,
+                      boxShadow: true,
+                      child: Image.asset(
+                          'assets/images/navigation1.png'),
+                    ):CustomContainer(
+                          height: 40,
+                          width: 40,
+                          ontap: () {},
+                          rd: 100,
+                          color: whiteColor,
+                          boxShadow: true,
+                          child: Image.asset(
+                              'assets/images/navigation.png'),
+                        ),
+                    SizedBox(width: 5.w),
+                        businessModel?.contactPhone==null
+                            ?  CustomContainer(
+                        height: 40,
+                        width: 40,
+                        ontap: () {
+                          print(businessModel?.contactPhone);
+                          if (businessModel?.contactPhone != null) {
+                            String phoneUrl = 'tel:${businessModel!.contactPhone}';
+                            launchUrl(Uri.parse(phoneUrl));
+                          }
+                        },
+                        rd: 100,
+                        color: whiteColor,
+                        boxShadow: true,
+                        child:
+                        Image.asset('assets/images/call1.png')): CustomContainer(
+                            height: 40,
+                            width: 40,
+                            ontap: () {
+                              print(businessModel?.contactPhone);
+                              if (businessModel?.contactPhone != null) {
+                                String phoneUrl = 'tel:${businessModel!.contactPhone}';
+                                launchUrl(Uri.parse(phoneUrl));
+                              }
+                            },
+                            rd: 100,
+                            color: whiteColor,
+                            boxShadow: true,
+                            child:
+                            Image.asset('assets/images/call.png')),
+                    SizedBox(width: 5.w),
+                        businessModel?.whatsAppNumber==null
+                            ?  CustomContainer(
+                        height: 40,
+                        width: 40,
+                        ontap: () {},
+                        rd: 100,
+                        color: whiteColor,
+                        boxShadow: true,
+                        child:
+                        Image.asset('assets/images/sms1.png'))
+                            : CustomContainer(
+                            height: 40,
+                            width: 40,
+                            ontap: () {},
+                            rd: 100,
+                            color: whiteColor,
+                            boxShadow: true,
+                            child:
+                            Image.asset('assets/images/sms.png')),
+                    SizedBox(width: 5.w),
+                    businessModel?.contactPhone==null
+                   ? CustomContainer(
+                    height: 40,
+                    width: 40,
+                    ontap: () {
+                      print(businessModel?.contactPhone);
+                      // String whatsappUrl = 'https://wa.me/+1${businessModel!.whatsAppNumber}';
+                      if(businessModel?.contactPhone != null){
+                        String whatsappUrl = 'https://wa.me/+1${businessModel!.contactPhone}';
+                        launchUrl(Uri.parse(whatsappUrl));
+                      }
+                    },
+                    rd: 100,
+                    color: whiteColor,
+                    boxShadow: true,
+                    child: Image.asset(
+                        'assets/images/whtsapp1.png'),)
+                   : CustomContainer(
+                    height: 40,
+                    width: 40,
+                    ontap: () {
+                      print(businessModel?.contactPhone);
+                      // String whatsappUrl = 'https://wa.me/+1${businessModel!.whatsAppNumber}';
+                      if(businessModel?.contactPhone != null){
+                        String whatsappUrl = 'https://wa.me/+1${businessModel!.contactPhone}';
+                        launchUrl(Uri.parse(whatsappUrl));
+                      }
+                    },
+                    rd: 100,
+                    color: whiteColor,
+                    boxShadow: true,
+                    child: Image.asset(
+                        'assets/images/whtsapp.png')),
+                     SizedBox(width: 5.w),
+                    businessModel?.whatsAppNumber==null
+                            ?  CustomContainer(
+                  height: 40,
+                  width: 40,
+                  ontap: () {
+
+                  },
+                  rd: 100,
+                  color: whiteColor,
+                  boxShadow: true,
+                  child: Image.asset('assets/images/share2.png'),
+                )
+                            : CustomContainer(
+                          height: 40,
+                          width: 40,
+                          ontap: () {},
+                          rd: 100,
+                          color: whiteColor,
+                          boxShadow: true,
+                          child: Image.asset('assets/images/share.png')),
+              ],
+            ),
+          ),
 
         ],
       ),
@@ -971,13 +970,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                     // color: greenColor2,
                   ),
                 ),
-                // Tab(
-                //   child: CustomText(
-                //     title: "SPECIALITIES",
-                //     fontWeight: FontWeight.bold,
-                //     fontSize: 14,
-                //     // color: greenColor2,
-                //   ),
                 Tab(
                   child: CustomText(
                     title: "Products",
@@ -1041,18 +1033,19 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
             ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height/1.6,
+            height: MediaQuery.of(context).size.height/3.6,
             child: TabBarView(
               controller: _tabController,
               children:  [
                 Container(
                   alignment: Alignment.center,
-                  height: 250.h,
+                  // height: 20.h,
                   margin: EdgeInsets.symmetric(vertical: 8),
                   decoration: BoxDecoration(
-                    // color: Colors.blue,
+                    color: Colors.white,
                       border: Border.all(color: grayColor2),
-                      borderRadius: BorderRadius.circular(12)),
+                      borderRadius: BorderRadius.circular(12),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -1092,45 +1085,46 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                           indent: 1,
                           endIndent: 250,
                         ),
+                 /// Speciality code
                         Expanded(
                           child: ListView.builder(
                             physics: AlwaysScrollableScrollPhysics(),
                             itemCount: businessModel?.speciality?.split(',').length ?? 0,
                             itemBuilder: (context, index) {
                               List<String>? specialties = businessModel?.speciality?.split(',');
-                              return Padding(
-                                padding: const EdgeInsets.only(top:7,left: 7,right: 12),
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    children: [
-                                      Image.asset('assets/images/checkicon.png', scale: 30,),
-                                      SizedBox(width: 10,),
-                                      AutoSizeText(
-                                          specialties?[index].trim() ?? "",
-                                        style: TextStyle(fontSize: 12, color: grayColor),
-                                        minFontSize: 10,
-                                        stepGranularity: 10,
-                                        // maxLines: 4,
-                                        overflow: TextOverflow.ellipsis,
-                                      )
-                                      // CustomText(
-                                      //   title: specialties?[index].trim() ?? "",
-                                      //   color: grayColor,
-                                      //   fontSize: 12.sp,
-                                      // ),
-                                    ],
+                              String? specialty = specialties?[index].trim();
+                              if (specialty != null && specialty.isNotEmpty) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 7, left: 7, right: 12),
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: [
+                                        Image.asset('assets/images/checkicon.png', scale: 30),
+                                        SizedBox(width: 10),
+                                        AutoSizeText(
+                                          specialty,
+                                          style: TextStyle(fontSize: 12, color: grayColor),
+                                          minFontSize: 10,
+                                          stepGranularity: 10,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
+                                );
+                              } else {
+                                // Return an empty container if there's no specialty
+                                return Container();
+                              }
                             },
                           ),
                         ),
+
                       ],
                     ),
                   ),
                 ),
-                /// product UI
                 Container(
                   alignment: Alignment.center,
                   height: 200.h,
@@ -1257,7 +1251,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                                               // ),
                                               Custom_Button_Widget(
                                                 ontap: () {
-
                                                   print(businessModel?.contactPhone);
                                                   if (businessModel?.contactPhone != null) {
                                                     String phoneUrl = 'tel:${businessModel!.contactPhone?.replaceAll(",", ",")}';
@@ -1284,15 +1277,8 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                                   ),
                                 );
                               }
-
-
-
                               ),
                         ),
-
-
-
-
 
 
                       ],
@@ -1339,8 +1325,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                                 businessModel!.images![index].imageName!.isNotEmpty) {
                               return Container(
                                 width: MediaQuery.of(context).size.width,
-                                child: Image.network(
-                                  "https://businessonline.pk/Images/Gallery/${businessModel!.karobarId}/${businessModel!.images![index].imageName}",
+                                child: Image.network("https://businessonline.pk/Images/Gallery/${businessModel!.karobarId}/${businessModel!.images![index].imageName}",
                                   fit: BoxFit.cover,
                                 ),
                               );
@@ -1713,6 +1698,9 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
               ],
             ),
           ),
+
+
+
           Container(
             alignment: Alignment.center,
             // height: ScreenUtil().screenHeight / 2.4,
@@ -1827,11 +1815,10 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
             ),
           ),
           SizedBox(height: 10),
-          /// comment for play store
+          /// comment for play store Repor Your Business
           // Custom_Button_Widget(
           //   ontap: () {
-          //     _showAlertDialog(
-          //         context); // Call the function to show the alert dialog
+          //      _showAlertDialog(context); // Call the function to show the alert dialog
           //     print('Report');
           //   },
           //   rd: 10,

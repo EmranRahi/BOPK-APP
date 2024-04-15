@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:app_settings/app_settings.dart';
 import 'package:businessonlinepk/globle_variable/globle.dart';
 import 'package:businessonlinepk/view/customs_widgets/constant_color.dart';
 import 'package:businessonlinepk/view/customs_widgets/custom_textfield.dart';
@@ -85,7 +84,6 @@ class _HomePageState extends State<HomePage> {
       getLocation();
     }
   }
-
   @override
   Widget build(BuildContext context) {
     // Hide status bar icons by setting the system overlay style
@@ -94,10 +92,12 @@ class _HomePageState extends State<HomePage> {
       statusBarIconBrightness: Brightness.light, // Use dark icons on the status bar
        ),
     );
+
     return  MaterialApp(
       debugShowCheckedModeBanner: false,
       home:  UpgradeAlert(
         child: Scaffold(
+          backgroundColor: Color(0xffE4E4E4),
           body: Column(
             children: [
               SizedBox(
@@ -768,7 +768,7 @@ class _HomePageState extends State<HomePage> {
                 TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
-                      AppSettings.openLocationSettings();
+                      // AppSettings.openLocationSettings();
                       setState(() {
                         //refresh UI on update
                         getLocation();

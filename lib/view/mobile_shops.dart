@@ -1300,8 +1300,10 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:http/http.dart' as http;
-import 'package:businessonlinepk/model/StaticListModelPage.dart' as BusinessOnline;
+import 'package:businessonlinepk/model/StaticListModelPage.dart'
+    as BusinessOnline;
 import 'package:businessonlinepk/globle_variable/globle.dart';
 import 'package:businessonlinepk/view/HomePage_ofBopk.dart';
 import 'package:businessonlinepk/view/customs_widgets/constant_color.dart';
@@ -1332,17 +1334,18 @@ import 'add_jobs.dart';
 import 'business_for_sale.dart';
 
 class MobileShops extends StatefulWidget {
-  MobileShops(this.searchKey, this.categoryId, this.lat, this.long, {super.key});
+  MobileShops(this.searchKey, this.categoryId, this.lat, this.long,
+      {super.key});
   String? searchKey = "";
   int? categoryId = 0;
-  double? lat,long;
+  double? lat, long;
   @override
   State<MobileShops> createState() => _MobileShopsState();
 }
 
 class _MobileShopsState extends State<MobileShops> {
   final GlobalKey<ScaffoldState> _drawerscaffoldkey =
-      new GlobalKey<ScaffoldState>();
+      GlobalKey<ScaffoldState>();
   // List<StaticListSearchModel> searchResults = [];
   TextEditingController searchController = TextEditingController();
   ScrollController _scrollController = ScrollController();
@@ -1358,17 +1361,13 @@ class _MobileShopsState extends State<MobileShops> {
   int page = 1;
   double _scrollPosition = 0.0;
 
-  Future<StaticListModel> fetchData(
-      int categoryId, int page, String bySearch) async {
-    // final response = await http.get(Uri.parse('http://144.91.86.203/bopkapi/Karobar/GetData?id=$categoryId&page=$page'));
-    // final response = await http.get(Uri.parse(
-    //     "https://bopkapi.businessonline.pk/Karobar/GetByLocation?lat=33.5968788&lng=73.0528412&miles=10"));
+  Future<StaticListModel> fetchData(int categoryId, int page, String bySearch) async {
     final response = await http.get(Uri.parse(
-        "https://bopkapi.businessonline.pk/Karobar/GetByLocationSearching?categoryId=$categoryId&page=$page&searchTerm=${widget.searchKey}&lat=${widget.lat}&lng=${widget.long}&miles=10"));
+       "https://bopkapi.businessonline.pk/Karobar/GetByLocationSearching?categoryId=$categoryId&page=$page&searchTerm=$bySearch&lat=${widget.lat}&lng=${widget.long}&miles=10"));
     print(response.statusCode);
     print(response.body);
     print(
-        "https://bopkapi.businessonline.pk/Karobar/GetByLocationSearching?categoryId=$categoryId&page=$page&searchTerm=0&lat=${widget.lat}&lng=${widget.long}&miles=10");
+        "https://bopkapi.businessonline.pk/Karobar/GetByLocationSearching?categoryId=$categoryId&page=$page&searchTerm=$bySearch&lat=${widget.lat}&lng=${widget.long}&miles=10");
     if (response.statusCode == 200) {
       // If the server returns a 200 OK response, parse the JSON
       setState(() {});
@@ -1396,74 +1395,49 @@ class _MobileShopsState extends State<MobileShops> {
     }
   }
 
-  Future<void> _refreshData() async {
-    setState(() {
-      futureData = fetchData(widget.categoryId!.toInt(), page, "no");
-      futureData.then((value) {
-        // dataList.clear();
-        dataList.addAll(value.data!);
-      });
-    });
-  }
 
-  Future<void> fetchData1(String query) async {
-    final response = await http.get(Uri.parse(
-        'http://144.91.86.203/bopkapi/Karobar/SearchBusiness?search=$query'));
-    print('http://144.91.86.203/bopkapi/Karobar/SearchBusiness?search=$query');
-    // print('http://144.91.86.203/bopkapi/Karobar/Search?search=$query');
-    if (response.statusCode == 200) {
-      // If the server returns a 200 OK response, parse the data
-      List<StaticListModel> results = List<StaticListModel>.from(
-        json.decode(response.body).map((x) => StaticListModel.fromJson(x)),
-      );
-      // Update the state to trigger a rebuild with the fetched data
-      setState(() {
-        data = results;
-      });
-    } else {
-      // If the server did not return a 200 OK response, throw an exception.
-      throw Exception('Failed to load data');
-    }
-  }
-  // void search() {
-  //   String query = searchController.text;
-  //   if (query.isNotEmpty) {
-  //     fetchData1(query);
-  //   }
-  // }
-
-  void search(String query) {
-    if (query.isNotEmpty) {
-      fetchData1(query).then((data) {
-        setState(() {
-          // Update the state with the fetched data
-          futureData = Future.value(
-              dataList as FutureOr<BusinessOnline.StaticListModel>?);
-        });
-      }).catchError((error) {
-        print('Error fetching data: $error');
-        // Handle error if needed
-      });
-    } else {
-      // If query is empty, reset futureData to fetch all data
-      setState(() {
-        futureData = fetchData(widget.categoryId!.toInt(), page, "no");
-      });
-    }
-  }
 
   @override
   void initState() {
     super.initState();
     // futureData = fetchData(page);
     _scrollController.addListener(_scrollListener);
-    // if (widget.categoryId! > 0) {
-      // fetchData(widget.categoryId!.toInt());
-      futureData = fetchData(widget.categoryId!.toInt(), page, "no");
-    // } else {
-    //   fetchData1(widget.searchKey.toString());
-    // }
+     if (widget.categoryId! > 0) {
+    // fetchData(widget.categoryId!.toInt());
+    futureData = fetchData(widget.categoryId!.toInt(), page, "no");
+    _loadMoreData("no");
+     } else {
+       futureData = fetchData(widget.categoryId!.toInt(), page, widget.searchKey.toString());
+       _loadMoreData(widget.searchKey.toString());
+       // fetchData1(widget.searchKey.toString());
+     }
+
   }
+  bool _loading = false;
+  bool _hasMoreData = true;
+
+  // Other existing code...
+
+  _loadMoreData(String search) {
+    if (!_loading && _hasMoreData) {
+      setState(() {
+        _loading = true;
+      });
+
+      fetchData(widget.categoryId!.toInt(), page, search).then((value) {
+        setState(() {
+          if (value.data!.isEmpty) {
+            _hasMoreData = false; // No more data available
+          } else {
+            dataList.addAll(value.data!);
+            page++; // Increment page number
+          }
+          _loading = false;
+        });
+      });
+    }
+  }
+
 
   @override
   void dispose() {
@@ -1472,13 +1446,15 @@ class _MobileShopsState extends State<MobileShops> {
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
     print(widget.lat);
     print(widget.long);
     return Scaffold(
-      backgroundColor: whiteColor,
+      backgroundColor: Color(0xffE4E4E4),
       appBar: customAppBar1(
+        backgroundColor: Color(0xffE4E4E4),
         elevation: 0,
         centerTitle: false,
         title: SingleChildScrollView(
@@ -1505,125 +1481,12 @@ class _MobileShopsState extends State<MobileShops> {
             size: 30,
           ),
         ),
-        action: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            PopupMenuButton<int>(
-              icon: Icon(Icons.menu, color: greenColor2, size: 30),
-              color: whiteColor,
-              itemBuilder: (BuildContext context) {
-                return <PopupMenuEntry<int>>[
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => MenuLogin()));
-                    },
-                    value: 0,
-                    child: CustomText(
-                        title: "Login ", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => RegisterYourBusiness()));
-                    },
-                    value: 1,
-                    child: CustomText(
-                        title: "Register Your Business",
-                        fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-
-                  /// same asi tarah jaisa keh meny home page kia s leye ye bhi comment kia .
-                  // PopupMenuDivider(),
-                  // PopupMenuItem<int>(
-                  //   onTap: (){
-                  //     Navigator.push(context, MaterialPageRoute(builder: (context)=> VerifyDownLoadScreen()));
-                  //   },
-                  //   value: 3,
-                  //   child: CustomText(title: "Verify Download", fontStyle: FontStyle.italic),
-                  // ),
-                  // PopupMenuDivider(),
-                  // PopupMenuItem<int>(
-                  //   onTap: (){
-                  //     Navigator.push(context, MaterialPageRoute(builder: (context)=> PayNowScreen()));
-                  //   },
-                  //   value: 4,
-                  //   child: CustomText(title: "Pay Now", fontStyle: FontStyle.italic),
-                  // ),
-                  // PopupMenuDivider(),
-                  // PopupMenuItem<int>(
-                  //   onTap: (){
-                  //     Navigator.push(context, MaterialPageRoute(builder: (context)=> GetDisCountCard()));
-                  //   },
-                  //   value: 5,
-                  //   child: CustomText(title: "Get Discount Card", fontStyle: FontStyle.italic),
-                  // ),
-                  // PopupMenuDivider(),
-                  // PopupMenuItem<int>(
-                  //   onTap: (){
-                  //     Navigator.push(context, MaterialPageRoute(builder: (context)=> GetYourBusinessNow()));
-                  //   },
-                  //   value: 6,
-                  //   child: CustomText(title: "Get Your Business Verify Now", fontStyle: FontStyle.italic),
-                  // ),
-                  // PopupMenuDivider(),
-                  // PopupMenuItem<int>(
-                  //   onTap: (){
-                  //     Navigator.push(context, MaterialPageRoute(builder: (context)=> DealAndDisCount()));
-                  //   },
-                  //   value: 7,
-                  //   child: CustomText(title: "Deal And Discount ", fontStyle: FontStyle.italic),
-                  // ),
-                  // PopupMenuDivider(),
-                  // PopupMenuItem<int>(
-                  //   onTap: (){
-                  //     Navigator.push(context, MaterialPageRoute(builder: (context)=> BusinessForSale()));
-                  //   },
-                  //   value: 10,
-                  //   child: CustomText(title: "Business For Sale", fontStyle: FontStyle.italic),
-                  // ),
-                  // PopupMenuDivider(),
-                  // PopupMenuItem<int>(
-                  //   onTap: (){
-                  //     Navigator.push(context, MaterialPageRoute(builder: (context)=> AddJobs()));
-                  //   },
-                  //   value: 8,
-                  //   child: CustomText(title: "Add Jobs", fontStyle: FontStyle.italic),
-                  // ),
-                ];
-              },
-              onSelected: (int value) {
-                if (value == 0) {
-                  print("Login menu is selected.");
-                } else if (value == 1) {
-                  print("Register Your Business menu is selected.");
-                } else if (value == 2) {
-                  print("BOPK Home menu is selected.");
-                } else if (value == 3) {
-                  print("Business For Sale menu is selected.");
-                } else if (value == 4) {
-                  print("About us menu is selected.");
-                } else if (value == 5) {
-                  print("Contact us menu is selected.");
-                } else if (value == 6) {
-                  print("Contact us menu is selected.");
-                } else if (value == 7) {
-                  print("Contact us menu is selected.");
-                }
-              },
-            ),
-          ],
-        ),
+        ///
       ),
       key: _drawerscaffoldkey, //set gobal key defined above
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Column(
-          children: [
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: Column(children: [
             Row(
               children: [
                 Flexible(
@@ -1642,26 +1505,19 @@ class _MobileShopsState extends State<MobileShops> {
                         ),
                       ],
                     ),
-                    child: CustomTextFormFieldWidget(
-                      textInputAction: TextInputAction.search,
-                      onChanged: (v) {
-                        searchController.text = v;
-                      },
-                      borderRadius: 30,
-                      contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          fetchData(widget.categoryId!.toInt(), page,
-                              searchController.text);
-                          setState(() {}); // This triggers a UI refresh
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 25.0),
+                      child: TextField(
+                        controller: searchController,
+                        onChanged: (value) {
+                          // Call a method to update the filtered list
+                          filterData(value);
                         },
-                        icon: Icon(Icons.search),
+                        decoration: InputDecoration(
+                          hintText: '    Search...',
+                          border: InputBorder.none, // Remove the line under the TextField
+                        ),
                       ),
-                      hint: "Search Your Business",
-                      // prefixIcon: IconButton(onPressed: (){}, icon: Icon(Icons.location_on,color: greenColor2),),
-                      // color: Colors.white,
-                      // fillColor: true,
-                      borderSide: BorderSide.none,
                     ),
                   ),
                 ),
@@ -1705,440 +1561,380 @@ class _MobileShopsState extends State<MobileShops> {
                 ),
               ],
             ),
+
             Expanded(
-              key: UniqueKey(), // Add UniqueKey here
               child: RefreshIndicator(
                 onRefresh: _refreshData,
-                child: FutureBuilder<StaticListModel>(
-                  future: futureData,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      // dataList.clear(); // Clear the list before adding new data
-                      dataList.addAll(snapshot.data!.data!);
-                      return ListView.builder(
-                        itemCount: snapshot.data!.data!.length,
-                        controller: _scrollController,
-                        itemBuilder: (context, index) {
-                          final item = snapshot.data!.data![index];
-                          // final item = dataList[index]; // Use dataList instead of snapshot.data!.data![index]
-                          String specialties = item.speciality ?? "";
-                          List<String> specialtyList = specialties.split(',');
-                          // Take only the first 3 specialties
-                          List<String> displaySpecialties =
-                              specialtyList.length > 3
-                                  ? specialtyList.sublist(0, 3)
-                                  : specialtyList;
-                          List<Widget> specialtyButtons = [];
-                          for (String specialty in displaySpecialties) {
-                            if (specialty.trim().isNotEmpty) {
-                              specialtyButtons.add(
-                                Padding(
-                                  padding: const EdgeInsets.all(5),
-                                  child: Container(
-                                    height: 35.h,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(10.r),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.5),
-                                            blurRadius: 2.r,
-                                            spreadRadius: 2.r,
-                                            offset: Offset(0, 0),
-                                          ),
-                                        ]),
-                                    child: TextButton(
-                                      onPressed: () {
-                                        // Handle button press
-                                      },
-                                      child: CustomText(
-                                        title: specialty.trim(),
-                                        googleFont: "Inter",
-                                        color: grayColor,
-                                        fontSize: 12,
-                                      ),
-                                    ),
+                child:    AlignedGridView.count(
+                  itemCount:  dataList.length + 1, // Use the length of snapshot.data.data
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 2,
+                  crossAxisSpacing: 2,
+                  itemBuilder: (context, index) {
+
+                    if (index < dataList.length) {
+                      final item = dataList[index];
+                      // if (item.title!.toLowerCase().contains(searchController.text.toLowerCase())) {
+                        // If the item matches the search query, build the UI
+                        String specialties = item.speciality ?? "";
+                        List<String> specialtyList = specialties.split(',');
+                        List<String> displaySpecialties = specialtyList.length > 3
+                            ? specialtyList.sublist(0, 3)
+                            : specialtyList;
+                        List<Widget> specialtyButtons = [];
+                      for (String specialty in displaySpecialties) {
+                        if (specialty.trim().isNotEmpty) {
+                          specialtyButtons.add(
+                            Container(
+                              height: 25,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0xffD9CDE7).withOpacity(0.3),
+                                    blurRadius: 2,
+                                    spreadRadius: 2,
+                                    offset: Offset(0, 0),
+                                  ),
+                                ],
+                              ),
+                              child: TextButton(
+                                onPressed: () {
+                                  // Handle button press
+                                },
+                                child: Text(
+                                  specialty.trim(),
+                                  style: TextStyle(fontSize: 08, color: Colors.grey),
+                                ),
+                              ),
+                            ),
+                          );
+                          specialtyButtons.add(SizedBox(width: 8)); // Add some spacing between buttons
+                        }
+                      }
+                      // Build your list items here
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => StaticBusinessDetailsPage(item.karobarId, item.title),
+                            ),
+                          );
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                          elevation: 5,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(12),
+                                  topLeft: Radius.circular(12.r),
+                                  // bottomRight: Radius.circular(25.r),
+                                  // bottomLeft: Radius.circular(25.r),
+                                ),
+                                child: Container(
+                                  child: item.images != null &&
+                                      item.images!.isNotEmpty
+                                      ? Image.network(
+                                    // Accessing the first image if available
+                                    item.images![0].imageName != null
+                                        ? "https://businessonline.pk/Images/Gallery/${item.karobarId}/${item.images![0].imageName}"
+                                        : 'assets/newbopkpic/b2.png',
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height / 5.9,
+                                    fit: BoxFit.fill,
+                                  )
+                                      : Image.asset(
+                                    'assets/newbopkpic/b2.png',
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height / 5.9,
+                                    fit: BoxFit.fill,
                                   ),
                                 ),
-                              );
-                              specialtyButtons.add(SizedBox(
-                                  width:
-                                      8)); // Add some spacing between buttons
-                            }
-                          }
-                          return InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        StaticBusinessDetailsPage(
-                                            item.karobarId, item.title),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                // alignment: Alignment.center,
-                                // height: MediaQuery.of(context).size.height/3.9,
-                                width: MediaQuery.of(context).size.width,
-                                // padding: EdgeInsets.all(8),
-                                margin: EdgeInsets.symmetric(vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: whiteColor,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: boxShadow == true
-                                          ? Colors.grey.withOpacity(0.5)
-                                          : Colors.transparent,
-                                      blurRadius: 2.r,
-                                      spreadRadius: 2.r,
-                                      offset: Offset(0, 0),
-                                    ),
-                                  ],
-                                  // color: Colors.grey,
-                                  border: Border.all(color: grayColor2),
-                                  borderRadius: BorderRadius.circular(12.r),
-                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 08,vertical: 05),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        // ClipRRect(
-                                        //   borderRadius: BorderRadius.only(
-                                        //     // topRight: Radius.circular(25),
-                                        //     topLeft: Radius.circular(12.r),
-                                        //     bottomRight: Radius.circular(15.r),
-                                        //   ),
-                                        //   child: Container(
-                                        //     child:item.images != null &&
-                                        //         item.images!.isNotEmpty
-                                        //         ? Image.network(
-                                        //       "https://businessonline.pk/Images/Gallery/${item.karobarId}/${item.images![0].imageName}",
-                                        //       // Assuming there's always at least one image in the first item
-                                        //       width: MediaQuery
-                                        //           .of(context)
-                                        //           .size
-                                        //           .width / 3,
-                                        //       // Adjust the width as needed
-                                        //       height: MediaQuery
-                                        //           .of(context)
-                                        //           .size
-                                        //           .height / 5.9,
-                                        //       // Adjust the height as needed
-                                        //       fit: BoxFit.fill,
-                                        //     )
-                                        //         : Image.asset(
-                                        //       'assets/images/bopk1.png',
-                                        //       // Path to your default image asset
-                                        //       width: MediaQuery
-                                        //           .of(context)
-                                        //           .size
-                                        //           .width / 3,
-                                        //       // Adjust the width as needed
-                                        //       height: MediaQuery
-                                        //           .of(context)
-                                        //           .size
-                                        //           .height / 5.9,
-                                        //       // Adjust the height as needed
-                                        //       fit: BoxFit.cover,
-                                        //     ),
-                                        //   ),
-                                        // ),
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.only(
-                                            // topRight: Radius.circular(25),
-                                            topLeft: Radius.circular(12.r),
-                                            bottomRight: Radius.circular(15.r),
-                                          ),
-                                          child: Container(
-                                            child: item.images != null &&
-                                                    item.images!.isNotEmpty
-                                                ? Image.network(
-                                                    // Accessing the first image if available
-                                                    item.images![0].imageName != null
-                                                        ? "https://businessonline.pk/Images/Gallery/${item.karobarId}/${item.images![0].imageName}"
-                                                        : 'assets/newbopkpic/b2.png',
-                                                    width: MediaQuery.of(context).size.width / 3,
-                                                    height: MediaQuery.of(context).size.height / 5.9,
-                                                    fit: BoxFit.fill,
-                                                  )
-                                                : Image.asset(
-                                                    'assets/newbopkpic/b2.png',
-                                                    width: MediaQuery.of(context).size.width /3,
-                                                    height: MediaQuery.of(context).size.height / 5.9,
-                                                    fit: BoxFit.fill,
-                                                  ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 10),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                constraints: BoxConstraints(
-                                                  maxWidth: MediaQuery.of(
-                                                              context)
-                                                          .size
-                                                          .width /
-                                                      2, // Adjust this as needed
-                                                ),
-                                                child: CustomText(
-                                                  title: item.title,
-                                                  color: greenColor2,
-                                                  googleFont: "Inter",
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16.sp,
-                                                  // minFontSize: 5,
-                                                  maxLine: 2,
-                                                  textOverflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                              // SizedBox(
-                                              //   height: 20.h,
-                                              // ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  Column(
-                                                    children: [
-                                                      // Row(
-                                                      //   children: [
-                                                      //     Icon(
-                                                      //       Icons.location_on,
-                                                      //       color: greenColor2,
-                                                      //     ),
-                                                      //     SizedBox(
-                                                      //         width: ScreenUtil()
-                                                      //                 .screenWidth /
-                                                      //             40),
-                                                      //     CustomText(
-                                                      //       title:
-                                                      //           "0.01 KM away",
-                                                      //       googleFont: "Jost",
-                                                      //       fontWeight:
-                                                      //           FontWeight.bold,
-                                                      //       fontSize: 12.sp,
-                                                      //       // minFontSize: 5.sp,
-                                                      //       color: grayColor,
-                                                      //     ),
-                                                      //   ],
-                                                      // ),
-                                                      Row(
-                                                        children: [
-                                                          Icon(
-                                                            Icons
-                                                                .access_time_rounded,
-                                                            color: greenColor2,
-                                                          ),
-                                                          SizedBox(
-                                                              width: ScreenUtil()
-                                                                      .screenWidth /
-                                                                  40),
-                                                          CustomText(
-                                                            title: "Open Now",
-                                                            googleFont: "Jost",
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 14.sp,
-                                                            // minFontSize: 5.sp,
-                                                            color: grayColor,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    width: ScreenUtil()
-                                                        .setWidth(30.w),
-                                                  ),
-                                                  item.isVerified == true
-                                                      ? Image.asset(
-                                                          "assets/images/verified.png",
-                                                          scale: 3,
-                                                          width: 50,
-                                                          height: 50,
-                                                          fit: BoxFit.cover,
-                                                        )
-                                                      : SizedBox.shrink(),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                height: 20.h,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  ///navigation Picture comment for play store
-                                                  CustomContainer(
-                                                    height: 30,
-                                                    width: 30,
-                                                    ontap: () {},
-                                                    rd: 100,
-                                                    color: whiteColor,
-                                                    boxShadow: true,
-                                                    child: Image.asset(
-                                                      'assets/images/navigation.png',
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 10.w),
-
-                                                  /// Phone Image Comment felhal comment for play store
-                                                  item.contactPhone == null
-                                                      ? CustomContainer(
-                                                          height: 30,
-                                                          width: 30,
-                                                          ontap: () {
-                                                            print(item
-                                                                .contactPhone);
-                                                            if (item.contactPhone !=
-                                                                null) {
-                                                              String phoneUrl =
-                                                                  'tel:${item.contactPhone?.replaceAll(',', '')}';
-                                                              launchUrl(
-                                                                  Uri.parse(
-                                                                      phoneUrl));
-                                                            }
-                                                          },
-                                                          rd: 100,
-                                                          color: whiteColor,
-                                                          boxShadow: true,
-                                                          child: Image.asset(
-                                                              'assets/images/call1.png'))
-                                                      : CustomContainer(
-                                                          height: 30,
-                                                          width: 30,
-                                                          ontap: () {
-                                                            print(item
-                                                                .contactPhone);
-                                                            if (item.contactPhone !=
-                                                                null) {
-                                                              String phoneUrl =
-                                                                  'tel:${item.contactPhone?.replaceAll(',', '')}';
-                                                              launchUrl(
-                                                                  Uri.parse(
-                                                                      phoneUrl));
-                                                            }
-                                                          },
-                                                          rd: 100,
-                                                          color: whiteColor,
-                                                          boxShadow: true,
-                                                          child: Image.asset(
-                                                              'assets/images/call.png')),
-
-                                                  SizedBox(width: 10.w),
-
-                                                  /// below WhatsApp Image Comment  comment for play store
-                                                  CustomContainer(
-                                                    height: 35,
-                                                    width: 35,
-                                                    ontap: () {
-                                                      if (item.contactPhone !=
-                                                          null) {
-                                                        print(
-                                                            "Contact Phone: ${item.contactPhone}");
-                                                        String whatsappUrl =
-                                                            'https://wa.me/+92${item.contactPhone}';
-                                                        launchUrl(Uri.parse(
-                                                                whatsappUrl))
-                                                            .then((value) {
-                                                          print(
-                                                              "WhatsApp URL launched successfully");
-                                                          print(
-                                                              "Contact Phone: ${item.contactPhone}");
-                                                        }).catchError((error) {
-                                                          print(
-                                                              "Error launching WhatsApp URL: $error");
-                                                          // Handle error (e.g., display a message to the user)
-                                                        });
-                                                      } else {
-                                                        print(
-                                                            "Contact Phone is null");
-                                                        // Handle case where contact phone is null
-                                                      }
-                                                    },
-                                                    rd: 100,
-                                                    color: whiteColor,
-                                                    boxShadow: true,
-                                                    child: Image.asset(
-                                                      item.contactPhone == null
-                                                          ? 'assets/images/whtsapp.png'
-                                                          : 'assets/images/whtsapp.png',
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 10.w),
-
-                                                  /// comment for play store
-                                                  CustomContainer(
-                                                      height: 30,
-                                                      width: 30,
-                                                      ontap: () {},
-                                                      rd: 100,
-                                                      color: whiteColor,
-                                                      boxShadow: true,
-                                                      child: Image.asset(
-                                                          'assets/images/sms.png')),
-                                                  SizedBox(width: 10.w),
-
-                                                  ///  comment for play store
-                                                  CustomContainer(
-                                                    height: 30,
-                                                    width: 30,
-                                                    ontap: () {},
-                                                    rd: 100,
-                                                    color: whiteColor,
-                                                    boxShadow: true,
-                                                    child: Image.asset(
-                                                        'assets/images/share.png'),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        child: Row(
-                                          children: specialtyButtons,
-                                        ),
+                                    Container(
+                                      constraints: BoxConstraints(
+                                        maxWidth: MediaQuery.of(context).size.width/2, // Adjust this as needed
+                                      ),
+                                      child: CustomText(
+                                        title: item.title,
+                                        color: greenColor2,
+                                        googleFont: "Inter",
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 10.sp,
+                                        // minFontSize: 5,
+                                        maxLine: 4,
+                                        textOverflow:
+                                        TextOverflow.ellipsis,
                                       ),
                                     ),
                                   ],
                                 ),
-                              ));
-                        },
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  // crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            SizedBox(width: ScreenUtil().screenWidth /40),
+                                            Icon(
+                                              Icons.location_on,
+                                              color: greenColor2,
+                                              size: 14,
+                                            ),
+                                            CustomText(
+                                              title:
+                                              "0.01 KM away",
+                                              googleFont: "Jost",
+                                              fontWeight:
+                                              FontWeight.bold,
+                                              fontSize: 08.sp,
+                                              // minFontSize: 5.sp,
+                                              color: grayColor,
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Icon(Icons.access_time_rounded,
+                                              color: greenColor2,
+                                              size: 14,
+                                            ),
+                                            CustomText(
+                                              title: "Open Now",
+                                              googleFont: "Jost",
+                                              fontWeight:
+                                              FontWeight.bold,
+                                              fontSize: 08.sp,
+                                              // minFontSize: 5.sp,
+                                              color: grayColor,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(width: ScreenUtil().setWidth(30.w)),
+                                    item.isVerified == true
+                                        ? Image.asset(
+                                      "assets/images/verified.png",
+                                      scale: 2,
+                                      width: 30,
+                                      height: 30,
+                                      // fit: BoxFit.cover,
+                                    )
+                                        : SizedBox.shrink(),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 08,right: 08),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      ///navigation Picture comment for play store
+                                      CustomContainer(
+                                        height: 30,
+                                        width: 30,
+                                        ontap: () {},
+                                        color: whiteColor,
+                                        rd: 100,
+                                        boxShadow: true,
+                                        child: Image.asset(
+                                          'assets/images/navigation.png',
+                                        ),
+                                      ),
+                                      SizedBox(width: 10.w),
+                                      /// Phone Image Comment felhal comment for play store
+                                      item.contactPhone == null
+                                          ? CustomContainer(
+                                          height: 30,
+                                          width: 30,
+                                          ontap: () {
+                                            print(item.contactPhone);
+                                            if (item.contactPhone !=
+                                                null) {
+                                              String phoneUrl =
+                                                  'tel:${item.contactPhone?.replaceAll(',', '')}';
+                                              launchUrl(
+                                                  Uri.parse(
+                                                      phoneUrl));
+                                            }
+                                          },
+                                          rd: 100,
+                                          color: whiteColor,
+                                          boxShadow: true,
+                                          child: Image.asset(
+                                              'assets/images/call1.png'))
+                                          : CustomContainer(
+                                          height: 30,
+                                          width: 30,
+                                          ontap: () {
+                                            print(item.contactPhone);
+                                            if (item.contactPhone != null) {String phoneUrl =
+                                                'tel:${item.contactPhone?.replaceAll(',', '')}';
+                                            launchUrl(Uri.parse(phoneUrl));
+                                            }
+                                          },
+                                          rd: 100,
+                                          color: whiteColor,
+                                          boxShadow: true,
+                                          child: Image.asset(
+                                              'assets/images/call.png')),
+
+                                      SizedBox(width: 10.w),
+
+                                      /// below WhatsApp Image Comment  comment for play store
+                                      CustomContainer(
+                                        height: 30,
+                                        width: 30,
+                                        ontap: () {
+                                          if (item.contactPhone !=
+                                              null) {
+                                            print(
+                                                "Contact Phone: ${item.contactPhone}");
+                                            String whatsappUrl =
+                                                'https://wa.me/+92${item.contactPhone}';
+                                            launchUrl(Uri.parse(
+                                                whatsappUrl))
+                                                .then((value) {
+                                              print(
+                                                  "WhatsApp URL launched successfully");
+                                              print(
+                                                  "Contact Phone: ${item.contactPhone}");
+                                            }).catchError((error) {
+                                              print(
+                                                  "Error launching WhatsApp URL: $error");
+                                              // Handle error (e.g., display a message to the user)
+                                            });
+                                          } else {
+                                            print(
+                                                "Contact Phone is null");
+                                            // Handle case where contact phone is null
+                                          }
+                                        },
+                                        rd: 100,
+                                        color: whiteColor,
+                                        boxShadow: true,
+                                        child: Image.asset(
+                                          item.contactPhone == null
+                                              ? 'assets/images/whtsapp.png'
+                                              : 'assets/images/whtsapp.png',
+                                        ),
+                                      ),
+                                      SizedBox(width: 10.w),
+
+                                      /// comment for play store
+                                      CustomContainer(
+                                          height: 30,
+                                          width: 30,
+                                          ontap: () {},
+                                          rd: 100,
+                                          color: whiteColor,
+                                          boxShadow: true,
+                                          child: Image.asset(
+                                              'assets/images/sms.png')),
+                                      SizedBox(width: 10.w),
+
+                                      ///  comment for play store
+                                      CustomContainer(
+                                        height: 30,
+                                        width: 30,
+                                        ontap: () {},
+                                        rd: 100,
+                                        color: whiteColor,
+                                        boxShadow: true,
+                                        child: Image.asset(
+                                            'assets/images/share.png'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: specialtyButtons,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       );
-                    } else if (snapshot.hasError) {
-                      return Text('${snapshot.error}');
+                    } else {
+                      // This is the "View More" button
+                      if (_loading) {
+                        // If loading, show a loading indicator
+                        return Center(child: CircularProgressIndicator());
+                      } else if (!_hasMoreData) {
+                        // If no more data available, show a message
+                        return Center(child: Text("No more data available"));
+                      } else {
+                        // If more data available, show the "View More" button
+                        return Center(
+                          child: TextButton(
+                            onPressed:(){
+                              _loadMoreData("no");
+                            },
+                            child: Text("View More"),
+                          ),
+                        );
+                      }
                     }
-                    // By default, show a loading spinner
-                    return Center(child: CircularProgressIndicator());
                   },
                 ),
               ),
             ),
+
+
+
           ],
-        ),
+          ),
       ),
     );
+  }
+  void filterData(String query) {
+    // Create a new list to hold the filtered items
+    List<Datum> filteredList = [];
+
+    // Filter the dataList based on the query
+    filteredList.addAll(dataList.where((item) {
+      // Modify the condition according to your filtering logic
+      return item.title!.toLowerCase().contains(query.toLowerCase());
+    }).toList());
+
+    setState(() {
+      // Update the UI with the filtered list
+      dataList.clear(); // Clear the original dataList
+      dataList.addAll(filteredList); // Add the filtered items to dataList
+    });
+  }
+  Future<void> _refreshData() async {
+    setState(() {
+      futureData = fetchData(widget.categoryId!.toInt(), page, "no");
+      futureData.then((value) {
+        // dataList.clear();
+        dataList.addAll(value.data!);
+      });
+    });
   }
 }

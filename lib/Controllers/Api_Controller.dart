@@ -21,38 +21,38 @@ import 'BopkController.dart';
 class APIController{
 ///  ALL Karobar or Business API
   ///  pagenation Api
-    int _currentPage = 1;
-     int _totalPages = 0;
-     List<Datum> _data = [];
-    final int pageSize = 20; // Define page size
-    Future<List<List<Datum>>> fetchData(int subCategoryId) async {
-      // final String url = "http://144.91.86.203/bopkapi/Karobar/GetData?id=$subCategoryId&page=$_currentPage&pageSize=20";
-      final String url = "http://144.91.86.203/bopkapi/Karobar/GetData?id=1&page=1&s=no";
-      try {
-        final response = await http.get(Uri.parse(url));
-        print(response.statusCode);
-        print(response.body);
-        print(url);
-        if (response.statusCode == 200) {
-          final Map<String, dynamic> responseData = json.decode(response.body);
-          final StaticListModel staticListModel = StaticListModel.fromJson(responseData);
-          _totalPages = staticListModel.totalPages ?? 0;
-
-          if (_currentPage == 1) {
-            _data = staticListModel.data ?? [];
-
-          } else {
-            _data.addAll(staticListModel.data ?? []);
-          }
-          return [_data];
-        } else {
-          throw Exception('Failed to load data');
-        }
-      } catch (error) {
-        print('Error: $error');
-        throw error;
-      }
-    }
+  //   int _currentPage = 1;
+  //    int _totalPages = 0;
+  //    List<Datum> _data = [];
+  //   final int pageSize = 20; // Define page size
+  //   Future<List<List<Datum>>> fetchData(int subCategoryId) async {
+  //     // final String url = "http://144.91.86.203/bopkapi/Karobar/GetData?id=$subCategoryId&page=$_currentPage&pageSize=20";
+  //     final String url = "http://144.91.86.203/bopkapi/Karobar/GetData?id=1&page=1&s=no";
+  //     try {
+  //       final response = await http.get(Uri.parse(url));
+  //       print(response.statusCode);
+  //       print(response.body);
+  //       print(url);
+  //       if (response.statusCode == 200) {
+  //         final Map<String, dynamic> responseData = json.decode(response.body);
+  //         final StaticListModel staticListModel = StaticListModel.fromJson(responseData);
+  //         _totalPages = staticListModel.totalPages ?? 0;
+  //
+  //         if (_currentPage == 1) {
+  //           _data = staticListModel.data ?? [];
+  //
+  //         } else {
+  //           _data.addAll(staticListModel.data ?? []);
+  //         }
+  //         return [_data];
+  //       } else {
+  //         throw Exception('Failed to load data');
+  //       }
+  //     } catch (error) {
+  //       print('Error: $error');
+  //       throw error;
+  //     }
+  //   }
 
   Future<DetailStaticBusinessModel?> fetchDataDetails(int? karobarId) async {
     try {

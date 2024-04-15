@@ -360,106 +360,105 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                     child: CustomText(
                         title: "Login ", fontStyle: FontStyle.italic),
                   ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => RegisterYourBusiness()));
-                    },
-                    value: 1,
-                    child: CustomText(
-                        title: "Register Your Business",
-                        fontStyle: FontStyle.italic),
-                  ),
-
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => VerifyDownLoadScreen()));
-                    },
-                    value: 3,
-                    child: CustomText(
-                        title: "Verify Download", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PayNowScreen()));
-                    },
-                    value: 4,
-                    child: CustomText(
-                        title: "Pay Now", fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => GetDisCountCard()));
-                    },
-                    value: 5,
-                    child: CustomText(
-                        title: "Get Discount Card",
-                        fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => GetYourBusinessNow()));
-                    },
-                    value: 6,
-                    child: CustomText(
-                        title: "Get Your Business Verify Now",
-                        fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DealAndDisCount()));
-                    },
-                    value: 7,
-                    child: CustomText(
-                        title: "Deal And Discount ",
-                        fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BusinessForSale()));
-                    },
-                    value: 10,
-                    child: CustomText(
-                        title: "Business For Sale",
-                        fontStyle: FontStyle.italic),
-                  ),
-                  PopupMenuDivider(),
-                  PopupMenuItem<int>(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => AddJobs()));
-                    },
-                    value: 8,
-                    child: CustomText(
-                        title: "Add Jobs", fontStyle: FontStyle.italic),
-                  ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => RegisterYourBusiness()));
+                  //   },
+                  //   value: 1,
+                  //   child: CustomText(
+                  //       title: "Register Your Business",
+                  //       fontStyle: FontStyle.italic),
+                  // ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => VerifyDownLoadScreen()));
+                  //   },
+                  //   value: 3,
+                  //   child: CustomText(
+                  //       title: "Verify Download", fontStyle: FontStyle.italic),
+                  // ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => PayNowScreen()));
+                  //   },
+                  //   value: 4,
+                  //   child: CustomText(
+                  //       title: "Pay Now", fontStyle: FontStyle.italic),
+                  // ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => GetDisCountCard()));
+                  //   },
+                  //   value: 5,
+                  //   child: CustomText(
+                  //       title: "Get Discount Card",
+                  //       fontStyle: FontStyle.italic),
+                  // ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => GetYourBusinessNow()));
+                  //   },
+                  //   value: 6,
+                  //   child: CustomText(
+                  //       title: "Get Your Business Verify Now",
+                  //       fontStyle: FontStyle.italic),
+                  // ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => DealAndDisCount()));
+                  //   },
+                  //   value: 7,
+                  //   child: CustomText(
+                  //       title: "Deal And Discount ",
+                  //       fontStyle: FontStyle.italic),
+                  // ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => BusinessForSale()));
+                  //   },
+                  //   value: 10,
+                  //   child: CustomText(
+                  //       title: "Business For Sale",
+                  //       fontStyle: FontStyle.italic),
+                  // ),
+                  // PopupMenuDivider(),
+                  // PopupMenuItem<int>(
+                  //   onTap: () {
+                  //     Navigator.push(context,
+                  //         MaterialPageRoute(builder: (context) => AddJobs()));
+                  //   },
+                  //   value: 8,
+                  //   child: CustomText(
+                  //       title: "Add Jobs", fontStyle: FontStyle.italic),
+                  // ),
                 ];
               },
               onSelected: (int value) {
@@ -495,15 +494,15 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 /// How to Register business? Button
-                Align(
-                    alignment: Alignment.topRight,
-                    child: TextButton(
-                        onPressed: () {},
-                        child: CustomText(
-                          title: "How to Register business?",
-                          color: greenColor2,
-                          decoration: TextDecoration.underline,
-                        ))),
+                // Align(
+                //     alignment: Alignment.topRight,
+                //     child: TextButton(
+                //         onPressed: () {},
+                //         child: CustomText(
+                //           title: "How to Register business?",
+                //           color: greenColor2,
+                //           decoration: TextDecoration.underline,
+                //         ))),
                 Align(
                   alignment: Alignment.center,
                   child: CustomText(

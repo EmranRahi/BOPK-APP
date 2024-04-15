@@ -45,7 +45,7 @@ dependencies:
   carousel_slider: ^4.0.0
   flutter_typeahead: ^4.0.0
   shared_preferences: ^2.0.13
-  app_settings: ^4.1.8
+#  app_settings: ^4.1.8
   intl: any
   cached_network_image:
   http: any
@@ -55,9 +55,11 @@ dependencies:
   image_picker: any
   auto_size_text: ^3.0.0
   device_preview: ^1.1.0
-  flutter_inappwebview: ^5.3.2
+#  flutter_inappwebview: ^5.3.2
   permission_handler: ^10.2.0
   change_app_package_name: ^1.1.0
+  infinite_scroll_pagination: ^4.0.0
+  flutter_staggered_grid_view: ^0.7.0
 
 
 
