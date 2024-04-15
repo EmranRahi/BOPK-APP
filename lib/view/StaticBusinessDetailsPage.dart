@@ -1033,7 +1033,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
             ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height/3.6,
+            height: MediaQuery.of(context).size.height/1.6,
             child: TabBarView(
               controller: _tabController,
               children:  [
