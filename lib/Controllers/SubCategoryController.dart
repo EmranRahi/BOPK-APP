@@ -1,18 +1,16 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import '../model/HomePageMainCategory.dart';
+
 import '../model/SubCategoryModel.dart';
-
-class BopkController {
-
-  List<HomePageMainCategory> categories = [];
+import 'package:http/http.dart'as http;
+class SubCategoryController{
+  List<SubCategoryModel> categories = [];
   bool isLoading = false;
 
   Future<void> fetchHomePageCategories() async {
     try {
       isLoading = true;
       // final response = await http.get(Uri.parse("http://144.91.86.203/bopkapi/MainCategory"));
-      final response = await http.get(Uri.parse("http://144.91.86.203/bopkapi/MainCategory"));
+      final response = await http.get(Uri.parse("http://144.91.86.203/bopkapi/Category"));
       print(response.body);
       print(response.statusCode);
       print("http://144.91.86.203/bopkapi/MainCategory");
@@ -25,7 +23,7 @@ class BopkController {
 
         // Check if jsonResponse is not null and is a List
         if (jsonResponse != null && jsonResponse is List<dynamic>) {
-          categories = jsonResponse.map((json) => HomePageMainCategory.fromJson(json)).toList();
+          categories = jsonResponse.map((json) => SubCategoryModel.fromJson(json)).toList();
         } else {
           // Handle the case where jsonResponse is null or not a List
           throw Exception('Invalid JSON structure or empty response');
@@ -40,9 +38,4 @@ class BopkController {
       isLoading = false;
     }
   }
-
 }
-
-
-
-

@@ -19,7 +19,7 @@ import 'BopkController.dart';
 
 
 class APIController{
-///  ALL Karobar or Business API
+  ///  ALL Karobar or Business API
   ///  pagenation Api
   //   int _currentPage = 1;
   //    int _totalPages = 0;
@@ -57,6 +57,7 @@ class APIController{
   Future<DetailStaticBusinessModel?> fetchDataDetails(int? karobarId) async {
     try {
       final response = await http.get(Uri.parse('http://144.91.86.203/bopkapi/Karobar/Details/${karobarId}'));
+      print("http://144.91.86.203/bopkapi/Karobar/Details/${karobarId}");
 
       if (response.statusCode == 200) {
         // Parse the JSON response
@@ -255,8 +256,6 @@ class APIController{
     }
 
 
-
-
     /// Post Contact us APi
   static Future<ContactUsModel> contactUsPost(ContactUsModel profileScreenModel,BuildContext context) async {
     final createJson = jsonEncode(profileScreenModel);
@@ -319,8 +318,6 @@ class APIController{
     }
 
   }
-
-
 
   /// product OR Item API in Details
     static Future<List<DetailsPageProductModel>> fetchProducts() async {

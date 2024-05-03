@@ -59,7 +59,9 @@ dependencies:
   permission_handler: ^10.2.0
   change_app_package_name: ^1.1.0
   infinite_scroll_pagination: ^4.0.0
-  flutter_staggered_grid_view: ^0.7.0
+  google_maps_flutter: any
+  share: ^2.0.4
+#  flutter_staggered_grid_view: ^0.7.0
 
 
 

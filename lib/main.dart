@@ -1,10 +1,14 @@
+import 'dart:async';
+
 import 'package:businessonlinepk/test_dialouge.dart';
 import 'package:businessonlinepk/view/SplashScreen.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:http/http.dart' as http;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 
 void main() {
@@ -46,5 +50,4 @@ class BopkApp extends StatelessWidget {
      );
   }
 }
-
 

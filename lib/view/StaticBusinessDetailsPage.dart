@@ -21,7 +21,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:group_button/group_button.dart';
+import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../model/DetailStaticBusinessModel.dart';
 import '../model/DetailsPageProductModel.dart';
@@ -39,6 +41,7 @@ class StaticBusinessDetailsPage extends StatefulWidget {
 
   int? karobarId = 0;
   String? title = "";
+
 
   @override
   State<StaticBusinessDetailsPage> createState() => _StaticBusinessDetailsPageState();
@@ -58,9 +61,12 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
   TextEditingController descriptionController = TextEditingController();
 
 
-  late TabController _tabController;
+  late GoogleMapController myController;
+  LatLng? _center;
+  void _onMapCreated(GoogleMapController controller) {
+    myController = controller;
+  }
 
-  // bool  checkboxValue =  false;
   List<bool> checkboxValues =
   List.generate(30, (index) => false); // 30 checkboxess
   DetailStaticBusinessModel? businessModel = DetailStaticBusinessModel();
@@ -71,7 +77,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
     'False news'
   ];
   String selectedValue = 'Select report category';
-/// this function for Report Business
+  /// this function for Report Business
 //   void _showAlertDialog(BuildContext context) {
 //     showDialog(
 //       context: context,
@@ -166,6 +172,8 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
 //     );
 //   }
 
+  late TabController _tabController;
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -174,14 +182,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
  /// products List
   late List<DetailsPageProductModel> _products = [];
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getDetails(widget.karobarId);
-    _tabController = TabController(length: 7, vsync: this);
-    _fetchProducts();
-  }
+
 
 
   Future<void> _fetchProducts() async {
@@ -195,42 +196,66 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
       // Handle error
     }
   }
-
-
-
   bool _isAboutTabSelected = false;
-   _handleTabTap(int index) {
-    // _tabController.animateTo(index);
-     setState(() {
-       _isAboutTabSelected = _tabController.index == 6;
-     });
 
+  double height = 150; // Initial default height
+
+  void _handleTabTap(int index) {
+    setState(() {
+      if (index == 0) {
+        height = 250; // Height for index 0
+      } else if (index == 1) {
+        height = 400; // Height for index 2
+      }  else if (index == 2) {
+        height = 260; // Height for index 2
+      } else if (index == 3) {
+        height = 480; // Height for index 2
+      } else if (index == 4) {
+        height = 400; // Height for index 2
+      } else if (index == 5) {
+        height = 400; // Height for index 2
+      }  else {
+        height = 480; // Default height for other indices
+        _isAboutTabSelected = _tabController.index == 6;
+      }
+      print(index);
+    });
   }
-
-
 
   Future<void> getDetails(int? karobarId) async {
     APIController controller = APIController();
-
-    // Call fetchDataDetails and await the result
     businessModel = await controller.fetchDataDetails(karobarId);
+    if (businessModel != null && businessModel!.lat != null && businessModel!.lng != null) {
+      _center = LatLng(
+        businessModel!.lat!.toDouble(),
+        businessModel!.lng!.toDouble(),
+      );
+      setState(() {}); // Rebuild the widget tree to reflect the updated _center value
+    } else {
+      // Handle the case where businessModel or its properties are null
+    }
+  }
 
-    // if (businessModel != null) {
-    // print('Business Title: ${businessModel!.title}');
-    print('Business Description: ${businessModel?.description}');
-    // print('Business Location: ${businessModel?.location?.locationName}');
-    // } else {
-    // Handle the case where the data fetch was unsuccessful
-    // }
-    setState(() {
-
-    });
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getDetails(widget.karobarId);
+    _tabController = TabController(length: 7, vsync: this);
+    // _tabController.addListener(_handleTabSelection);
+    _fetchProducts();
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     // contactUsModel.user=User();
     print('work');
+    print("businessModel: $businessModel");
+    print("businessModel.lat: ${businessModel?.lat}");
+    print("businessModel.lng: ${businessModel?.lng}");
+    print("_center: $_center");
+
     return Scaffold(
       backgroundColor: Color(0xffE4E4E4),
       key: _scaffoldKey,
@@ -419,17 +444,37 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
             SizedBox(height: 10,),
             Stack(
               children: [
-                Container(
-                  height: MediaQuery.of(context).size.height/3.5,
-                  width:  MediaQuery.of(context).size.width,
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: Image.asset(
-                      'assets/images/bopk1.png',
-                      fit: BoxFit.fill,
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 3,
+                  width: MediaQuery.of(context).size.width,
+                  child: _center != null
+                      ? GoogleMap(
+                    onMapCreated: _onMapCreated,
+                    initialCameraPosition: CameraPosition(
+                      target: _center!, // Use null check operator (!) to access non-nullable LatLng value
+                      zoom: 14.0,
                     ),
+                    markers: Set<Marker>.of([
+                      Marker(
+                        markerId: MarkerId('Exact Location'),
+                        position: _center!,
+                        infoWindow: InfoWindow(title: 'Exact Location'),
+                      ),
+                    ]),
+                  )
+                      : Center(
+                    child: CircularProgressIndicator(),
                   ),
+                //   GoogleMap(
+                //     onMapCreated: _onMapCreated,
+                //     initialCameraPosition: CameraPosition(
+                //       target: _center!,
+                //       zoom: 16.0,
+                //     ),
+                //     markers: _center == null ? {} : {Marker(markerId: MarkerId('marker'), position: _center!)},
+                // ),
                 ),
+
                 // Map Image
                 // Image.asset('assets/images/map.jpg',width: double.infinity,fit: BoxFit.fitWidth,),
                 // Positioned(
@@ -463,7 +508,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                 //   // ),
                 // ),
                 Positioned(
-                  top: 90.h,
+                  top: 130.h,
                   left: 8.w,
                   child: Row(
                     children: [
@@ -488,20 +533,21 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                 ),
 
                 Positioned(
-                  top: 105,
+                  top: 185,
                   left: 80,
                   child: CustomText(
                     title:  businessModel?.title ?? "Default Title",
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                     color: Colors.black,
+                    maxLine: 2,
                   ),
                 ),
                 Positioned(
-                  top: 125,
+                  top: 200,
                   left: 80,
                   child: RatingBar.builder(
-                    itemSize: 10,
+                    itemSize: 20,
                     initialRating: 0,
                     minRating: 1,
                     direction: Axis.horizontal,
@@ -520,7 +566,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
 
           /// Navigation images comment for play store
                 Positioned(
-                  top: 150.h,
+                  top: 190.h,
                     left: 60.w,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -632,26 +678,19 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                     child: Image.asset(
                         'assets/images/whtsapp.png')),
                      SizedBox(width: 5.w),
-                    businessModel?.whatsAppNumber==null
-                            ?  CustomContainer(
-                  height: 40,
-                  width: 40,
-                  ontap: () {
+                     CustomContainer(
+                        height: 40,
+                        width: 40,
+                        ontap: () {
+                          // whatsapp();
+                          _launchWhatsApp("Hi, how i can help you");
+                          },
+                           rd: 100,
+                           color: whiteColor,
+                            boxShadow: true,
+                            child: Image.asset('assets/images/share.png'),
+                             ),
 
-                  },
-                  rd: 100,
-                  color: whiteColor,
-                  boxShadow: true,
-                  child: Image.asset('assets/images/share2.png'),
-                )
-                            : CustomContainer(
-                          height: 40,
-                          width: 40,
-                          ontap: () {},
-                          rd: 100,
-                          color: whiteColor,
-                          boxShadow: true,
-                          child: Image.asset('assets/images/share.png')),
               ],
             ),
           ),
@@ -679,7 +718,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
               //       scale: 3),
               // ),
               businessModel?.email == null ?
-              CustomContainer(
+               CustomContainer(
                 height: 50,
                 width: 50,
                 ontap: () {
@@ -693,7 +732,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                 child: Image.asset('assets/media/mesage.png',
                     scale: 2),
               )
-                  :CustomContainer(
+                    :CustomContainer(
                 height: 50,
                 width: 50,
                 ontap: () {
@@ -718,7 +757,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
               //   child: Image.asset('assets/media/share1.png',
               //       scale: 2),
               // ),
-
               /// this is the facebook URL
               businessModel?.facebookUrl == null
                   ?  CustomContainer(
@@ -926,6 +964,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                     fontWeight: FontWeight.bold,
                     googleFont: "Jost",
                     fontSize: 14.sp,
+                    maxLine: 4,
                   ),
                   SizedBox(height: 20),
                   CustomText(
@@ -934,7 +973,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
                         "Satellite Town, Rawalpindi,Punjab,Pakistan",
                     fontSize: 13.sp,
                     color: grayColor,
-                    maxLine: 2,
+                    maxLine: 4,
                     textOverflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -942,6 +981,8 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
             ),
           ),
        /// Below Tab Bar View
+
+
           Container(
             height: 30, // Adjust the height of the tab container
             decoration: BoxDecoration(
@@ -954,9 +995,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
               controller: _tabController,
               isScrollable: true,
               indicator: BoxDecoration(
-                borderRadius: BorderRadius.circular(
-                  25.0,
-                ),
+                borderRadius: BorderRadius.circular(25.0,),
                 color: greenColor2,
               ),
               labelColor: Colors.white,
@@ -1032,670 +1071,676 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
               onTap: _handleTabTap,
             ),
           ),
-          Container(
-            height: MediaQuery.of(context).size.height/1.6,
-            child: TabBarView(
-              controller: _tabController,
-              children:  [
-                Container(
-                  alignment: Alignment.center,
-                  // height: 20.h,
-                  margin: EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                      border: Border.all(color: grayColor2),
-                      borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          title: "OVERVIEW",
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                          color: greenColor2,
-                        ),
-                        Divider(
-                          color: greenColor2,
-                          thickness: 2,
-                          indent: 1,
-                          endIndent: 250,
-                        ),
-                        CustomText(
-                          title: businessModel?.description ??
-                              'we deal in Samsung and Iphone Only',
-                          fontSize: 14,
-                          googleFont: "Jost",
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        CustomText(
-                          title: "SPECIALITIES",
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                          color: greenColor2,
-                        ),
-                        Divider(
-                          color: greenColor2,
-                          thickness: 2,
-                          indent: 1,
-                          endIndent: 250,
-                        ),
-                 /// Speciality code
-                        Expanded(
-                          child: ListView.builder(
-                            physics: AlwaysScrollableScrollPhysics(),
-                            itemCount: businessModel?.speciality?.split(',').length ?? 0,
-                            itemBuilder: (context, index) {
-                              List<String>? specialties = businessModel?.speciality?.split(',');
-                              String? specialty = specialties?[index].trim();
-                              if (specialty != null && specialty.isNotEmpty) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(top: 7, left: 7, right: 12),
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(
-                                      children: [
-                                        Image.asset('assets/images/checkicon.png', scale: 30),
-                                        SizedBox(width: 10),
-                                        AutoSizeText(
-                                          specialty,
-                                          style: TextStyle(fontSize: 12, color: grayColor),
-                                          minFontSize: 10,
-                                          stepGranularity: 10,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                // Return an empty container if there's no specialty
-                                return Container();
-                              }
-                            },
-                          ),
-                        ),
-
-                      ],
+          SingleChildScrollView(
+            // scrollDirection: Axis.horizontal,
+            child: SizedBox(
+               height: height,
+              // height: tabHeights[_selectedIndex], // Use the height based on the selected index
+             child: TabBarView(
+                controller: _tabController,
+                children:  [
+                  Container(
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      // color: Colors.blue,
+                        border: Border.all(color: grayColor2),
+                        borderRadius: BorderRadius.circular(12),
                     ),
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  height: 200.h,
-                  margin: EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    // color: Colors.blue,
-                      border: Border.all(color: grayColor2),
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        top: 10.h, left: 10.w, bottom: 10, right: 10.w),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          title: "PRODUCT",
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                          color: greenColor2,
-                        ),
-                        Divider(
-                          color: greenColor2,
-                          thickness: 2,
-                          indent: 1,
-                          endIndent: 250,
-                        ),
-
-                        /// product grid view
-                        Expanded(
-                          child: GridView.builder(
-                              padding: EdgeInsets.all(0.5),
-                              gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisSpacing: 3,
-                                mainAxisSpacing: 4,
-                                crossAxisCount: 2, // Number of columns
-                              ),
-                              itemCount: _products.length, // Number of items in the grid
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            title: "OVERVIEW",
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: greenColor2,
+                          ),
+                          Divider(
+                            color: greenColor2,
+                            thickness: 2,
+                            indent: 1,
+                            endIndent: 250,
+                          ),
+                          CustomText(
+                            title: businessModel?.description ??
+                                'we deal in Samsung and Iphone Only',
+                            fontSize: 14,
+                            googleFont: "Jost",
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          CustomText(
+                            title: "SPECIALITIES",
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: greenColor2,
+                          ),
+                          Divider(
+                            color: greenColor2,
+                            thickness: 2,
+                            indent: 1,
+                            endIndent: 250,
+                          ),
+                   /// Speciality code
+                          Expanded(
+                            child: ListView.builder(
+                              physics: AlwaysScrollableScrollPhysics(),
+                              itemCount: businessModel?.speciality?.split(',').length ?? 0,
                               itemBuilder: (context, index) {
-                                final product = _products[index]; // Get the product at the current index
-                                return InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ProductScreen()));
-                                    print('GridView');
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          color: whiteColor,
-                                          borderRadius:
-                                          BorderRadius.circular(10.r),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: grayColor2,
-                                              blurRadius: 1.r,
-                                              spreadRadius: 1.r,
-                                              offset: Offset(0, 0),
-                                            ),
-                                          ]),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                List<String>? specialties = businessModel?.speciality?.split(',');
+                                String? specialty = specialties?[index].trim();
+                                if (specialty != null && specialty.isNotEmpty) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 7, left: 7, right: 12),
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
                                         children: [
-                                          Center(
-                                            child:  Image.asset(
-                                              product.images != null && product.images!.isNotEmpty ? product.images![0] : 'assets/images/producimage1.png',
-                                              scale: 7,
-                                            ),
+                                          Image.asset('assets/images/checkicon.png', scale: 30),
+                                          SizedBox(width: 10),
+                                          AutoSizeText(
+                                            specialty,
+                                            style: TextStyle(fontSize: 12, color: grayColor),
+                                            minFontSize: 10,
+                                            stepGranularity: 10,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                          SizedBox(
-                                            height: 2,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 10),
-                                            child: CustomText(
-                                              title: product.itemName ?? 'Iphone',
-                                              color: grayColor,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 2,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 10),
-                                            child: CustomText(
-                                              title: 'Rs.${product.price}', // Display product price,
-                                              color: tealColor1,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          /// Product Screen button  comment for play store
-                                          Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment
-                                                .spaceAround,
-                                            children: [
-                                              Custom_Button_Widget(
-                                                ontap: () {
-                                                  if (businessModel?.contactPhone != null) {
-                                                    String whatsappUrl = 'https://wa.me/+92${businessModel!.contactPhone?.replaceAll(',', '')}';
-                                                    launchUrl(Uri.parse(whatsappUrl));
-                                                  }
-                                                },
-                                                rd: 4.r,
-                                                height: 20.h,
-                                                width: 50.h,
-                                                color: greenColor,
-                                                child: CustomText(
-                                                  title: "whatsApp",
-                                                  color: whiteColor,
-                                                  fontWeight:
-                                                  FontWeight.bold,
-                                                  fontSize: 10,
-                                                ),
-                                              ),
-                                              // SizedBox(
-                                              //   width: 30.w,
-                                              // ),
-                                              Custom_Button_Widget(
-                                                ontap: () {
-                                                  print(businessModel?.contactPhone);
-                                                  if (businessModel?.contactPhone != null) {
-                                                    String phoneUrl = 'tel:${businessModel!.contactPhone?.replaceAll(",", ",")}';
-                                                    launchUrl(Uri.parse(phoneUrl));
-                                                  }
-                                                },
-                                                rd: 4.r,
-                                                height: 20.h,
-                                                width: 50.h,
-                                                color: greenColor,
-                                                child: CustomText(
-                                                  title: "Call",
-                                                  color: whiteColor,
-                                                  fontWeight:
-                                                  FontWeight.bold,
-                                                  fontSize: 10,
-                                                ),
-                                              ),
-                                            ],
-                                          )
                                         ],
                                       ),
                                     ),
+                                  );
+                                } else {
+                                  // Return an empty container if there's no specialty
+                                  return Container();
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    height: 200.h,
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      // color: Colors.blue,
+                        border: Border.all(color: grayColor2),
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          top: 10.h, left: 10.w, bottom: 10, right: 10.w),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            title: "PRODUCT",
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: greenColor2,
+                          ),
+                          Divider(
+                            color: greenColor2,
+                            thickness: 2,
+                            indent: 1,
+                            endIndent: 250,
+                          ),
+
+                          /// product grid view
+                          Expanded(
+                            child: GridView.builder(
+                                padding: EdgeInsets.all(0.3),
+                                gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisSpacing: 3,
+                                  mainAxisSpacing: 4,
+                                  crossAxisCount: 2, // Number of columns
+                                ),
+                                itemCount: _products.length, // Number of items in the grid
+                                itemBuilder: (context, index) {
+                                  final product = _products[index]; // Get the product at the current index
+                                  return InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProductScreen()));
+                                      print('GridView');
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            // color: whiteColor,
+                                            borderRadius:
+                                            BorderRadius.circular(10.r),
+                                            border: Border.all(
+                                              color: grayColor2
+                                            )
+                                            // boxShadow: [
+                                            //   BoxShadow(
+                                            //     color: grayColor2,
+                                            //     blurRadius: 1.r,
+                                            //     spreadRadius: 1.r,
+                                            //     offset: Offset(0, 0),
+                                            //   ),
+                                            // ]
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Center(
+                                              child:  Image.asset(
+                                                product.images != null && product.images!.isNotEmpty ? product.images![0] : 'assets/images/producimage1.png',
+                                                scale: 7,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 2,
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 10),
+                                              child: CustomText(
+                                                title: product.itemName ?? 'Iphone',
+                                                color: grayColor,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 2,
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(left: 10),
+                                              child: CustomText(
+                                                title: 'Rs.${product.price}', // Display product price,
+                                                color: tealColor1,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            /// Product Screen button  comment for play store
+                                            Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment
+                                                  .spaceAround,
+                                              children: [
+                                                Custom_Button_Widget(
+                                                  ontap: () {
+                                                    if (businessModel?.contactPhone != null) {
+                                                      String whatsappUrl = 'https://wa.me/+92${businessModel!.contactPhone?.replaceAll(',', '')}';
+                                                      launchUrl(Uri.parse(whatsappUrl));
+                                                    }
+                                                  },
+                                                  rd: 4.r,
+                                                  height: 20.h,
+                                                  width: 50.h,
+                                                  color: greenColor,
+                                                  child: CustomText(
+                                                    title: "whatsApp",
+                                                    color: whiteColor,
+                                                    fontWeight:
+                                                    FontWeight.bold,
+                                                    fontSize: 10,
+                                                  ),
+                                                ),
+                                                // SizedBox(
+                                                //   width: 30.w,
+                                                // ),
+                                                Custom_Button_Widget(
+                                                  ontap: () {
+                                                    print(businessModel?.contactPhone);
+                                                    if (businessModel?.contactPhone != null) {
+                                                      String phoneUrl = 'tel:${businessModel!.contactPhone?.replaceAll(",", ",")}';
+                                                      launchUrl(Uri.parse(phoneUrl));
+                                                    }
+                                                  },
+                                                  rd: 4.r,
+                                                  height: 20.h,
+                                                  width: 50.h,
+                                                  color: greenColor,
+                                                  child: CustomText(
+                                                    title: "Call",
+                                                    color: whiteColor,
+                                                    fontWeight:
+                                                    FontWeight.bold,
+                                                    fontSize: 10,
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }
+                                ),
+                          ),
+
+
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: grayColor2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            title: "GALLERY",
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            color: greenColor2,
+                          ),
+                          Divider(
+                            color: greenColor2,
+                            thickness: 2,
+                            indent: 1,
+                            endIndent: 250,
+                          ),
+                          CarouselSlider.builder(
+                            options: CarouselOptions(
+                              viewportFraction: 1.0,
+                              enlargeCenterPage: false,
+                              autoPlay: true,
+                            ),
+                            itemCount: businessModel?.images?.length ?? 0,
+                            itemBuilder: (BuildContext context, int index, _) {
+                              if (businessModel?.images != null &&
+                                  businessModel!.images!.isNotEmpty &&
+                                  index < businessModel!.images!.length &&
+                                  businessModel!.images![index].imageName != null &&
+                                  businessModel!.images![index].imageName!.isNotEmpty) {
+                                return Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Image.network("https://businessonline.pk/Images/Gallery/${businessModel!.karobarId}/${businessModel!.images![index].imageName}",
+                                    fit: BoxFit.cover,
                                   ),
                                 );
-                              }
-                              ),
-                        ),
-
-
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: grayColor2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          title: "GALLERY",
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                          color: greenColor2,
-                        ),
-                        Divider(
-                          color: greenColor2,
-                          thickness: 2,
-                          indent: 1,
-                          endIndent: 250,
-                        ),
-                        CarouselSlider.builder(
-                          options: CarouselOptions(
-                            viewportFraction: 1.0,
-                            enlargeCenterPage: false,
-                            autoPlay: true,
-                          ),
-                          itemCount: businessModel?.images?.length ?? 0,
-                          itemBuilder: (BuildContext context, int index, _) {
-                            if (businessModel?.images != null &&
-                                businessModel!.images!.isNotEmpty &&
-                                index < businessModel!.images!.length &&
-                                businessModel!.images![index].imageName != null &&
-                                businessModel!.images![index].imageName!.isNotEmpty) {
-                              return Container(
-                                width: MediaQuery.of(context).size.width,
-                                child: Image.network("https://businessonline.pk/Images/Gallery/${businessModel!.karobarId}/${businessModel!.images![index].imageName}",
+                              } else {
+                                return Image.asset(
+                                  'assets/images/gallery.jpg',
                                   fit: BoxFit.cover,
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    // height: ScreenUtil().screenHeight / 2.4,
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      // color: Colors.blue,
+                        border: Border.all(color: grayColor2),
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          top: 10.h, left: 10.w, bottom: 10, right: 10.w),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.access_time_rounded,
+                                color: greenColor2,
+                                size: 30,
+                              ),
+                              SizedBox(width: 20),
+                              CustomText(
+                                title: "OPENING HOURS",
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: tealColor1,
+                              ),
+                            ],
+                          ),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            physics: ScrollPhysics(),
+                            child: DataTable(
+                              columnSpacing: 40,
+                              columns: const [
+                                DataColumn(label: Text('Day')),
+                                DataColumn(label: Text('12:00AM')),
+                                DataColumn(label: Text('12:00PM')),
+                              ],
+                              rows: const [
+                                DataRow(
+                                  selected: true,
+                                  cells: <DataCell>[
+                                    DataCell(Text('Monday')),
+                                    DataCell(Text('10:00AM')),
+                                    DataCell(Text('10:00PM')),
+                                  ],
                                 ),
-                              );
-                            } else {
-                              return Image.asset(
-                                'assets/images/gallery.jpg',
-                                fit: BoxFit.cover,
-                              );
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  // height: ScreenUtil().screenHeight / 2.4,
-                  margin: EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    // color: Colors.blue,
-                      border: Border.all(color: grayColor2),
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        top: 10.h, left: 10.w, bottom: 10, right: 10.w),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.access_time_rounded,
-                              color: greenColor2,
-                              size: 30,
-                            ),
-                            SizedBox(width: 20),
-                            CustomText(
-                              title: "OPENING HOURS",
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: tealColor1,
-                            ),
-                          ],
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: DataTable(
-                            columnSpacing: 40,
-                            columns: const [
-                              DataColumn(label: Text('Day')),
-                              DataColumn(label: Text('12:00AM')),
-                              DataColumn(label: Text('12:00PM')),
-                            ],
-                            rows: const [
-                              DataRow(
-                                selected: true,
-                                cells: <DataCell>[
-                                  DataCell(Text('Monday')),
-                                  DataCell(Text('10:00AM')),
-                                  DataCell(Text('10:00PM')),
-                                ],
-                              ),
-                              DataRow(
-                                selected: true,
-                                cells: <DataCell>[
-                                  DataCell(Text('Tuesday')),
-                                  DataCell(Text('10:00AM')),
-                                  DataCell(Text('10:00PM')),
-                                ],
-                              ),
-                              DataRow(
-                                selected: true,
-                                cells: <DataCell>[
-                                  DataCell(
-                                    Text('Wednesday'),
-                                  ),
-                                  DataCell(
-                                    Text('10:00AM'),
-                                  ),
-                                  DataCell(
-                                    Text('10:00PM'),
-                                  ),
-                                ],
-                              ),
-                              DataRow(
-                                selected: true,
-                                cells: <DataCell>[
-                                  DataCell(
-                                    Text('Thursday'),
-                                  ),
-                                  DataCell(
-                                    Text('10:00AM'),
-                                  ),
-                                  DataCell(
-                                    Text('10:00PM'),
-                                  ),
-                                ],
-                              ),
-                              DataRow(
-                                selected: true,
-                                cells: <DataCell>[
-                                  DataCell(Text('Friday')),
-                                  DataCell(Text('10:00AM')),
-                                  DataCell(Text('10:00PM')),
-                                ],
-                              ),
-                              DataRow(
-                                selected: true,
-                                cells: <DataCell>[
-                                  DataCell(Text('Saturday')),
-                                  DataCell(Text('10:00AM')),
-                                  DataCell(Text('10:00PM')),
-                                ],
-                              ),
-                              DataRow(
-                                selected: true,
-                                cells: <DataCell>[
-                                  DataCell(Text('Sunday')),
-                                  DataCell(Text('10:00AM')),
-                                  DataCell(Text('10:00PM')),
-                                ],
-                              ),
-
-                              // Add more rows as needed
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  height: ScreenUtil().screenHeight / 2.4,
-                  margin: EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    // color: Colors.blue,
-                      border: Border.all(color: grayColor2),
-                      borderRadius: BorderRadius.circular(12)),
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        top: 10.h, left: 10.w, bottom: 10, right: 10.w),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          title: "USER REVIEWS",
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: greenColor2,
-                        ),
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: 10,
-                            itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  Container(
-                                    alignment: Alignment.center,
-                                    height:
-                                    ScreenUtil().screenHeight / 8.0,
-                                    margin:
-                                    EdgeInsets.symmetric(vertical: 8),
-                                    decoration: BoxDecoration(
-                                      // color: Colors.blue,
-                                      border:
-                                      Border.all(color: grayColor2),
-                                      // borderRadius: BorderRadius.circular(12)
+                                DataRow(
+                                  selected: true,
+                                  cells: <DataCell>[
+                                    DataCell(Text('Tuesday')),
+                                    DataCell(Text('10:00AM')),
+                                    DataCell(Text('10:00PM')),
+                                  ],
+                                ),
+                                DataRow(
+                                  selected: true,
+                                  cells: <DataCell>[
+                                    DataCell(
+                                      Text('Wednesday'),
                                     ),
-                                    child: ListTile(
-                                      title: CustomText(title: "imran khan"),
-                                      subtitle: CustomText(
-                                        title: "waw3wo3eo",
-                                      ),
-                                      trailing: CustomText(
-                                          title:
-                                          "06/02/2024"),
+                                    DataCell(
+                                      Text('10:00AM'),
                                     ),
-                                  )
-                                ],
-                              );
-                            },
+                                    DataCell(
+                                      Text('10:00PM'),
+                                    ),
+                                  ],
+                                ),
+                                DataRow(
+                                  selected: true,
+                                  cells: <DataCell>[
+                                    DataCell(
+                                      Text('Thursday'),
+                                    ),
+                                    DataCell(
+                                      Text('10:00AM'),
+                                    ),
+                                    DataCell(
+                                      Text('10:00PM'),
+                                    ),
+                                  ],
+                                ),
+                                DataRow(
+                                  selected: true,
+                                  cells: <DataCell>[
+                                    DataCell(Text('Friday')),
+                                    DataCell(Text('10:00AM')),
+                                    DataCell(Text('10:00PM')),
+                                  ],
+                                ),
+                                DataRow(
+                                  selected: true,
+                                  cells: <DataCell>[
+                                    DataCell(Text('Saturday')),
+                                    DataCell(Text('10:00AM')),
+                                    DataCell(Text('10:00PM')),
+                                  ],
+                                ),
+                                DataRow(
+                                  selected: true,
+                                  cells: <DataCell>[
+                                    DataCell(Text('Sunday')),
+                                    DataCell(Text('10:00AM')),
+                                    DataCell(Text('10:00PM')),
+                                  ],
+                                ),
+
+                                // Add more rows as needed
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: grayColor2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Align(alignment: Alignment.centerLeft,
-                              child: CustomText( title: 'Name',
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: greenColor2,
-                              ),),
-                            Text("*",style: GoogleFonts.jost(color: Colors.red),),
-                          ],
-                        ),
-                        CustomTextFormFieldWidget(
-                          controller: nameForContactus,
-                          onChanged: (val) {
-                            // ownerNameController4.text=val;
-                              contactUsModel.user!.name =val;
-                          },
-                            borderRadius: 10,
-                          contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 5),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Align(alignment: Alignment.centerLeft,
-                              child: CustomText( title: 'Email',
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: greenColor2,
-                              ),),
-                            Text("*",style: GoogleFonts.jost(color: Colors.red),),
-                          ],
-                        ),
-                        CustomTextFormFieldWidget(
-                          controller: emailForContactus,
-                            onChanged: (val) {
-                              contactUsModel.user!.email = val;
-                            },
-                            borderRadius: 10,
-                          contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 5),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Align(alignment: Alignment.centerLeft,
-                              child: CustomText( title: 'Phone',
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: greenColor2,
-                              ),),
-                            Text("*",style: GoogleFonts.jost(color: Colors.red),),
-                          ],
-                        ),
-                        CustomTextFormFieldWidget(
-                          controller: phoneController,
-                           keyboardType: TextInputType.phone,
-                          onChanged: (val) {
-                            contactUsModel.user!.contact= val;
-                          },
-                          borderRadius: 10,
-                          contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 5),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Align(alignment: Alignment.centerLeft,
-                              child: CustomText( title: 'Massage',
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: greenColor2,
-                              ),),
-                            Text("*",style: GoogleFonts.jost(color: Colors.red),),
-                          ],
-                        ),
-                        CustomTextFormFieldWidget(
-                          controller: messageController,
-                            onChanged: (val) {
-                              contactUsModel.message =val;
-                            },
-                            borderRadius: 10,
-                          // contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 5),
-                           maxLines: 2,
-                        ),
-                        SizedBox(height: 20,),
-                        Center(
-                          child: Custom_Button_Widget(
-                            height: ScreenUtil().setHeight(30.h),
-                            ontap: () async{
-                              contactUsModel.contactId=0;
-                              contactUsModel.fkCityId = 0;
-                              contactUsModel.fkServiceId = 0;
-                              contactUsModel.fkProgramId =0;
-                              contactUsModel.fkCountryId=0;
-                              contactUsModel.fkPackageId=0;
-                              contactUsModel.timing="";
-                              contactUsModel.budget=0;
-                              contactUsModel.area="";
-                              contactUsModel.token="";
-                              print(contactUsModel.user!.name);
-                              APIController.contactUsPost(contactUsModel,context);
-                             nameForContactus.clear();
-                             emailForContactus.clear();
-                             phoneController.clear();
-                             messageController.clear();
-
-                            },
-                            rd: 10,
+                  Container(
+                    alignment: Alignment.center,
+                    // height: ScreenUtil().screenHeight / 2.4,
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      // color: Colors.blue,
+                        border: Border.all(color: grayColor2),
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          top: 10.h, left: 10.w, bottom: 10, right: 10.w),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            title: "USER REVIEWS",
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
                             color: greenColor2,
-                            child: CustomText(
-                              title: "Send",
-                              color: whiteColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.sp,
+                          ),
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: 10,
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: [
+                                    Container(
+                                      alignment: Alignment.center,
+                                      // height:
+                                      // ScreenUtil().screenHeight / 8.0,
+                                      margin:
+                                      EdgeInsets.symmetric(vertical: 05),
+                                      decoration: BoxDecoration(
+                                        // color: Colors.blue,
+                                        border:
+                                        Border.all(color: grayColor2),
+                                        // borderRadius: BorderRadius.circular(12)
+                                      ),
+                                      child: ListTile(
+                                        title: CustomText(title: "imran khan"),
+                                        subtitle: CustomText(
+                                          title: "waw3wo3eo",
+                                        ),
+                                        trailing: CustomText(
+                                            title:
+                                            "06/02/2024"),
+                                      ),
+                                    )
+                                  ],
+                                );
+                              },
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: grayColor2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 15),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          title: "About Business Online",
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: greenColor2,
-                        ),
-                        Divider(
-                          color: greenColor2,
-                          thickness: 2,
-                          indent: 1,
-                          endIndent: 120,
-                        ),
-                        CustomText(
-                          title: "Businessonline.pk is a product of High Performance Computing Private Limited.\n"
-                               " It is not just a normal marketing website but a platform for every small, medium and large Pakistani businesses to come together and present their products and services.\n"
-                               "Pakistani users will benefit to find closest and local businesses ranging from butchers to cobblers, stationers to pizza shops, telecom to banks at an ease of just Businessonline.pk.\n"
-                               " We Businessonline.pk are committed to covert tradition businesses in old Pakistan to latest technology in Naya Pakistan.\n"
-                               "Let’s join our hands and work together to form Naya Pakistan in our own very special way In sha Allah .\n",
-                          color: blackColor,
-                          googleFont: "Jost",
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14.sp,
-                          // minFontSize: 5,
-                          maxLine: 20,
-                          textOverflow: TextOverflow.ellipsis,
-                        ),
+                  Container(
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: grayColor2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Align(alignment: Alignment.centerLeft,
+                                child: CustomText( title: 'Name',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: greenColor2,
+                                ),),
+                              Text("*",style: GoogleFonts.jost(color: Colors.red),),
+                            ],
+                          ),
+                          CustomTextFormFieldWidget(
+                            controller: nameForContactus,
+                            onChanged: (val) {
+                              // ownerNameController4.text=val;
+                                contactUsModel.user!.name =val;
+                            },
+                              borderRadius: 10,
+                            contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 5),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Align(alignment: Alignment.centerLeft,
+                                child: CustomText( title: 'Email',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: greenColor2,
+                                ),),
+                              Text("*",style: GoogleFonts.jost(color: Colors.red),),
+                            ],
+                          ),
+                          CustomTextFormFieldWidget(
+                            controller: emailForContactus,
+                              onChanged: (val) {
+                                contactUsModel.user!.email = val;
+                              },
+                              borderRadius: 10,
+                            contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 5),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Align(alignment: Alignment.centerLeft,
+                                child: CustomText( title: 'Phone',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: greenColor2,
+                                ),),
+                              Text("*",style: GoogleFonts.jost(color: Colors.red),),
+                            ],
+                          ),
+                          CustomTextFormFieldWidget(
+                            controller: phoneController,
+                             keyboardType: TextInputType.phone,
+                            onChanged: (val) {
+                              contactUsModel.user!.contact= val;
+                            },
+                            borderRadius: 10,
+                            contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 5),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Align(alignment: Alignment.centerLeft,
+                                child: CustomText( title: 'Massage',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: greenColor2,
+                                ),),
+                              Text("*",style: GoogleFonts.jost(color: Colors.red),),
+                            ],
+                          ),
+                          CustomTextFormFieldWidget(
+                            controller: messageController,
+                              onChanged: (val) {
+                                contactUsModel.message =val;
+                              },
+                              borderRadius: 10,
+                            // contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 5),
+                             maxLines: 2,
+                          ),
+                          SizedBox(height: 20,),
+                          Center(
+                            child: Custom_Button_Widget(
+                              height: ScreenUtil().setHeight(30.h),
+                              ontap: () async{
+                                contactUsModel.contactId=0;
+                                contactUsModel.fkCityId = 0;
+                                contactUsModel.fkServiceId = 0;
+                                contactUsModel.fkProgramId =0;
+                                contactUsModel.fkCountryId=0;
+                                contactUsModel.fkPackageId=0;
+                                contactUsModel.timing="";
+                                contactUsModel.budget=0;
+                                contactUsModel.area="";
+                                contactUsModel.token="";
+                                print(contactUsModel.user!.name);
+                                APIController.contactUsPost(contactUsModel,context);
+                               nameForContactus.clear();
+                               emailForContactus.clear();
+                               phoneController.clear();
+                               messageController.clear();
 
-                      ],
+                              },
+                              rd: 10,
+                              color: greenColor2,
+                              child: CustomText(
+                                title: "Send",
+                                color: whiteColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15.sp,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
+                  Container(
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: grayColor2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10,vertical: 15),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            title: "About Business Online",
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: greenColor2,
+                          ),
+                          Divider(
+                            color: greenColor2,
+                            thickness: 2,
+                            indent: 1,
+                            endIndent: 120,
+                          ),
+                          CustomText(
+                            title: "Businessonline.pk is a product of High Performance Computing Private Limited.\n"
+                                 " It is not just a normal marketing website but a platform for every small, medium and large Pakistani businesses to come together and present their products and services.\n"
+                                 "Pakistani users will benefit to find closest and local businesses ranging from butchers to cobblers, stationers to pizza shops, telecom to banks at an ease of just Businessonline.pk.\n"
+                                 " We Businessonline.pk are committed to covert tradition businesses in old Pakistan to latest technology in Naya Pakistan.\n"
+                                 "Let’s join our hands and work together to form Naya Pakistan in our own very special way In sha Allah .\n",
+                            color: blackColor,
+                            googleFont: "Jost",
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14.sp,
+                            // minFontSize: 5,
+                            maxLine: 20,
+                            textOverflow: TextOverflow.ellipsis,
+                          ),
 
-              ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
 
@@ -1848,5 +1893,33 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage> w
     );
   }
 
+  void sendMessage(String data) {
+    final message = 'Your data: $data';
+    Share.share(message);
+  }
+
+  // whatsapp() async{
+  //   var contact = "+923319234730";
+  //   var androidUrl = "whatsapp://send?phone=$contact&text=Hi, I need some help";
+  //   var iosUrl = "https://wa.me/$contact?text=${Uri.parse('Hi, I need some help')}";
+  //
+  //   try{
+  //     if(Platform.isIOS){
+  //       await launchUrl(Uri.parse(iosUrl));
+  //     }
+  //     else{
+  //       await launchUrl(Uri.parse(androidUrl));
+  //     }
+  //   } on Exception{
+  //     // EasyLoading.showError('WhatsApp is not installed.');
+  //   }
+  // }
+
+  void _launchWhatsApp(String message) async {
+    var whatsappUrl = "whatsapp://send?text=${Uri.encodeComponent(message)}";
+    await launch(whatsappUrl).catchError((e) {
+      print("Error launching WhatsApp: $e");
+    });
+  }
 
 }

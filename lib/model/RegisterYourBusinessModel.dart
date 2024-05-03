@@ -39,7 +39,7 @@ class RegisterYourBusinessModel {
   bool isVerified;
   String? whatsAppNumber;
   int fkCategoryId;
-  Location? location;
+  LocationModel? location;
   List<dynamic>? images;
 
   RegisterYourBusinessModel({
@@ -108,7 +108,7 @@ class RegisterYourBusinessModel {
     isVerified: json["isVerified"] ?? false,
     whatsAppNumber: json["whatsAppNumber"] ?? "",
     fkCategoryId: json["fkCategoryId"] ?? 1,
-    location: json["location"] == null ? null : Location.fromJson(json["location"]),
+    location: json["location"] == null ? null : LocationModel.fromJson(json["location"]),
     images: json["images"] == null ? [] : List<dynamic>.from(json["images"]!.map((x) => x)),
   );
 
@@ -148,20 +148,20 @@ class RegisterYourBusinessModel {
   };
 }
 
-class Location {
+class LocationModel {
   int? locationId;
   String locationName;
   double locLat;
   double locLng;
 
-  Location({
+  LocationModel({
     this.locationId=0,
     this.locationName="",
     this.locLat=0,
     this.locLng=0,
   });
 
-  factory Location.fromJson(Map<String, dynamic> json) => Location(
+  factory LocationModel.fromJson(Map<String, dynamic> json) => LocationModel(
     locationId: json["locationId"]?? 0,
     locationName: json["locationName"]?? "",
     locLat: json["locLat"]?? 0,

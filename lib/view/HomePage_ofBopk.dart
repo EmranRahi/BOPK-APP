@@ -281,25 +281,71 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                         width: MediaQuery.of(context).size.width - 60, // Adjust the width as needed
-                        child: CustomTextFormFieldWidget(
-                          textInputAction: TextInputAction.search,
-                          onChanged: (v){
-                            _searchByKey.text=v;
-                            print("off"+lat.toString());
-                            print("on"+long.toString());
-                          },
-                          hint: "Search by Business",
-                          color: Colors.white,
-                          fillColor: true,
-                          borderRadius: 80.r,
-                          borderSide: BorderSide.none,
-                          suffixIcon: IconButton(onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context){
-                              return MobileShops(_searchByKey.text.toString(),0, lat,long);
-                            },),);
-                          }, icon: Icon(Icons.search)),
-                          // prefixIcon: IconButton(onPressed: (){}, icon: Icon(Icons.location_on,color: greenColor2,),),
-                          contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        child:
+                            ///Old Text Field
+                        // CustomTextFormFieldWidget(
+                        //   textInputAction: TextInputAction.search,
+                        //   onChanged: (value) {
+                        //     _searchByKey.text=value;
+                        //     // Navigator.push(context, MaterialPageRoute(builder: (context){
+                        //     //   return MobileShops(_searchByKey.text.toString(),0, lat,long);
+                        //     // },),);
+                        //   },
+                        //   textInputAction: TextInputAction.search
+                        //
+                        //   Onsubmit: (value) {
+                        //     _searchByKey.text=value;
+                        //     Navigator.push(context, MaterialPageRoute(builder: (context){
+                        //       return MobileShops(_searchByKey.text.toString(),0, lat,long);
+                        //     },),);
+                        //   },
+                        //   hint: "Search by Business",
+                        //   color: Colors.white,
+                        //   fillColor: true,
+                        //   borderRadius: 80.r,
+                        //   borderSide: BorderSide.none,
+                        //   suffixIcon: IconButton(onPressed: (){
+                        //     Navigator.push(context, MaterialPageRoute(builder: (context){
+                        //       return MobileShops(_searchByKey.text.toString(),0, lat,long);
+                        //     },),);
+                        //   }, icon: Icon(Icons.search)),
+                        //   // prefixIcon: IconButton(onPressed: (){}, icon: Icon(Icons.location_on,color: greenColor2,),),
+                        //   contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        // ),
+                        /// New TextField 
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                          borderRadius: BorderRadius.circular(80),
+                          ),
+                          child: TextField(
+                            // controller: searchController,
+                            onChanged: (value) {
+                              _searchByKey.text=value;
+                              // Navigator.push(context, MaterialPageRoute(builder: (context){
+                              //   return MobileShops(_searchByKey.text.toString(),0, lat,long);
+                              // },),);
+                            },
+                            textInputAction: TextInputAction.search, // Add search button to keyboard
+                            onSubmitted: (value) {
+                              _searchByKey.text=value;
+                              Navigator.push(context, MaterialPageRoute(builder: (context){
+                                return MobileShops(_searchByKey.text.toString(),0, lat,long);
+                              },),);
+                            },
+                            decoration: InputDecoration(
+                              hintText: 'Search by Business',
+                              border: InputBorder.none,
+                              filled: true,
+                              suffixIcon: IconButton(onPressed: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context){
+                                  return MobileShops(_searchByKey.text.toString(),0, lat,long);
+                                },),);
+                              }, icon: Icon(Icons.search)),
+                              // prefixIcon: IconButton(onPressed: (){}, icon: Icon(Icons.location_on,color: greenColor2,),),
+                              contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                            ),
+                          ),
                         ),
                       ),
                     ),

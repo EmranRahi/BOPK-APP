@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:businessonlinepk/Controllers/SubCategoryController.dart';
 import 'package:businessonlinepk/view/customs_widgets/constant_color.dart';
 import 'package:businessonlinepk/view/customs_widgets/custom_appbar.dart';
 import 'package:businessonlinepk/view/customs_widgets/custom_button.dart';
@@ -10,6 +11,9 @@ import 'package:businessonlinepk/view/verify_download.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import '../Controllers/Api_Controller.dart';
@@ -17,6 +21,7 @@ import '../Controllers/BopkController.dart';
 import '../model/HomePageMainCategory.dart';
 import '../model/OpeningAndClosingTimeModel.dart';
 import '../model/RegisterYourBusinessModel.dart';
+import '../model/SubCategoryModel.dart';
 import 'HomePage_ofBopk.dart';
 import 'add_jobs.dart';
 import 'business_for_sale.dart';
@@ -72,7 +77,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
   //   });
   // }
 
-
+  late GoogleMapController myController;
 // Define variables to hold selected values
   String? selectedOpeningTime;
   String? selectedClosingTime;
@@ -184,19 +189,70 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
 
   TextEditingController addressController = TextEditingController();
   RegisterYourBusinessModel registerYourBusinessModel = RegisterYourBusinessModel();
-  final BopkController _controller = BopkController();
-  HomePageMainCategory? selectedCategory; // Variable to hold the selected category
+  final SubCategoryController _controller = SubCategoryController();
+  // HomePageMainCategory? selectedCategory; // Variable to hold the selected category
+
+
+  late GoogleMapController mapController;
+  late Position _currentPosition;
+  final Set<Marker> _markers = {};
+  String _currentAddress = '';
+  SubCategoryModel? _selectedCategory;
 
   @override
   void initState() {
     super.initState();
     // categoryController.text = selectedCategory;
     _fetchCategories();
+    _getCurrentLocation();
   }
+
+  void _getCurrentLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      _currentPosition = position;
+      _updateMarkers();
+      _getAddressFromLatLng();
+    });
+  }
+
+  void _updateMarkers() {
+    _markers.clear();
+    _markers.add(
+      Marker(
+        markerId: MarkerId("current_location"),
+        position: LatLng(_currentPosition.latitude, _currentPosition.longitude),
+        infoWindow: InfoWindow(title: "Current Location"),
+      ),
+    );
+  }
+
+  void _getAddressFromLatLng() async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          _currentPosition.latitude, _currentPosition.longitude);
+      Placemark place = placemarks[0];
+      setState(() {
+        _currentAddress =
+        "${place.street}, ${place.locality}, ${place.postalCode}, ${place.country}";
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+  List<SubCategoryModel> _categories = [];
+
   Future<void> _fetchCategories() async {
     await _controller.fetchHomePageCategories();
-    setState(() {}); // Update the UI after fetching categories
+    setState(() {
+      _categories = _controller.categories
+          .where((category) => category.categoryName != null) // Filter out null names
+          .toList();
+    });
   }
+
+
 
   List<Widget> socialMediaLinks = []; // List to store text fields
   int fieldCounter = 0;
@@ -536,20 +592,29 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                 SizedBox(
                   height: ScreenUtil().setHeight(6.h),
                 ),
-                TextField(
-                  controller: categoryController,
-                  style: TextStyle(color: Colors.grey),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      // SizedBox(height: 10.0),
+                      _buildCategoryDropdown(),
+                    ],
                   ),
-                  readOnly: true,
-                  onTap: () {
-                    _showCategoryList(context);
-                  },
                 ),
+                // TextField(
+                //   controller: categoryController,
+                //   style: TextStyle(color: Colors.grey),
+                //   decoration: InputDecoration(
+                //     border: OutlineInputBorder(
+                //       borderSide: BorderSide(),
+                //       borderRadius: BorderRadius.circular(10),
+                //     ),
+                //   ),
+                //   readOnly: true,
+                //   onTap: () {
+                //     _showCategoryList(context);
+                //   },
+                // ),
                 SizedBox(
                   height: ScreenUtil().setHeight(6.h),
                 ),
@@ -976,7 +1041,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                     // contactNumController1.text=val;
                     registerYourBusinessModel.contactPhone = val;
                   },
-                  hint: "eg 0331,9838,546",
+                  hint: "Enter your phone number",
                   borderRadius: 10,
                   borderSide: BorderSide(width: 2),
                 ),
@@ -1128,7 +1193,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                         });
                       },
                     ),
-                    Text("Some number for WhatsApp"),
+                    Text("Same number for WhatsApp"),
                   ],
                 ),
                 Visibility(
@@ -1488,7 +1553,47 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                 //     hint: "Search Location",
                 //     borderRadius: 10),
                 SizedBox(height: ScreenUtil().setHeight(4.h)),
-                Image.asset('assets/images/bopk1.png'),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height/3,
+                  width:  MediaQuery.of(context).size.width,
+                  child:   SizedBox(
+                    height: MediaQuery.of(context).size.height / 3,
+                    width: MediaQuery.of(context).size.width,
+                    child: _currentPosition == null
+                        ? Center(child: CircularProgressIndicator())
+                        : GoogleMap(
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(_currentPosition.latitude, _currentPosition.longitude),
+                        zoom: 15,
+                      ),
+                      onMapCreated: (GoogleMapController controller) {
+                        mapController = controller;
+                      },
+                      markers: _markers,
+                      myLocationEnabled: true,
+                      myLocationButtonEnabled: true,
+                    ),
+                    // _center != null
+                    //     ? GoogleMap(
+                    //   onMapCreated: _onMapCreated,
+                    //   initialCameraPosition: CameraPosition(
+                    //     target: _center!, // Use null check operator (!) to access non-nullable LatLng value
+                    //     zoom: 14.0,
+                    //   ),
+                    //   markers: Set<Marker>.of([
+                    //     Marker(
+                    //       markerId: MarkerId('Exact Location'),
+                    //       position: _center!,
+                    //       infoWindow: InfoWindow(title: 'Exact Location'),
+                    //     ),
+                    //   ]),
+                    // )
+                    //
+                    //     : Center(
+                    //   child: CircularProgressIndicator(),
+                    // ),
+                  ),
+                ),
                 SizedBox(
                   height: ScreenUtil().setHeight(10.h),
                 ),
@@ -1500,9 +1605,9 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                 CustomTextFormFieldWidget(
                   controller: addressController,
                     onChanged: (val) {
-                      registerYourBusinessModel.address = val;
+                      registerYourBusinessModel.address = _currentAddress;
                     },
-                    hint: "Address",
+                    hint: _currentAddress,
                     borderRadius: 10),
                 Divider(
                   color: greenColor2,
@@ -1549,19 +1654,18 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                         ontap: ()  async{
                           print("click");
                           registerYourBusinessModel.karobarId = 0;
-                          registerYourBusinessModel.lat = 0.0;
-                          registerYourBusinessModel.lng = 0.0;
-                          registerYourBusinessModel.location = Location();
+                          registerYourBusinessModel.lat = _currentPosition.latitude;
+                          registerYourBusinessModel.lng = _currentPosition.latitude;
+                          registerYourBusinessModel.location = LocationModel();
                           registerYourBusinessModel.location?.locationId = 0;
                           registerYourBusinessModel.location?.locationName = "";
-                          registerYourBusinessModel.location?.locLat = 0.0;
-                          registerYourBusinessModel.location?.locLng = 0.0;
+                          registerYourBusinessModel.location?.locLat = _currentPosition.latitude;
+                          registerYourBusinessModel.location?.locLng = _currentPosition.latitude;
+                          registerYourBusinessModel.location?.locationName = _currentAddress;
                           // APIController.registerBusinessPostData(registerYourBusinessModel, context);
                           apiController.registerBusinessPostData(registerYourBusinessModel, context);
                           int id = 1;
                           await uploadImage(id);
-
-
                           // Clear fields and image
                           setState(() {
                             imageFile = File('path/to/default/image.png');
@@ -1570,10 +1674,12 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                           setState(() {});
                           sendDataForAllDays();
                           clearFields();
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePage()));
+
                         },
                         rd: 10,
                         color: greenColor2,
-                        width: ScreenUtil().screenWidth / 3,
+                        width: ScreenUtil().screenWidth / 1.2,
                         child: CustomText(
                             title: "Register your Business",
                             fontWeight: FontWeight.bold,
@@ -1581,42 +1687,42 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                             color: whiteColor),
                       ),
                     ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(boxShadow: const [
-                        BoxShadow(
-                          color: Colors.grey,
-                          spreadRadius: 1,
-                          blurRadius: 7,
-                          offset: Offset(0, 0),
-                        )
-                      ]),
-                      child: Custom_Button_Widget(
-                        ontap: () {},
-                        rd: 10,
-                        color: greenColor2,
-                        width: ScreenUtil().screenWidth / 3,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              CustomText(
-                                  title: "Edit Your Business",
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 10,
-                                  color: whiteColor),
-                              Icon(
-                                Icons.edit,
-                                size: 20,
-                                color: whiteColor,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                    // SizedBox(
+                    //   width: 10,
+                    // ),
+                    // Container(
+                    //   decoration: BoxDecoration(boxShadow: const [
+                    //     BoxShadow(
+                    //       color: Colors.grey,
+                    //       spreadRadius: 1,
+                    //       blurRadius: 7,
+                    //       offset: Offset(0, 0),
+                    //     )
+                    //   ]),
+                    //   child: Custom_Button_Widget(
+                    //     ontap: () {},
+                    //     rd: 10,
+                    //     color: greenColor2,
+                    //     width: ScreenUtil().screenWidth / 3,
+                    //     child: Padding(
+                    //       padding: const EdgeInsets.all(8.0),
+                    //       child: Row(
+                    //         children: [
+                    //           CustomText(
+                    //               title: "Edit Your Business",
+                    //               fontWeight: FontWeight.bold,
+                    //               fontSize: 10,
+                    //               color: whiteColor),
+                    //           Icon(
+                    //             Icons.edit,
+                    //             size: 20,
+                    //             color: whiteColor,
+                    //           )
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
                 SizedBox(
@@ -1727,8 +1833,8 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                         if (_controller.categories != null) {
                           businessCategories = (_controller.categories = _controller.categories!
                               .where((category) =>
-                          category.mainCategoryName != null &&
-                              category.mainCategoryName!
+                          category.categoryName != null &&
+                              category.categoryName!
                                   .toLowerCase()
                                   .contains(text.toLowerCase()))
                               .toList()).cast<String>();
@@ -1750,15 +1856,15 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                             shrinkWrap: true,
                             children: _controller.categories!.map((category) {
                               return ListTile(
-                                title: Text(category.mainCategoryName ?? ''),
+                                title: Text(category.categoryName ?? ''),
                                 onTap: () {
-                                  print(category.mainCategoryName);
+                                  print(category.categoryName);
                                   setState(() {
-                                    categoryController.text = category.mainCategoryName.toString() ;
+                                    categoryController.text = category.categoryName.toString() ;
                                   });
                                   Navigator.of(context).pop();
                                 },
-                                selected: category.mainCategoryName == defaultCategory,
+                                selected: category.categoryName == defaultCategory,
                               );
                             }).toList(),
                           );
@@ -1800,6 +1906,44 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
     addressController.clear();
   }
 
+  Widget _buildCategoryDropdown() {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0), // Adjust the value as needed
+        border: Border.all(color: Colors.grey), // Add border color if needed
+      ),
+      child: DropdownButton<SubCategoryModel>(
+        value: _selectedCategory,
+        onChanged: (SubCategoryModel? newValue) {
+          setState(() {
+            _selectedCategory = newValue;
+          });
+          if (_selectedCategory != null) {
+            print('Selected category ID: ${_selectedCategory!.categoryId}');
+            print('Selected category name: ${_selectedCategory!.categoryName}');
+            registerYourBusinessModel.fkCategoryId=_selectedCategory!.categoryId!.toInt();
+          }
+        },
+        items: [
+          DropdownMenuItem(
+            value: null,
+            child: Text(
+              '  Please select a category',
+              style: TextStyle(color: Colors.grey),
+            ),
+          ),
+          ..._categories.map<DropdownMenuItem<SubCategoryModel>>((SubCategoryModel category) {
+            return DropdownMenuItem<SubCategoryModel>(
+              value: category,
+              child: Text('  ${category.categoryName ?? ''} '), // Display category name with spaces
+            );
 
-
+          }).toList(),
+        ],
+      ),
+    );
   }
+
+
+}
