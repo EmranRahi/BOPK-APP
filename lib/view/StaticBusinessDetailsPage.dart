@@ -880,7 +880,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   ),
                                 ],
                               ),
-
                               // CustomText(
                               //   title: businessModel?.contactName
                               //           ?.replaceAll(',', '') ??
@@ -1021,15 +1020,85 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
 
                       /// Below Tab Bar View
 
+                      // Container(
+                      //   height: 30, // Adjust the height of the tab container
+                      //   decoration: BoxDecoration(
+                      //     // color: Colors.grey[300],
+                      //     borderRadius: BorderRadius.circular(
+                      //       25.0,
+                      //     ),
+                      //   ),
+                      //   child:  TabBar(
+                      //     controller: _tabController,
+                      //     isScrollable: true,
+                      //     indicator: BoxDecoration(
+                      //       // borderRadius: BorderRadius.circular(25.0),
+                      //       color: greenColor2, // Adjust the color as needed
+                      //     ),
+                      //     labelColor: Colors.white,
+                      //     unselectedLabelColor: Colors.green,
+                      //     tabs: [
+                      //       Tab(
+                      //         child: CustomText(
+                      //           title: 'Overview',
+                      //           fontWeight: FontWeight.bold,
+                      //           fontSize: 14,
+                      //         ),
+                      //       ),
+                      //       Tab(
+                      //         child: CustomText(
+                      //           title: "Products",
+                      //           fontWeight: FontWeight.bold,
+                      //           fontSize: 14,
+                      //         ),
+                      //       ),
+                      //       Tab(
+                      //         child: CustomText(
+                      //           title: "Gallery",
+                      //           fontWeight: FontWeight.bold,
+                      //           fontSize: 14,
+                      //         ),
+                      //       ),
+                      //       Tab(
+                      //         child: Row(
+                      //           children: [
+                      //             Icon(
+                      //               Icons.access_time_rounded,
+                      //               size: 20,
+                      //             ),
+                      //             SizedBox(width: 10),
+                      //             CustomText(
+                      //               title: "Opening Hours",
+                      //               fontWeight: FontWeight.bold,
+                      //               fontSize: 14,
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //       Tab(
+                      //         child: CustomText(
+                      //           title: "User Review",
+                      //           fontWeight: FontWeight.bold,
+                      //           fontSize: 14,
+                      //         ),
+                      //       ),
+                      //       Tab(
+                      //         child: CustomText(
+                      //           title: "Contact us",
+                      //           fontWeight: FontWeight.bold,
+                      //           fontSize: 14,
+                      //         ),
+                      //       ),
+                      //     ],
+                      //     onTap: _handleTabTap,
+                      //   ),
+                      // ),
                       Container(
                         height: 30, // Adjust the height of the tab container
                         decoration: BoxDecoration(
-                          // color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(
-                            25.0,
-                          ),
+                          borderRadius: BorderRadius.circular(25.0),
                         ),
-                        child:  TabBar(
+                        child: TabBar(
                           controller: _tabController,
                           isScrollable: true,
                           indicator: BoxDecoration(
@@ -1037,63 +1106,83 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                             color: greenColor2, // Adjust the color as needed
                           ),
                           labelColor: Colors.white,
-                          unselectedLabelColor: Colors.green,
+                          unselectedLabelColor: greenColor2,
+                          labelPadding: EdgeInsets.symmetric(horizontal: 3.0),
                           tabs: [
-                            Tab(
-                              child: CustomText(
-                                title: 'Overview',
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                            Container( // Adjust the width as needed
+                              width: 100, // Example width
+                              child: Tab(
+                                child: CustomText(
+                                  title: 'Overview',
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
                               ),
                             ),
-                            Tab(
-                              child: CustomText(
-                                title: "Products",
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                            Container( // Adjust the width as needed
+                              width: 100, // Example width
+                              child: Tab(
+                                child: CustomText(
+                                  title: "Products",
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
                               ),
                             ),
-                            Tab(
-                              child: CustomText(
-                                title: "Gallery",
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                            Container( // Adjust the width as needed
+                              width: 100, // Example width
+                              child: Tab(
+                                child: CustomText(
+                                  title: "Gallery",
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
                               ),
                             ),
-                            Tab(
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.access_time_rounded,
-                                    size: 20,
-                                  ),
-                                  SizedBox(width: 10),
-                                  CustomText(
-                                    title: "Opening Hours",
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ],
+                            Container( // Adjust the width as needed
+                              width: 150, // Example width
+                              child: Tab(
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.access_time_rounded,
+                                      size: 20,
+                                    ),
+                                    SizedBox(width: 10),
+                                    CustomText(
+                                      title: "Opening Hours",
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                            Tab(
-                              child: CustomText(
-                                title: "User Review",
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                            Container( // Adjust the width as needed
+                              width: 120, // Example width
+                              child: Tab(
+                                child: CustomText(
+                                  title: "User Review",
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
                               ),
                             ),
-                            Tab(
-                              child: CustomText(
-                                title: "Contact us",
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                            Container( // Adjust the width as needed
+                              width: 120, // Example width
+                              child: Tab(
+                                child: CustomText(
+                                  title: "Contact us",
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
                               ),
                             ),
                           ],
                           onTap: _handleTabTap,
                         ),
                       ),
+
                       SingleChildScrollView(
                         // scrollDirection: Axis.horizontal,
                         child: SizedBox(
@@ -1104,7 +1193,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                             children: [
                               Container(
                                 alignment: Alignment.center,
-                                margin: EdgeInsets.symmetric(vertical: 8),
+                                margin: EdgeInsets.symmetric(vertical: 5),
                                 decoration: BoxDecoration(
                                   // color: Colors.blue,
                                   border: Border.all(color: grayColor2),
@@ -1114,8 +1203,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   padding: const EdgeInsets.all(8.0),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       CustomText(
                                         title: "OVERVIEW",
