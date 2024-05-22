@@ -1,28 +1,13 @@
-import 'dart:async';
-
-import 'package:businessonlinepk/test_dialouge.dart';
 import 'package:businessonlinepk/view/SplashScreen.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-
-
 void main() {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive, overlays: []);
   runApp(DevicePreview(
       enabled: false,
       builder: (context)=> BopkApp()));
-  // runApp(const BopkApp());
-  // SystemChrome.setSystemUIOverlayStyle(
-  //     SystemUiOverlayStyle(
-  //       statusBarColor: greenColor2, // Change this to the desired color
-  //       statusBarIconBrightness: Brightness.light, // Change text color to light or dark
-  //     ),
-  // );
 }
 
 class BopkApp extends StatelessWidget {

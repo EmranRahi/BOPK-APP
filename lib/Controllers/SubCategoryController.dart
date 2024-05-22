@@ -9,11 +9,11 @@ class SubCategoryController{
   Future<void> fetchHomePageCategories() async {
     try {
       isLoading = true;
-      // final response = await http.get(Uri.parse("http://144.91.86.203/bopkapi/MainCategory"));
-      final response = await http.get(Uri.parse("http://144.91.86.203/bopkapi/Category"));
+      // final response = await http.get(Uri.parse("https://bopkapi.businessonline.pk/MainCategory"));
+      final response = await http.get(Uri.parse("https://bopkapi.businessonline.pk/Category"));
       print(response.body);
       print(response.statusCode);
-      print("http://144.91.86.203/bopkapi/MainCategory");
+      print("https://bopkapi.businessonline.pk/MainCategory");
 
       if (response.statusCode == 200) {
         dynamic jsonResponse = json.decode(response.body);

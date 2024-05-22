@@ -21,11 +21,10 @@ class CustomTextFormFieldWidget extends StatefulWidget {
     this.onChanged,
     this.Onsubmit,
     this.validator,
-    this.contentPadding, // Add a contentPadding parameter
-    this.borderSide = const BorderSide(), // Add a default value
+    this.contentPadding,
+    this.borderSide = const BorderSide(),
     this.textInputAction,
-
-
+    this.textAlign = TextAlign.start, // Default textAlign value
   }) : super(key: key);
 
   final String? hint;
@@ -43,12 +42,11 @@ class CustomTextFormFieldWidget extends StatefulWidget {
   final TextEditingController? controller;
   final void Function(String)? onChanged;
   final void Function(String)? Onsubmit;
-  final String? Function(String?)? validator; // Define the validator function
-  final EdgeInsets? contentPadding; // Add contentPadding property to the constructor
+  final String? Function(String?)? validator;
+  final EdgeInsets? contentPadding;
   final BorderSide? borderSide;
   final TextInputAction? textInputAction;
-
-
+  final TextAlign textAlign; // Non-nullable TextAlign property
 
   @override
   State<CustomTextFormFieldWidget> createState() => _CustomTextFormFieldWidgetState();
@@ -56,6 +54,7 @@ class CustomTextFormFieldWidget extends StatefulWidget {
 
 class _CustomTextFormFieldWidgetState extends State<CustomTextFormFieldWidget> {
   final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -68,12 +67,12 @@ class _CustomTextFormFieldWidgetState extends State<CustomTextFormFieldWidget> {
       focusNode: widget.focusNode,
       keyboardType: widget.keyboardType,
       inputFormatters: widget.inputFormatters,
-      validator:widget.validator, // Set the validator function
+      validator: widget.validator,
       textInputAction: widget.textInputAction,
+      textAlign: widget.textAlign,
 
       decoration: InputDecoration(
         contentPadding: widget.contentPadding,
-            // ?? EdgeInsets.fromLTRB(10, 10, 10, 0), // Use the provided contentPadding or default value
         fillColor: widget.color,
         filled: widget.fillColor,
         hintText: widget.hint,
@@ -82,9 +81,10 @@ class _CustomTextFormFieldWidgetState extends State<CustomTextFormFieldWidget> {
         counterText: widget.counterText,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.borderRadius ?? 30.r),
-          borderSide: widget.borderSide!, // Use the borderSide parameter
+          borderSide: widget.borderSide!,
         ),
       ),
     );
   }
 }
+

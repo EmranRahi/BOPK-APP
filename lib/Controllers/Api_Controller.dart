@@ -1,63 +1,99 @@
 import 'dart:convert';
+import 'package:businessonlinepk/model/BannerApiModel.dart';
 import 'package:businessonlinepk/model/ContactUs_Model.dart';
 import 'package:businessonlinepk/model/OpeningAndClosingTimeModel.dart';
 import 'package:businessonlinepk/model/RegisterReviewRattingModel.dart';
-import 'package:businessonlinepk/view/mobile_shops.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../Service/ApiResponse.dart';
+import '../Service/ApiService.dart';
 import '../model/DetailStaticBusinessModel.dart';
 import '../model/DetailsPageProductModel.dart';
-import '../model/LanguageModelClass.dart';
+import '../model/DisplayReviewModel.dart';
+import '../model/HomePageMainCategory.dart';
+import '../model/OpenningHour.dart';
 import '../model/RegisterYourBusinessModel.dart';
-import '../model/StaticListModelPage.dart';
 import 'package:http/http.dart' as http;
 import '../view/customs_widgets/constant_color.dart';
-import '../view/customs_widgets/custom_text.dart';
-import 'BopkController.dart';
 
 
 class APIController{
+
+  final String baseUrl = 'https://bopkapi.businessonline.pk/api';
+
+  Future<List<DisplayReviewModel>> fetchReviews(int id) async {
+    final response = await http.get(Uri.parse('$baseUrl/KarobarReview?id=$id'));
+
+    if (response.statusCode == 200) {
+      return displayReviewModelFromJson(response.body);
+    } else {
+      throw Exception('Failed to load reviews');
+    }
+  }
+
+  static Future<List<BannerApiModel>> getBanners() async {
+    List<BannerApiModel> list = [];
+    // Assuming ApiResponse and ApiService classes are defined
+    ApiResponse res = ApiResponse();
+    ApiService apiService = ApiService();
+    res = await apiService.GetData("https://bopkapi.businessonline.pk/api/KarobarBanner");
+    print(res.StatusCode);
+    if (res.StatusCode == 0) {
+      // Handle error case
+    } else if (res.StatusCode == 200) {
+      List data = res.Response;
+      print(data.toString());
+
+      // Convert data to List<BannerApiModel>
+      list = data.map<BannerApiModel>((json) => BannerApiModel.fromJson(json)).toList();
+    } else {
+      // Handle error case
+    }
+    return list;
+  }
+
+  List<HomePageMainCategory> categories = [];
+  bool isLoading = false;
+
+  Future<void> fetchHomePageCategories() async {
+    try {
+      isLoading = true;
+      // final response = await http.get(Uri.parse("https://bopkapi.businessonline.pk/MainCategory"));
+      final response = await http.get(Uri.parse("https://bopkapi.businessonline.pk/MainCategory"));
+      print(response.body);
+      print(response.statusCode);
+      print("https://bopkapi.businessonline.pk/MainCategory");
+
+      if (response.statusCode == 200) {
+        dynamic jsonResponse = json.decode(response.body);
+
+        // Print jsonResponse before using map
+        print('JSON Response: $jsonResponse');
+
+        // Check if jsonResponse is not null and is a List
+        if (jsonResponse != null && jsonResponse is List<dynamic>) {
+          categories = jsonResponse.map((json) => HomePageMainCategory.fromJson(json)).toList();
+        } else {
+          // Handle the case where jsonResponse is null or not a List
+          throw Exception('Invalid JSON structure or empty response');
+        }
+      } else {
+        // Handle the case where the response status code is not 200
+        throw Exception('Failed to load data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    } finally {
+      isLoading = false;
+    }
+  }
   ///  ALL Karobar or Business API
   ///  pagenation Api
-  //   int _currentPage = 1;
-  //    int _totalPages = 0;
-  //    List<Datum> _data = [];
-  //   final int pageSize = 20; // Define page size
-  //   Future<List<List<Datum>>> fetchData(int subCategoryId) async {
-  //     // final String url = "http://144.91.86.203/bopkapi/Karobar/GetData?id=$subCategoryId&page=$_currentPage&pageSize=20";
-  //     final String url = "http://144.91.86.203/bopkapi/Karobar/GetData?id=1&page=1&s=no";
-  //     try {
-  //       final response = await http.get(Uri.parse(url));
-  //       print(response.statusCode);
-  //       print(response.body);
-  //       print(url);
-  //       if (response.statusCode == 200) {
-  //         final Map<String, dynamic> responseData = json.decode(response.body);
-  //         final StaticListModel staticListModel = StaticListModel.fromJson(responseData);
-  //         _totalPages = staticListModel.totalPages ?? 0;
-  //
-  //         if (_currentPage == 1) {
-  //           _data = staticListModel.data ?? [];
-  //
-  //         } else {
-  //           _data.addAll(staticListModel.data ?? []);
-  //         }
-  //         return [_data];
-  //       } else {
-  //         throw Exception('Failed to load data');
-  //       }
-  //     } catch (error) {
-  //       print('Error: $error');
-  //       throw error;
-  //     }
-  //   }
-
   Future<DetailStaticBusinessModel?> fetchDataDetails(int? karobarId) async {
     try {
-      final response = await http.get(Uri.parse('http://144.91.86.203/bopkapi/Karobar/Details/${karobarId}'));
-      print("http://144.91.86.203/bopkapi/Karobar/Details/${karobarId}");
+      final response = await http.get(Uri.parse('https://bopkapi.businessonline.pk/Karobar/Details/$karobarId'));
+      print("https://bopkapi.businessonline.pk/Karobar/Details/$karobarId");
 
       if (response.statusCode == 200) {
         // Parse the JSON response
@@ -78,12 +114,10 @@ class APIController{
     }
   }
 
-  /// Register Your Business Post API Controller
-  Future<RegisterYourBusinessModel> registerBusinessPostData(
-      RegisterYourBusinessModel profileScreenModel, BuildContext context) async {
+  Future<ApiResponseReg> registerBusinessPostData(RegisterYourBusinessModel profileScreenModel, BuildContext context) async {
     final createJson = jsonEncode(profileScreenModel);
     final response = await http.post(
-      Uri.parse('http://144.91.86.203/bopkapi/Karobar/Register'),
+      Uri.parse('https://bopkapi.businessonline.pk/RegisterBusinesses/Create'),
       headers: <String, String>{
         'Content-Type': 'application/json',
       },
@@ -97,66 +131,26 @@ class APIController{
     }
 
     if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          duration: Duration(seconds: 3),
-          content: Container(
-            width: MediaQuery.of(context).size.width * 0.90,
-            height: 50,
-            decoration: BoxDecoration(
-              color: Colors.green,
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Align(
-              alignment: Alignment.center,
-              child: Text(
-                "Registration successful",
-                style: TextStyle(fontSize: 17),
-              ),
-            ),
-          ),
-        ),
-      );
-      // If the response is successful, navigate to the next screen
-      return registerYourBusinessModelFromJson(response.body);
+     print("successfully register the business");
     } else {
       // Show Snackbar with error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          duration: Duration(seconds: 3),
-          content: Container(
-            width: MediaQuery.of(context).size.width * 0.90,
-            height: 50,
-            decoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Align(
-              alignment: Alignment.center,
-              child: Text(
-                "Failed to submit response",
-                style: TextStyle(fontSize: 17),
-              ),
-            ),
-          ),
-        ),
-      );
-
-      // Throw exception
-      throw Exception('Failed to create customer');
+     print("field to register the business");
     }
+
+    // Return ApiResponse object with status code and response body
+    return ApiResponseReg(statusCode: response.statusCode, responseBody: response.body);
   }
 
 
 
 
+
+
   /// Post Opening And Closing Hour API in Register your Business class
-  static Future<void> openingAndClosingPostData(List<OpeningAndClosingTimeModel> models) async {
+  static Future<void> openingAndClosingPostData(List<OpenningHour> models) async {
     final createJson = jsonEncode(models.map((model) => model.toJson()).toList());
     final response = await http.post(
-      Uri.parse('http://144.91.86.203/bopkapi/ClosingOpeningtime/CreateDays'),
+      Uri.parse('https://bopkapi.businessonline.pk/ClosingOpeningtime/CreateDays'),
       headers: <String, String>{
         'Content-Type': 'application/json',
       },
@@ -183,7 +177,7 @@ class APIController{
   /// Post Review Rating Api Business Register
    static Future<RegisterReviewModel> registerReviewModel(RegisterReviewModel profileScreenModel,BuildContext context) async {
       final createJson = jsonEncode(profileScreenModel);
-      final response = await http.post(Uri.parse('http://144.91.86.203/bopkapi/api/KarobarReview/Create'),
+      final response = await http.post(Uri.parse('https://bopkapi.businessonline.pk/api/KarobarReview/Create'),
         headers: <String, String>{
           'Content-Type': 'application/json',
         },
@@ -322,7 +316,7 @@ class APIController{
   /// product OR Item API in Details
     static Future<List<DetailsPageProductModel>> fetchProducts() async {
       final response =
-      await http.get(Uri.parse("http://144.91.86.203/bopkapi/KarobarItems"));
+      await http.get(Uri.parse("https://bopkapi.businessonline.pk/KarobarItems"));
       print(response.body);
       print(response.statusCode);
       if (response.statusCode == 200) {
@@ -336,4 +330,10 @@ class APIController{
       }
     }
 
+}
+class ApiResponseReg {
+  int? statusCode;
+  dynamic responseBody; // Field to store the response body
+
+  ApiResponseReg({this.statusCode, required this.responseBody});
 }

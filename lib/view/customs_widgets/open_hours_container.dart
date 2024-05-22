@@ -4,13 +4,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class OpenHoursContainer extends StatefulWidget {
   final Widget child;
   final bool isChecked;
-  final Widget customCheckbox; // Add a parameter for custom Checkbox
+  final Widget customCheckbox;
 
   const OpenHoursContainer({
     Key? key,
     required this.child,
     this.isChecked = false,
-    required this.customCheckbox, // Provide a custom Checkbox widget
+    required this.customCheckbox,
   }) : super(key: key);
 
   @override
@@ -18,40 +18,27 @@ class OpenHoursContainer extends StatefulWidget {
 }
 
 class _OpenHoursContainerState extends State<OpenHoursContainer> {
-  // late bool isChecked;
-  // late String statusText;
-  //
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   isChecked = widget.isChecked;
-  //   statusText = isChecked ? 'Open' : 'Close';
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 50.h,
+      height: 50, // Set a fixed height
       decoration: BoxDecoration(
         color: Colors.grey, // Replace with your desired color
-        borderRadius: BorderRadius.circular(10)
+        borderRadius: BorderRadius.circular(10),
       ),
-    
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.w),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Row(
           children: [
             widget.child,
             Spacer(),
             widget.customCheckbox,
-            Text("Open"), // Display status text
+            Text(widget.isChecked ? "Open" : "Closed"), // Display status text
           ],
         ),
       ),
     );
-
   }
-
-
 }
+

@@ -13,7 +13,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:upgrader/upgrader.dart';
-import '../Controllers/BopkController.dart';
+import '../Controllers/Api_Controller.dart';
 import '../Service/ApiResponse.dart';
 import '../Service/ApiService.dart';
 import '../model/BannerApiModel.dart';
@@ -43,9 +43,9 @@ class _HomePageState extends State<HomePage> {
   var lat = 0.0;
   int? subCategoryid;
   late StreamSubscription<Position> positionStream;
-  final BopkController controller = BopkController();
+  final APIController controller = APIController();
   String minRequiredVersion ='1.5';
-  List<BannerApiModel>? listbaner = [];
+  List<BannerApiModel>? banners = [];
   List<String> imgList = [
     'assets/newbopkpic/b2.png',
     'assets/newbopkpic/b3.png',
@@ -57,15 +57,19 @@ class _HomePageState extends State<HomePage> {
   ];
   @override
   void initState() {
+    super.initState();
     checkGps();
     checkLocationPermission();
-    getBanners();
+    loadBanners();
     getLocation();
-    // Call the fetchHomePageCategories method when the widget initializes
-    super.initState();
     fetch();
   }
-
+  void loadBanners() async {
+    List<BannerApiModel> fetchedBanners = await APIController.getBanners();
+    setState(() {
+      banners = fetchedBanners;
+    });
+  }
   Future<void> checkLocationPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -102,30 +106,13 @@ class _HomePageState extends State<HomePage> {
             children: [
               SizedBox(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height / 3.0,
+                height: MediaQuery.of(context).size.height /3.3,
                 child: Stack(
                   children: [
-                    // Positioned CarouselSlider covering the entire screen
-                    // CarouselSlider(
-                    //   options: CarouselOptions(
-                    //     // height: MediaQuery.of(context).size.height/3,
-                    //     viewportFraction: 1.0, // Occupy full width
-                    //     enlargeCenterPage: false,
-                    //     autoPlay: true,
-                    //   ),
-                    //   items: imgList.map((item) {
-                    //     return Container(
-                    //       width: MediaQuery.of(context).size.width,
-                    //       child: Image.asset(
-                    //         item,
-                    //         fit: BoxFit.fill,
-                    //       ),
-                    //     );
-                    //   }).toList(),
-                    // ),
-                    CarouselSlider(
+                    banners != null && banners!.isNotEmpty
+                        ? CarouselSlider(
                       options: CarouselOptions(
-                        aspectRatio: 16 / 9,
+                        aspectRatio: 16 / 8,
                         viewportFraction: 1.0,
                         autoPlay: true,
                         autoPlayInterval: Duration(seconds: 5),
@@ -133,33 +120,22 @@ class _HomePageState extends State<HomePage> {
                         autoPlayCurve: Curves.fastOutSlowIn,
                         enlargeCenterPage: true,
                       ),
-                      items: (listbaner != null && listbaner!.isNotEmpty)
-                          ? listbaner!.map((banner) {
+                      items: banners!.map((banner) {
                         return Builder(
                           builder: (BuildContext context) {
                             return Container(
                               margin: EdgeInsets.symmetric(horizontal: 5.0),
                               child: Image.network(
-                                banner.webBanner!,
-                                fit: BoxFit.cover,
+                               "https://businessonline.pk/Image/Banners/${banner.bannerId!}/${banner.bannerName!}",
+                                fit: BoxFit.contain,
                               ),
                             );
                           },
                         );
-                      }).toList()
-                          : imgList.map((assetPath) {
-                        return Builder(
-                          builder: (BuildContext context) {
-                            return Container(
-                              // margin: EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Image.asset(
-                                assetPath,
-                                fit: BoxFit.fill,
-                              )
-                                );
-                          },
-                        );
                       }).toList(),
+                    )
+                        : Center(
+                      child: CircularProgressIndicator(), // Display a loading indicator while fetching banners
                     ),
                     Positioned(
                       top: ScreenUtil().setHeight(20),
@@ -482,17 +458,19 @@ class _HomePageState extends State<HomePage> {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
+                          controller.categories[index].mainCategoryName == null
+                              ? SizedBox.shrink()
+                              : Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: CustomText( title:
-                            controller.categories[index].mainCategoryName.toString() ?? "NO ",
+                            child: CustomText(
+                              title: controller.categories[index].mainCategoryName.toString() ?? "NO ",
                               googleFont: 'Jost',
-                              // fontSize: 18,
                               fontSize: 18,
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+
                           SizedBox(
                             height: 90,
                             child: controller.categories[index].categories == null
@@ -535,7 +513,7 @@ class _HomePageState extends State<HomePage> {
                                   child: Container(
                                     width: 80,
                                     child: Card(
-                                      elevation: 8,
+                                      elevation: 0,
                                       shadowColor: const Color.fromRGBO(0, 66, 37, 0.9),
                                       shape: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
@@ -570,34 +548,72 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                           SizedBox(height: 14.0),
                                           // Below this container is used for text green container
-                                          Container(
-                                            width: 80,
-                                            height: 30,
-                                            decoration: BoxDecoration(
-                                              color: greenColor2,
-                                              borderRadius: BorderRadius.only(
-                                                bottomRight: const Radius.circular(10.0),
-                                                bottomLeft: const Radius.circular(10.0),
-                                              ),
-                                            ),
-                                            child: Center(
-                                              child: LayoutBuilder(
-                                                builder: (context, constraints) {
-                                                  return FittedBox(
-                                                    fit: BoxFit.scaleDown,
-                                                    child: CustomText(
-                                                      title: controller.categories[index].categories![index1].categoryName ?? "ddd",
-                                                      googleFont: "Inter",
-                                                      fontSize: 08,
-                                                      color: Colors.white,
-                                                      maxLine: 3,
-                                                      textOverflow: TextOverflow.ellipsis,
-                                                      fontWeight: FontWeight.bold,
+                                          Column(
+                                            children: [
+                                              Container(
+                                                width: 80,
+                                                height: 30,
+                                                decoration: BoxDecoration(
+                                                  color: greenColor2,
+                                                  borderRadius: BorderRadius.only(
+                                                    bottomRight: const Radius.circular(10.0),
+                                                    bottomLeft: const Radius.circular(10.0),
+                                                  ),
+                                                ),
+                                                child: Column(
+                                                  children: [
+                                                    Center(
+                                                      child: LayoutBuilder(
+                                                        builder: (context, constraints) {
+                                                          return FittedBox(
+                                                            fit: BoxFit.scaleDown,
+                                                            child: CustomText(
+                                                              title: "موبائل" ?? "ddd",
+                                                              googleFont: "Inter",
+                                                              fontSize: 08,
+                                                              color: Colors.white,
+                                                              maxLine: 3,
+                                                              textOverflow: TextOverflow.ellipsis,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
                                                     ),
-                                                  );
-                                                },
+                                                    Container(
+                                                      width: 80,
+                                                      height: 15,
+                                                      decoration: BoxDecoration(
+                                                        color: greenColor2,
+                                                        borderRadius: BorderRadius.only(
+                                                          bottomRight: const Radius.circular(10.0),
+                                                          bottomLeft: const Radius.circular(10.0),
+                                                        ),
+                                                      ),
+                                                      child: Center(
+                                                        child: LayoutBuilder(
+                                                          builder: (context, constraints) {
+                                                            return FittedBox(
+                                                              fit: BoxFit.scaleDown,
+                                                              child: CustomText(
+                                                                title: controller.categories[index].categories![index1].categoryName ?? "ddd",
+                                                                googleFont: "Inter",
+                                                                fontSize: 08,
+                                                                color: Colors.white,
+                                                                maxLine: 3,
+                                                                textOverflow: TextOverflow.ellipsis,
+                                                                fontWeight: FontWeight.bold,
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
+
+                                            ],
                                           ),
                                         ],
                                       ),
@@ -825,28 +841,6 @@ class _HomePageState extends State<HomePage> {
             ));
   }
 
-  Future<List<BannerApiModel>> getBanners() async {
-    List<BannerApiModel> list = [];
-    ApiResponse res = ApiResponse();
-    ApiService apiService = ApiService();
-    res = await apiService.GetData("http://144.91.86.203/bopkapi/api/KarobarBanner");
-    print(res.StatusCode);
-    if (res.StatusCode == 0) {
-      // Handle error case
-    } else if (res.StatusCode == 200) {
-      List data = res.Response;
-      print(data.toString());
-      setState(() {});
-      print("xxxxxxxxxxxxxx"+data.toString());
-
-      // Assuming BannersClass is the class representing your API response
-      // Convert data from BannersClass to BannerApiModel
-      list = data.map<BannerApiModel>((json) => BannerApiModel.fromJson(json)).toList();
-    } else {
-      // Handle error case
-    }
-    return list;
-  }
 
 
   Future<void> fetch() async {
@@ -856,41 +850,4 @@ class _HomePageState extends State<HomePage> {
     });
   }
 }
-
-class TownName {
-  static Future<List<dynamic>> getSuggestionsTown(String strTown) async {
-    ApiResponse res = ApiResponse();
-    ApiService apiService = ApiService();
-    res = await apiService.GetData(
-        "http://144.91.86.203/boukapi/api/Cities/GetTowns/" + strTown);
-
-    // List<String> data = res.Response;
-    print("rash" + res.Response.toString());
-    List<dynamic> matches = <dynamic>[];
-    matches.addAll(res.Response);
-
-    matches.retainWhere((s) => s.toLowerCase().contains(strTown.toLowerCase()));
-    return matches;
-  }
-}
-
-class CitiesService {
-  static Future<List<dynamic>> getSuggestions(String query, String lat, String long) async {
-    ApiResponse res = ApiResponse();
-    ApiService apiService = ApiService();
-    res = await apiService.GetData(
-        "http://144.91.86.203/boukapi/api/Home/autoCompSubCatName?prefix=" +
-            query +
-            "&clat="+lat+"&clong="+long);
-
-    // List<String> data = res.Response;
-    print("rash" + res.Response.toString());
-    List<dynamic> matches = <dynamic>[];
-    matches.addAll(res.Response);
-
-    matches.retainWhere((s) => s.toLowerCase().contains(query.toLowerCase()));
-    return matches;
-  }
-}
-
 
