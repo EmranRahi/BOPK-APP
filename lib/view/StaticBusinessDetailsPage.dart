@@ -109,7 +109,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
 
   bool _isAboutTabSelected = false;
 
-  double height = 200; // Initial default height
+  double height = 300; // Initial default height
   void _handleTabChange() {
     _updateHeight(_tabController.index);
   }
@@ -121,7 +121,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
   void _updateHeight(int index) {
     setState(() {
       if (index == 0) {
-        height = 250; // Height for index 0
+        height = 270; // Height for index 0
       } else if (index == 1) {
         height = 400; // Height for index 1
       } else if (index == 2) {
@@ -226,13 +226,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    // contactUsModel.user=User();
-    print('work');
-    print("businessModel: $businessModel");
-    print("businessModel.lat: ${businessModel?.lat}");
-    print("businessModel.lng: ${businessModel?.lng}");
-    print("_center: $_center");
-
     return Scaffold(
       backgroundColor: Color(0xffE4E4E4),
       key: _scaffoldKey,

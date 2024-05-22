@@ -243,8 +243,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Positioned(
                       bottom: ScreenUtil().setHeight(24.h),
-                      left:  ScreenUtil().setWidth(50.w),
-                      right: ScreenUtil().setWidth(50.w),
+                      left: ScreenUtil().setWidth(10.w),
+                      right: ScreenUtil().setWidth(10.w),
                       child: Container(
                         decoration: BoxDecoration(
                           boxShadow: [
@@ -255,76 +255,59 @@ class _HomePageState extends State<HomePage> {
                               offset: Offset(0, 0), // changes position of shadow
                             ),
                           ],
+                          borderRadius: BorderRadius.circular(40), // Ensuring circular shape
                         ),
                         width: MediaQuery.of(context).size.width - 60, // Adjust the width as needed
-                        child:
-                            ///Old Text Field
-                        // CustomTextFormFieldWidget(
-                        //   textInputAction: TextInputAction.search,
-                        //   onChanged: (value) {
-                        //     _searchByKey.text=value;
-                        //     // Navigator.push(context, MaterialPageRoute(builder: (context){
-                        //     //   return MobileShops(_searchByKey.text.toString(),0, lat,long);
-                        //     // },),);
-                        //   },
-                        //   textInputAction: TextInputAction.search
-                        //
-                        //   Onsubmit: (value) {
-                        //     _searchByKey.text=value;
-                        //     Navigator.push(context, MaterialPageRoute(builder: (context){
-                        //       return MobileShops(_searchByKey.text.toString(),0, lat,long);
-                        //     },),);
-                        //   },
-                        //   hint: "Search by Business",
-                        //   color: Colors.white,
-                        //   fillColor: true,
-                        //   borderRadius: 80.r,
-                        //   borderSide: BorderSide.none,
-                        //   suffixIcon: IconButton(onPressed: (){
-                        //     Navigator.push(context, MaterialPageRoute(builder: (context){
-                        //       return MobileShops(_searchByKey.text.toString(),0, lat,long);
-                        //     },),);
-                        //   }, icon: Icon(Icons.search)),
-                        //   // prefixIcon: IconButton(onPressed: (){}, icon: Icon(Icons.location_on,color: greenColor2,),),
-                        //   contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                        // ),
-                        /// New TextField 
-                        Container(
+                        child: Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
-                          borderRadius: BorderRadius.circular(80),
+                            borderRadius: BorderRadius.circular(40), // Ensuring circular shape
                           ),
                           child: TextField(
-                            // controller: searchController,
                             onChanged: (value) {
-                              _searchByKey.text=value;
-                              // Navigator.push(context, MaterialPageRoute(builder: (context){
-                              //   return MobileShops(_searchByKey.text.toString(),0, lat,long);
-                              // },),);
+                              _searchByKey.text = value;
                             },
                             textInputAction: TextInputAction.search, // Add search button to keyboard
                             onSubmitted: (value) {
-                              _searchByKey.text=value;
-                              Navigator.push(context, MaterialPageRoute(builder: (context){
-                                return MobileShops(_searchByKey.text.toString(),0, lat,long);
-                              },),);
+                              _searchByKey.text = value;
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return MobileShops(_searchByKey.text.toString(), 0, lat, long);
+                                  },
+                                ),
+                              );
                             },
                             decoration: InputDecoration(
                               hintText: 'Search by Business',
-                              border: InputBorder.none,
                               filled: true,
-                              suffixIcon: IconButton(onPressed: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context){
-                                  return MobileShops(_searchByKey.text.toString(),0, lat,long);
-                                },),);
-                              }, icon: Icon(Icons.search)),
-                              // prefixIcon: IconButton(onPressed: (){}, icon: Icon(Icons.location_on,color: greenColor2,),),
+                              fillColor: Colors.white, // Set background color to white
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return MobileShops(_searchByKey.text.toString(), 0, lat, long);
+                                      },
+                                    ),
+                                  );
+                                },
+                                icon: Icon(Icons.search),
+                              ),
                               contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                             ),
                           ),
                         ),
                       ),
                     ),
+
+
+
                     Positioned(
                         bottom: -14, // Adjust the bottom position for the text field
                         // left: 50, // Adjust the left position for the text field
@@ -562,27 +545,30 @@ class _HomePageState extends State<HomePage> {
                                                 ),
                                                 child: Column(
                                                   children: [
-                                                    Center(
-                                                      child: LayoutBuilder(
-                                                        builder: (context, constraints) {
-                                                          return FittedBox(
-                                                            fit: BoxFit.scaleDown,
-                                                            child: CustomText(
-                                                              title: "موبائل" ?? "ddd",
-                                                              googleFont: "Inter",
-                                                              fontSize: 08,
-                                                              color: Colors.white,
-                                                              maxLine: 3,
-                                                              textOverflow: TextOverflow.ellipsis,
-                                                              fontWeight: FontWeight.bold,
-                                                            ),
-                                                          );
-                                                        },
-                                                      ),
-                                                    ),
+
+                                                    /// if you want to adjust urdu text then uncomment this.
+                                                    // Center(
+                                                    //   child: LayoutBuilder(
+                                                    //     builder: (context, constraints) {
+                                                    //       return FittedBox(
+                                                    //         fit: BoxFit.scaleDown,
+                                                    //         child: CustomText(
+                                                    //           title: "موبائل" ?? "ddd",
+                                                    //           googleFont: "Inter",
+                                                    //           fontSize: 08,
+                                                    //           color: Colors.white,
+                                                    //           maxLine: 3,
+                                                    //           textOverflow: TextOverflow.ellipsis,
+                                                    //           fontWeight: FontWeight.bold,
+                                                    //         ),
+                                                    //       );
+                                                    //     },
+                                                    //   ),
+                                                    // ),
                                                     Container(
                                                       width: 80,
-                                                      height: 15,
+                                                      height: 30,
+                                                      // height: 15,
                                                       decoration: BoxDecoration(
                                                         color: greenColor2,
                                                         borderRadius: BorderRadius.only(
