@@ -66,8 +66,10 @@ class _HomePageState extends State<HomePage> {
   }
   void loadBanners() async {
     List<BannerApiModel> fetchedBanners = await APIController.getBanners();
+    // Filter banners to include only those with isMain set to true
+    List<BannerApiModel> mainBanners = fetchedBanners.where((banner) => banner.isMain == true).toList();
     setState(() {
-      banners = fetchedBanners;
+      banners = mainBanners;
     });
   }
   Future<void> checkLocationPermission() async {
@@ -106,7 +108,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               SizedBox(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height /3.3,
+                height: MediaQuery.of(context).size.height /3,
                 child: Stack(
                   children: [
                     banners != null && banners!.isNotEmpty
@@ -125,9 +127,12 @@ class _HomePageState extends State<HomePage> {
                           builder: (BuildContext context) {
                             return Container(
                               margin: EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Image.network(
-                               "https://businessonline.pk/Image/Banners/${banner.bannerId!}/${banner.bannerName!}",
-                                fit: BoxFit.contain,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(30.0), // Adjust the border radius as needed
+                                child: Image.network(
+                                  "https://businessonline.pk/Image/Banners/${banner.bannerId!}/${banner.bannerName!}",
+                                  fit: BoxFit.contain,
+                                ),
                               ),
                             );
                           },
@@ -137,6 +142,7 @@ class _HomePageState extends State<HomePage> {
                         : Center(
                       child: CircularProgressIndicator(), // Display a loading indicator while fetching banners
                     ),
+
                     Positioned(
                       top: ScreenUtil().setHeight(20),
                       right: ScreenUtil().setWidth(5),
@@ -737,7 +743,7 @@ class _HomePageState extends State<HomePage> {
     prefs.setString("mykey", jsonData);
     print(prefs.getString("mykey")); // to print json data
     list1Share = jsonDecode(prefs.getString("mykey").toString());
-    print("kam" + list1Share.toString());
+    print("kam$list1Share");
     // Globle.listda = list1Share;
   }
 

@@ -15,16 +15,38 @@ import '../model/HomePageMainCategory.dart';
 import '../model/OpenningHour.dart';
 import '../model/RegisterYourBusinessModel.dart';
 import 'package:http/http.dart' as http;
+import '../model/SearchBusinessModel.dart';
+import '../model/StaticListModelPage.dart';
 import '../view/customs_widgets/constant_color.dart';
 
 
 class APIController{
 
-  final String baseUrl = 'https://bopkapi.businessonline.pk/api';
+  Future<StaticListModel> searchBusiness(SearchBusinessModel model) async {
+    final createJson = jsonEncode(model.toJson());
+    final response = await http.post(
+      Uri.parse("https://bopkapi.businessonline.pk/Karobar/GetByLocationSearchingPost"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: createJson,
+    );
+
+    print(createJson);
+    if (response.statusCode == 200) {
+      return StaticListModel.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
 
   Future<List<DisplayReviewModel>> fetchReviews(int id) async {
-    final response = await http.get(Uri.parse('$baseUrl/KarobarReview?id=$id'));
-
+    final response = await http.get(Uri.parse('http://144.91.86.203/bopkapi/api/KarobarReview?id=$id'));
+    // final response = await http.get(Uri.parse('https://bopkapi.businessonline.pk/KarobarReview?id=$id'));
+print(response.statusCode);
+print(response.body);
+print('https://bopkapi.businessonline.pk/KarobarReview?id=$id');
+print('https://bopkapi.businessonline.pk/KarobarReview?id=$id');
     if (response.statusCode == 200) {
       return displayReviewModelFromJson(response.body);
     } else {
@@ -254,10 +276,10 @@ class APIController{
   static Future<ContactUsModel> contactUsPost(ContactUsModel profileScreenModel,BuildContext context) async {
     final createJson = jsonEncode(profileScreenModel);
     final response = await http.post(
-      Uri.parse('http://144.91.86.203/apiwebsites/Contacts/Create'),
+      Uri.parse('https://apipython.highperformancecomputing.co.uk/Contacts/Create'),
       headers: <String, String>{
         'Content-Type': 'application/json',
-        "Project":"2"
+        "Project":"7"
       },
       body: createJson,
     );

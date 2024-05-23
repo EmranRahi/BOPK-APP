@@ -14,8 +14,10 @@ class BannerApiModel {
   String? bannerName;
   String? webBanner;
   String? landingLink;
+  bool? isMain;
   bool? isActive;
   DateTime? dateAdded;
+  String? karobar;
 
   BannerApiModel({
     this.bannerId=0,
@@ -23,18 +25,22 @@ class BannerApiModel {
     this.bannerName="",
     this.webBanner="",
     this.landingLink="",
+    this.isMain=false,
     this.isActive=false,
     this.dateAdded,
+    this.karobar="",
   });
 
   factory BannerApiModel.fromJson(Map<String, dynamic> json) => BannerApiModel(
-    bannerId: json["bannerId"]??0,
-    fkKarobarId: json["fkKarobarId"]??0,
-    bannerName: json["bannerName"]??"",
-    webBanner: json["webBanner"]??"",
-    landingLink: json["landingLink"]??"",
-    isActive: json["isActive"]??false,
+    bannerId: json["bannerId"],
+    fkKarobarId: json["fkKarobarId"],
+    bannerName: json["bannerName"],
+    webBanner: json["webBanner"],
+    landingLink: json["landingLink"],
+    isMain: json["isMain"],
+    isActive: json["isActive"],
     dateAdded: json["dateAdded"] == null ? null : DateTime.parse(json["dateAdded"]),
+    karobar: json["karobar"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -43,7 +49,10 @@ class BannerApiModel {
     "bannerName": bannerName,
     "webBanner": webBanner,
     "landingLink": landingLink,
+    "isMain": isMain,
     "isActive": isActive,
     "dateAdded": dateAdded?.toIso8601String(),
+    "karobar": karobar,
   };
 }
+

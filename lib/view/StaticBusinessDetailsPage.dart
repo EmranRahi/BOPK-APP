@@ -226,6 +226,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
 
   @override
   Widget build(BuildContext context) {
+    futureReviews = APIController().fetchReviews(widget.karobarId!.toInt());
     return Scaffold(
       backgroundColor: Color(0xffE4E4E4),
       key: _scaffoldKey,
@@ -831,28 +832,32 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       (contact1 != null && contact1!.isNotEmpty)
-                                          ?  CustomText(
-                                        title: "Owner Name: ${contact1!}" ??
-                                            "Imran Khan",
-                                        fontWeight: FontWeight.bold,
-                                        googleFont: "Jost",
-                                        fontSize: 14.sp,
-                                        maxLine: 4,
+                                          ? Flexible(
+                                        child: CustomText(
+                                          title: "Owner Name: ${contact1!}",
+                                          fontWeight: FontWeight.bold,
+                                          googleFont: "Jost",
+                                          fontSize: 14.sp,
+                                          maxLine: 4,
+                                          textOverflow: TextOverflow.ellipsis, // Add this to handle overflow
+                                        ),
                                       )
                                           : SizedBox.shrink(),
                                       (contact2 != null && contact2!.isNotEmpty)
-                                          ?  CustomText(
-                                        title: "Owner Name: ${contact2!}" ??
-                                            "Imran Khan",
-                                        fontWeight: FontWeight.bold,
-                                        googleFont: "Jost",
-                                        fontSize: 14.sp,
-                                        maxLine: 4,
+                                          ? Flexible(
+                                        child: CustomText(
+                                          title: "Owner Name: ${contact2!}",
+                                          fontWeight: FontWeight.bold,
+                                          googleFont: "Jost",
+                                          fontSize: 14.sp,
+                                          maxLine: 4,
+                                          textOverflow: TextOverflow.ellipsis, // Add this to handle overflow
+                                        ),
                                       )
                                           : SizedBox.shrink(),
                                     ],
                                   ),
-                                  SizedBox(height: 10), // Space between rows
+                              SizedBox(height: 10), // Space between rows
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
@@ -1303,10 +1308,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                     borderRadius: BorderRadius.circular(12)),
                                 child: Padding(
                                   padding: EdgeInsets.only(
-                                      top: 10.h,
-                                      left: 10.w,
-                                      bottom: 10,
-                                      right: 10.w),
+                                      top: 10.h),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
@@ -1361,14 +1363,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                                                 .circular(10.r),
                                                         border: Border.all(
                                                             color: grayColor2)
-                                                        // boxShadow: [
-                                                        //   BoxShadow(
-                                                        //     color: grayColor2,
-                                                        //     blurRadius: 1.r,
-                                                        //     spreadRadius: 1.r,
-                                                        //     offset: Offset(0, 0),
-                                                        //   ),
-                                                        // ]
                                                         ),
                                                     child: Column(
                                                       mainAxisAlignment:
@@ -1379,18 +1373,17 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                                               .start,
                                                       children: [
                                                         Center(
-                                                          child: Image.asset(
-                                                            product.images !=
-                                                                        null &&
-                                                                    product
-                                                                        .images!
-                                                                        .isNotEmpty
-                                                                ? product
-                                                                    .images![0]
-                                                                : 'assets/images/producimage1.png',
-                                                            scale: 7,
+                                                          child: ClipRRect(
+                                                            borderRadius: BorderRadius.circular(8.0), // Adjust the radius as needed
+                                                            child: Image.asset(
+                                                              product.images != null && product.images!.isNotEmpty
+                                                                  ? product.images![0]
+                                                                  : 'assets/images/prodc.jpg',
+                                                              scale: 3,
+                                                            ),
                                                           ),
                                                         ),
+
                                                         SizedBox(
                                                           height: 2,
                                                         ),
@@ -1637,115 +1630,52 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                       SingleChildScrollView(
                                         scrollDirection: Axis.vertical,
                                         physics: ScrollPhysics(),
-                                        child: Card(
-                                          child: DataTable(
-                                            columnSpacing: 20,
-                                            columns: const [
-                                              DataColumn(label: Text('Day')),
-                                              DataColumn(label: Text('OpeningTime')),
-                                              DataColumn(label: Text('ClosingTime')),
-                                            ],
-                                            rows: openningHours.map((OpenningHour hour) {
-                                              return DataRow(
-                                                color: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-                                                  // Use different background color for the row
-                                                  return Colors.grey[200]; // Set your desired background color here
-                                                }),
-                                                selected: true,
-                                                cells: <DataCell>[
-                                                  DataCell(Text(hour.dayOfWeek ?? '')),
-                                                  DataCell(Text(hour.openingTime ?? '')),
-                                                  DataCell(Text(hour.closingTime ?? '')),
-                                                ],
-                                              );
-                                            }).toList(),
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Card(
+                                            child: DataTable(
+                                              columnSpacing: 10,
+                                              columns: const [
+                                                DataColumn(label: Text('Day')),
+                                                DataColumn(label: Text('Opening Time')),
+                                                DataColumn(label: Text('Closing Time')),
+                                              ],
+                                              rows: openningHours.map((OpenningHour hour) {
+                                                final dayOfWeek = hour.dayOfWeek ?? '';
+                                                String openingTime;
+                                                String closingTime;
+
+                                                if (hour.isOpen == true) {
+                                                  if (hour.openingTime == "24Hours" || hour.closingTime == "24Hours") {
+                                                    openingTime = "24Hours";
+                                                    closingTime = "24Hours";
+                                                  } else {
+                                                    openingTime = hour.openingTime ?? 'Closed';
+                                                    closingTime = hour.closingTime ?? 'Closed';
+                                                  }
+                                                } else {
+                                                  openingTime = 'Closed';
+                                                  closingTime = 'Closed';
+                                                }
+
+                                                return DataRow(
+                                                  color: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+                                                    return Colors.grey[200]; // Set your desired background color here
+                                                  }),
+                                                  selected: true,
+                                                  cells: <DataCell>[
+                                                    DataCell(Text(dayOfWeek)),
+                                                    DataCell(Text(openingTime)),
+                                                    DataCell(Text(closingTime)),
+                                                  ],
+                                                );
+                                              }).toList(),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                      // SingleChildScrollView(
-                                      //   scrollDirection: Axis.vertical,
-                                      //   physics: ScrollPhysics(),
-                                      //   child: DataTable(
-                                      //     columnSpacing: 40,
-                                      //     columns: const [
-                                      //       DataColumn(label: Text('Day')),
-                                      //       DataColumn(label: Text('12:00AM')),
-                                      //       DataColumn(label: Text('12:00PM')),
-                                      //     ],
-                                      //     rows: const [
-                                      //       DataRow(
-                                      //         selected: true,
-                                      //         cells: <DataCell>[
-                                      //           DataCell(Text('Monday')),
-                                      //           DataCell(Text('10:00AM')),
-                                      //           DataCell(Text('10:00PM')),
-                                      //         ],
-                                      //       ),
-                                      //       DataRow(
-                                      //         selected: true,
-                                      //         cells: <DataCell>[
-                                      //           DataCell(Text('Tuesday')),
-                                      //           DataCell(Text('10:00AM')),
-                                      //           DataCell(Text('10:00PM')),
-                                      //         ],
-                                      //       ),
-                                      //       DataRow(
-                                      //         selected: true,
-                                      //         cells: <DataCell>[
-                                      //           DataCell(
-                                      //             Text('Wednesday'),
-                                      //           ),
-                                      //           DataCell(
-                                      //             Text('10:00AM'),
-                                      //           ),
-                                      //           DataCell(
-                                      //             Text('10:00PM'),
-                                      //           ),
-                                      //         ],
-                                      //       ),
-                                      //       DataRow(
-                                      //         selected: true,
-                                      //         cells: <DataCell>[
-                                      //           DataCell(
-                                      //             Text('Thursday'),
-                                      //           ),
-                                      //           DataCell(
-                                      //             Text('10:00AM'),
-                                      //           ),
-                                      //           DataCell(
-                                      //             Text('10:00PM'),
-                                      //           ),
-                                      //         ],
-                                      //       ),
-                                      //       DataRow(
-                                      //         selected: true,
-                                      //         cells: <DataCell>[
-                                      //           DataCell(Text('Friday')),
-                                      //           DataCell(Text('10:00AM')),
-                                      //           DataCell(Text('10:00PM')),
-                                      //         ],
-                                      //       ),
-                                      //       DataRow(
-                                      //         selected: true,
-                                      //         cells: <DataCell>[
-                                      //           DataCell(Text('Saturday')),
-                                      //           DataCell(Text('10:00AM')),
-                                      //           DataCell(Text('10:00PM')),
-                                      //         ],
-                                      //       ),
-                                      //       DataRow(
-                                      //         selected: true,
-                                      //         cells: <DataCell>[
-                                      //           DataCell(Text('Sunday')),
-                                      //           DataCell(Text('10:00AM')),
-                                      //           DataCell(Text('10:00PM')),
-                                      //         ],
-                                      //       ),
-                                      //
-                                      //       // Add more rows as needed
-                                      //     ],
-                                      //   ),
-                                      // ),
+
+
                                     ],
                                   ),
                                 ),
@@ -1848,68 +1778,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   }
                                 },
                               ),
-                              // Container(
-                              //   alignment: Alignment.center,
-                              //   // height: ScreenUtil().screenHeight / 2.4,
-                              //   margin: EdgeInsets.symmetric(vertical: 8),
-                              //   decoration: BoxDecoration(
-                              //       // color: Colors.blue,
-                              //       border: Border.all(color: grayColor2),
-                              //       borderRadius: BorderRadius.circular(12)),
-                              //   child: Padding(
-                              //     padding: EdgeInsets.only(
-                              //         top: 10.h,
-                              //         left: 10.w,
-                              //         bottom: 10,
-                              //         right: 10.w),
-                              //     child: Column(
-                              //       mainAxisAlignment: MainAxisAlignment.start,
-                              //       crossAxisAlignment:
-                              //           CrossAxisAlignment.start,
-                              //       children: [
-                              //         CustomText(
-                              //           title: "USER REVIEWS",
-                              //           fontWeight: FontWeight.bold,
-                              //           fontSize: 20,
-                              //           color: greenColor2,
-                              //         ),
-                              //         Expanded(
-                              //           child: ListView.builder(
-                              //             itemCount: 10,
-                              //             itemBuilder: (context, index) {
-                              //               return Column(
-                              //                 children: [
-                              //                   Container(
-                              //                     alignment: Alignment.center,
-                              //                     // height:
-                              //                     // ScreenUtil().screenHeight / 8.0,
-                              //                     margin: EdgeInsets.symmetric(
-                              //                         vertical: 05),
-                              //                     decoration: BoxDecoration(
-                              //                       // color: Colors.blue,
-                              //                       border: Border.all(
-                              //                           color: grayColor2),
-                              //                       // borderRadius: BorderRadius.circular(12)
-                              //                     ),
-                              //                     child: ListTile(
-                              //                       title: CustomText(
-                              //                           title: "imran khan"),
-                              //                       subtitle: CustomText(
-                              //                         title: "waw3wo3eo",
-                              //                       ),
-                              //                       trailing: CustomText(
-                              //                           title: "06/02/2024"),
-                              //                     ),
-                              //                   )
-                              //                 ],
-                              //               );
-                              //             },
-                              //           ),
-                              //         ),
-                              //       ],
-                              //     ),
-                              //   ),
-                              // ),
                               Container(
                                 alignment: Alignment.center,
                                 margin: EdgeInsets.symmetric(vertical: 8),

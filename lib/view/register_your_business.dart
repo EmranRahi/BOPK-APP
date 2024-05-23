@@ -68,6 +68,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
   };
   final List<String> timeList = [
     '09:00 AM',
+    "24Hours",
     '10:00 AM',
     '11:00 AM',
     '12:00 PM',
@@ -83,6 +84,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
     '10:00 PM',
     '11:00 PM',
     '12:00 PM',
+
   ];
   late GoogleMapController myController;
 // Define variables to hold selected values
@@ -127,46 +129,9 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
 
   // social media link
   bool socialMediaLink = false; // Initial state of the checkbox
-
   TextEditingController categoryController = TextEditingController();
-
-  // TextEditingController titleController = TextEditingController();
-  // TextEditingController descriptionController = TextEditingController();
-  // /// SpecialityController
-  // TextEditingController specialityController1 = TextEditingController();
-  // TextEditingController specialityController2 = TextEditingController();
-  // TextEditingController specialityController3 = TextEditingController();
-  // TextEditingController specialityController4 = TextEditingController();
-  // /// ownerNameController
-  // TextEditingController ownerNameController1 = TextEditingController();
-  // TextEditingController ownerNameController2 = TextEditingController();
-  // TextEditingController ownerNameController3 = TextEditingController();
-  // TextEditingController ownerNameController4 = TextEditingController();
-  // /// ContactNumber Controller
-  // TextEditingController contactNumController1 = TextEditingController();
-  // TextEditingController contactNumController2 = TextEditingController();
-  // TextEditingController contactNumController3 = TextEditingController();
-  // TextEditingController contactNumController4 = TextEditingController();
-  // /// Other Field Controller
-  // TextEditingController whatsAppController = TextEditingController();
-  // TextEditingController searchController = TextEditingController();
-  // /// Social Media Controller
-  // TextEditingController emailController = TextEditingController();
-  // TextEditingController iOsController = TextEditingController();
-  // TextEditingController androidController = TextEditingController();
-  // TextEditingController faxController = TextEditingController();
-  // TextEditingController faceBookController = TextEditingController();
-  // TextEditingController webController = TextEditingController();
-  // TextEditingController twitterController = TextEditingController();
-  // TextEditingController instagramController = TextEditingController();
-
-
-  // TextEditingController addressController = TextEditingController();
   RegisterYourBusinessModel registerYourBusinessModel = RegisterYourBusinessModel(openningHours: [OpenningHour()]);
   final SubCategoryController _controller = SubCategoryController();
-  // HomePageMainCategory? selectedCategory; // Variable to hold the selected category
-
-
   late GoogleMapController mapController;
    Position? _currentPosition;
   final Set<Marker> _markers = {};
@@ -1899,7 +1864,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                               dayOfWeek: day,
                               openingTime: selectedOpeningTimes[day] ?? "10:00 AM",
                               closingTime: selectedClosingTimes[day] ?? "10:00 PM",
-                              isOpen: false,
+                              isOpen: checkBoxValues[day] ?? false, // Check if the day is checked and set isOpen accordingly
                             );
                             modelsForAllDays.add(model);
                           }
@@ -1957,6 +1922,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                                 ),
                               ),
                             );
+                            Navigator.pop(context);
                             Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePage()));
                           }
                           else{
@@ -2021,32 +1987,6 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
       ),
     );
   }
-
-  // void clearFields() {
-  //   titleController.clear();
-  //   descriptionController.clear();
-  //   specialityController1.clear();
-  //   specialityController2.clear();
-  //   specialityController3.clear();
-  //   specialityController4.clear();
-  //   ownerNameController1.clear();
-  //   ownerNameController2.clear();
-  //   ownerNameController3.clear();
-  //   ownerNameController4.clear();
-  //   contactNumController1.clear();
-  //   contactNumController2.clear();
-  //   contactNumController3.clear();
-  //   contactNumController4.clear();
-  //   whatsAppController.clear();
-  //   iOsController.clear();
-  //   androidController.clear();
-  //   faxController.clear();
-  //   webController.clear();
-  //   faceBookController.clear();
-  //   instagramController.clear();
-  //   twitterController.clear();
-  //   addressController.clear();
-  // }
 
   Widget _buildCategoryDropdown() {
     return Container(
@@ -2166,42 +2106,6 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
       print(response.reasonPhrase);
       print('error Image uploaded successfully');
     }
-
-    // // Check if an image is selected
-    // if (imageFile == null) {
-    //   if (kDebugMode) {
-    //     print('No image selected.');
-    //   }
-    //   return;
-    // }
-    // try {
-    //   // Create a multipart request
-    //   var request = http.MultipartRequest(
-    //       'POST',
-    //       Uri.parse('https://bopkapi.businessonline.pk/api/RegisterImage/UploadImages')
-    //   );
-    //   // Add the query parameters directly to the URI
-    //   request.fields['KId'] = id.toString();
-    //   // Add the image file to the request
-    //   request.files.add(
-    //       await http.MultipartFile.fromPath('file', imageFile.path)
-    //   );
-    //   // Send the request
-    //   var response = await request.send();
-    //   // Check the response status code
-    //   if (response.statusCode == 200) {
-    //     // If successful, print the response
-    //     print('Image uploaded successfully');
-    //     print(await response.stream.bytesToString());
-    //   } else {
-    //     // If not successful, print the error status code and reason
-    //     print('Failed to upload image. Error: ${response.statusCode}');
-    //     print(await response.stream.bytesToString());
-    //   }
-    // } catch (e) {
-    //   // Catch any exceptions that occur during the request
-    //   print('Error uploading image: $e');
-    // }
   }
   Future<void> _showChoiceDialoge(BuildContext context) {
     return showDialog(
