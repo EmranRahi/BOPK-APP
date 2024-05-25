@@ -14,6 +14,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image_picker/image_picker.dart' as picker;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import '../Controllers/Api_Controller.dart';
@@ -100,14 +101,15 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
   int fieldCounter = 0;
 
   late File imageFile = File('path/to/default/image.png');
-  ImagePicker imagePicker = ImagePicker();
+  // ImagePicker imagePicker = ImagePicker();
 // Update onChanged callback for both DropdownButtons
   // String selectedCategory = "";
   List<String> businessCategories = [
   ];
   // BopkController _bopkController = BopkController();
   String defaultCategory = "Select Category "; // Set your default category here
-
+  final List<XFile>? selectedImagesList = [];
+  List<String> selectedImagePaths = []; // New list to store paths
   bool specialityOne = false;
   bool specialityTwo = false;
   bool specialityThree = false;
@@ -116,7 +118,8 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
   bool ownerNameOne = false;
   bool ownerNameTwo = false;
   bool ownerNameThree = false;
-
+  int? t = 0;
+  List<File> images = [];
   //Close OwnerName
   bool contactNumOne = false;
   bool contactNumTwo = false;
@@ -1823,16 +1826,102 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                         color: greenColor2),
                     TextButton(
                       onPressed: () {
-                        _showChoiceDialoge(context);
+                        _showSelectionDialog();
                       },
                       child: CustomText(
-                          title: "Select Gallery Picture",
+                          title: "Select Image",
                           fontWeight: FontWeight.bold,
                           decoration: TextDecoration.underline),
                     ),
                   ],
                 ),
-                decidedImageView(),
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        height: 180,
+                        // Set the height of your images
+                        width: MediaQuery.of(context).size.width,
+                        child: selectedImagesList!.isEmpty
+                            ? Center(
+                          child:   GestureDetector(
+                            onTap: (){
+                              _showSelectionDialog();
+                            },
+                            child: Card(
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10), // Adjust the border radius as needed
+                              ),
+                              child: Container(
+                                height: 180,
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [Colors.grey,greenColor2],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10), // Same border radius as the Card
+                                ),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(16),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.image,
+                                        size: 40,
+                                        color: Colors.white,
+                                      ),
+                                      SizedBox(height: 8),
+                                      Text(
+                                        'There are no images selected. Please select one.',
+                                        style: TextStyle(fontSize: 16, color: Colors.white),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+
+                            : ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount:
+                          selectedImagesList!.length,
+                          // Add 1 for the "Add Image" option
+                          itemBuilder: (BuildContext context,
+                              int index) {
+                            return Padding(
+                              padding:
+                              const EdgeInsets.all(8.0),
+                              child: ClipRRect(
+                                borderRadius:
+                                BorderRadius.circular(
+                                    16.0),
+                                child: Image.file(
+                                  File(selectedImagesList![
+                                  index]
+                                      .path),
+                                  fit: BoxFit.cover,
+                                  width: 150,
+                                  height: 200,
+                                ),
+                              ),
+                            );
+                            // }
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                // decidedImageView(),
                 SizedBox(
                   height: ScreenUtil().setHeight(10.h),
                 ),
@@ -1892,7 +1981,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                               // Now you can use the karobarId as needed
                               print('karobarId: $karobarId');
 
-                            await uploadImage(karobarId);
+                            await uploadImages(karobarId);
                             // Clear fields and image
                             setState(() {
                               imageFile = File('path/to/default/image.png');
@@ -2071,25 +2160,25 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
     });
   }
 
-  _openGallery(BuildContext context) async {
-    var picture = await imagePicker.pickImage(source: ImageSource.gallery);
-    if (picture != null) {
-      setState(() {
-        imageFile = File(picture.path); // Convert XFile to File
-      });
-    }
-    Navigator.pop(context);
-  }
-
-  _openCamera(BuildContext context) async {
-    var picture = await imagePicker.pickImage(source: ImageSource.camera);
-    if (picture != null) {
-      setState(() {
-        imageFile = File(picture.path); // Convert XFile to File
-      });
-    }
-    Navigator.pop(context);
-  }
+  // _openGallery(BuildContext context) async {
+  //   var picture = await imagePicker.pickImage(source: ImageSource.gallery);
+  //   if (picture != null) {
+  //     setState(() {
+  //       imageFile = File(picture.path); // Convert XFile to File
+  //     });
+  //   }
+  //   Navigator.pop(context);
+  // }
+  //
+  // _openCamera(BuildContext context) async {
+  //   var picture = await imagePicker.pickImage(source: ImageSource.camera);
+  //   if (picture != null) {
+  //     setState(() {
+  //       imageFile = File(picture.path); // Convert XFile to File
+  //     });
+  //   }
+  //   Navigator.pop(context);
+  // }
   Future<void> uploadImage(int id) async {
     var request = http.MultipartRequest('POST', Uri.parse('https://bopkapi.businessonline.pk/RegisterBusinesses/UploadImage?id=$id'));
     request.files.add(await http.MultipartFile.fromPath('files', imageFile.path));
@@ -2107,59 +2196,59 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
       print('error Image uploaded successfully');
     }
   }
-  Future<void> _showChoiceDialoge(BuildContext context) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: CustomText(title: "Make a Choice!"),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    _openGallery(context);
-                  },
-                  child: CustomText(title: "Gallery"),
-                ),
-                Padding(padding: EdgeInsets.all(8.0)),
-                GestureDetector(
-                  onTap: () {
-                    _openCamera(context);
-                  },
-                  child: CustomText(title: "Camera"),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+  // Future<void> _showChoiceDialoge(BuildContext context) {
+  //   return showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: CustomText(title: "Make a Choice!"),
+  //         content: SingleChildScrollView(
+  //           child: ListBody(
+  //             children: [
+  //               GestureDetector(
+  //                 onTap: () {
+  //                   _openGallery(context);
+  //                 },
+  //                 child: CustomText(title: "Gallery"),
+  //               ),
+  //               Padding(padding: EdgeInsets.all(8.0)),
+  //               GestureDetector(
+  //                 onTap: () {
+  //                   _openCamera(context);
+  //                 },
+  //                 child: CustomText(title: "Camera"),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   // Widget to display the image
-  Widget decidedImageView() {
-    return Container(
-      height: 250,
-      child: FutureBuilder<bool>(
-        future: imageFile.exists(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData && snapshot.data!) {
-            // If the file exists, display the image
-            return Image.file(
-              imageFile,
-              width: 400,
-              fit: BoxFit.fill,
-              scale: 13,
-            );
-          } else {
-            // If the file does not exist, display a placeholder image or message
-            return Center(child: CustomText(title: "No Image Selected"));
-          }
-        },
-      ),
-    );
-  }
+  // Widget decidedImageView() {
+  //   return Container(
+  //     height: 250,
+  //     child: FutureBuilder<bool>(
+  //       future: imageFile.exists(),
+  //       builder: (context, snapshot) {
+  //         if (snapshot.hasData && snapshot.data!) {
+  //           // If the file exists, display the image
+  //           return Image.file(
+  //             imageFile,
+  //             width: 400,
+  //             fit: BoxFit.fill,
+  //             scale: 13,
+  //           );
+  //         } else {
+  //           // If the file does not exist, display a placeholder image or message
+  //           return Center(child: CustomText(title: "No Image Selected"));
+  //         }
+  //       },
+  //     ),
+  //   );
+  // }
 
   onOpeningTimeChanged(String? value) {
     setState(() {
@@ -2253,5 +2342,81 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
       // Join the specialties with commas
       registerYourBusinessModel.speciality = specialties.join(',');
     });
+  }
+  Future<void> _showSelectionDialog() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add Picture'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                GestureDetector(
+                  child: const Text('Gallery',style: TextStyle(fontSize: 18),),
+                  onTap: () async {
+                    Navigator.of(context).pop();
+                    final List<XFile> selectedImages =
+                    await ImagePicker().pickMultiImage();
+
+                    if (selectedImages != null && selectedImages.isNotEmpty) {
+                      setState(() {
+                        selectedImagesList!.addAll(selectedImages);
+
+                        // Extract paths from selectedImages and add them to selectedImagePaths
+                        selectedImagePaths
+                            .addAll(selectedImages.map((image) => image.path));
+                      });
+                    }
+                  },
+                ),
+                const Padding(padding: EdgeInsets.all(8.0)),
+                GestureDetector(
+                  child: const Text('Camera',style: TextStyle(fontSize: 18),),
+                  onTap: () async {
+                    Navigator.of(context).pop();
+                    final XFile? picture = await ImagePicker()
+                        .pickImage(source: ImageSource.camera);
+                    if (picture != null) {
+                      setState(() {
+                        selectedImagesList!.add(picture);
+                        selectedImagePaths.add(picture.path);
+                      });
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+   uploadImages(int id) async {
+    var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(
+            'https://bopkapi.businessonline.pk/RegisterBusinesses/UploadImage?id=$id'));
+
+    for (var i = 0; i < selectedImagePaths.length; i++) {
+      print("hamad ${selectedImagePaths[i]}");
+      // Add each image to the request
+      File imageFile = File(selectedImagePaths[i]);
+      request.files.add(await http.MultipartFile.fromPath(
+          'files', imageFile.path,
+          filename: 'image_$i.jpg'));
+    }
+
+    try {
+      http.StreamedResponse response = await request.send();
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        print(await response.stream.bytesToString());
+      } else {
+        print(response.reasonPhrase);
+      }
+    } catch (e) {
+      print('Error uploading images: $e');
+    }
   }
 }

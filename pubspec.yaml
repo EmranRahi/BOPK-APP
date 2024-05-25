@@ -51,7 +51,7 @@ dependencies:
   url_launcher: any
   drop_down_list: ^0.0.6
   upgrader: ^9.0.0
-  image_picker: any
+  image_picker: ^0.8.5+3
   auto_size_text: ^3.0.0
   device_preview: ^1.1.0
 #  flutter_inappwebview: ^5.3.2
