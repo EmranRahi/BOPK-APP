@@ -61,6 +61,7 @@ dependencies:
   google_maps_flutter: any
   share: ^2.0.4
   photo_view: any
+  shimmer: ^2.0.0
 
 #  flutter_staggered_grid_view: ^0.7.0
 

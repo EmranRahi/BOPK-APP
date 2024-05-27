@@ -11,9 +11,7 @@ import 'package:businessonlinepk/view/customs_widgets/custom_textfield.dart';
 import 'package:businessonlinepk/view/product_deatils_screen/product_details.dart';
 import 'package:businessonlinepk/view/register_your_business.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,7 +26,6 @@ import '../model/OpenningHour.dart';
 import 'AllProductsScreen.dart';
 import 'AllReviewsScreen.dart';
 import 'menu_login.dart';
-import 'mobile_shops.dart';
 
 class StaticBusinessDetailsPage extends StatefulWidget {
   StaticBusinessDetailsPage(
@@ -115,7 +112,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
 
   bool _isAboutTabSelected = false;
 
-  double height = 250; // Initial default height
+  double height = 110; // Initial default height
   void _handleTabChange() {
     _updateHeight(_tabController.index);
   }
@@ -127,7 +124,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
   void _updateHeight(int index) {
     setState(() {
       if (index == 0) {
-        height = 250; // Height for index 0
+        height = 110; // Height for index 0
       } else if (index == 1) {
         height = 400; // Height for index 1
       } else if (index == 2) {
@@ -187,8 +184,8 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
 
       // Specialty code
       specialtyCount = businessModel?.speciality?.split(',').length ?? 0;
-      double baseHeight =50.0; // Base height for one item, adjust as needed
-      totalHeight = baseHeight * (specialtyCount > 4 ? 4 : specialtyCount);
+      // double baseHeight =50.0; // Base height for one item, adjust as needed
+      // totalHeight = baseHeight * (specialtyCount > 4 ? 4 : specialtyCount);
     } else {
       // Handle the case where businessModel or its properties are null
     }
@@ -1123,7 +1120,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                           unselectedLabelColor: greenColor2,
                           labelPadding: EdgeInsets.symmetric(horizontal: 3.0),
                           tabs: [
-                            Container( // Adjust the width as needed
+                            SizedBox( // Adjust the width as needed
                               width: 100, // Example width
                               child: Tab(
                                 child: CustomText(
@@ -1182,7 +1179,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                 ),
                               ),
                             ),
-                            Container( // Adjust the width as needed
+                            SizedBox( // Adjust the width as needed
                               width: 120, // Example width
                               child: Tab(
                                 child: CustomText(
@@ -1198,10 +1195,8 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                       ),
 
                       SingleChildScrollView(
-                        // scrollDirection: Axis.horizontal,
                         child: SizedBox(
                           height: height,
-                          // height: tabHeights[_selectedIndex], // Use the height based on the selected index
                           child: TabBarView(
                             controller: _tabController,
                             children: [
@@ -1232,11 +1227,11 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                       ),
                                       Text(
                                         businessModel!.description??"",
-                                        maxLines: showFullText ? null : 3,
+                                        maxLines: showFullText ? null :1,
                                       ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
+                                      // SizedBox(
+                                      //   height: 20,
+                                      // ),
                                       if (!showFullText)
                                         GestureDetector(
                                           onTap: () {
@@ -1650,75 +1645,81 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CustomText(
-                        title: "SPECIALITIES",
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        color: greenColor2,
-                      ),
-                      Divider(
-                        color: greenColor2,
-                        thickness: 2,
-                        indent: 1,
-                        endIndent: 250,
-                      ),
-                      Container(
-                        alignment: Alignment.center,
-                        height: specialtyCount == 0 ? 50.0 : totalHeight,
-                        margin: EdgeInsets.symmetric(vertical: 8),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(12),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5.0),
+                        child: CustomText(
+                          title: "SPECIALITIES",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: greenColor2,
                         ),
-                        child: Padding(
-                          padding: EdgeInsets.only(top: 10.0), // Adjust as needed
-                          child: specialtyCount == 0
-                              ? Center(
-                            child: CustomText(
-                              title: "No specialties available.",
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                              color: Colors.grey, // Or any other color
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5.0),
+                        child: Divider(
+                          color: greenColor2,
+                          thickness: 2,
+                          indent: 1,
+                          endIndent: 250,
+                        ),
+                      ),
+                      // Container(
+                      //   alignment: Alignment.center,
+                      //   height: specialtyCount == 0 ? 50.0 : totalHeight,
+                      //   margin: EdgeInsets.symmetric(vertical: 8),
+                      //   decoration: BoxDecoration(
+                      //     border: Border.all(color: Colors.grey),
+                      //     borderRadius: BorderRadius.circular(12),
+                      //   ),
+                      //   child: Padding(
+                      //     padding: EdgeInsets.only(top: 10.0), // Adjust as needed
+                      //     child: specialtyCount == 0
+                      //         ? Center(
+                      //       child: CustomText(
+                      //         title: "No specialties available.",
+                      //         fontWeight: FontWeight.bold,
+                      //         fontSize: 14,
+                      //         color: Colors.grey, // Or any other color
+                      //       ),
+                      //     )
+                      //        :
+                  ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true, // Allow the ListView to wrap its content
+                    itemCount: specialtyCount,
+                    itemBuilder: (context, index) {
+                      List<String>? specialties = businessModel?.speciality?.split(',');
+                      String? specialty = specialties?[index].trim();
+                      if (specialty != null && specialty.isNotEmpty) {
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 7, left: 7, right: 12),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  'assets/images/checkicon.png',
+                                  scale: 30,
+                                ),
+                                SizedBox(width: 10),
+                                AutoSizeText(
+                                  specialty,
+                                  style: TextStyle(fontSize: 12, color: grayColor),
+                                  minFontSize: 10,
+                                  stepGranularity: 10,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
                             ),
-                          )
-                              : ListView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: specialtyCount,
-                            itemBuilder: (context, index) {
-                              List<String>? specialties = businessModel?.speciality?.split(',');
-                              String? specialty = specialties?[index].trim();
-                              if (specialty != null && specialty.isNotEmpty) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(top: 7, left: 7, right: 12),
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(
-                                      children: [
-                                        Image.asset(
-                                          'assets/images/checkicon.png',
-                                          scale: 30,
-                                        ),
-                                        SizedBox(width: 10),
-                                        AutoSizeText(
-                                          specialty,
-                                          style: TextStyle(fontSize: 12, color: grayColor),
-                                          minFontSize: 10,
-                                          stepGranularity: 10,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                // Return an empty container if there's no specialty
-                                return Container();
-                              }
-                            },
                           ),
-                        ),
-                      ),
-                    ],
+                        );
+                      } else {
+                        // Return an empty container if there's no specialty
+                        return Container();
+                      }
+                    },
+                  ),
+                  ],
                   ),
                   Container(
                     alignment: Alignment.center,
@@ -1959,7 +1960,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                           );
                                         }
                                       },
-                                      child: Container(
+                                      child: SizedBox(
                                         width: MediaQuery.of(context).size.width,
                                         child: imageUrl != null
                                             ? FutureBuilder(

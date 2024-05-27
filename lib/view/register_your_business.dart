@@ -25,6 +25,10 @@ import 'HomePage_ofBopk.dart';
 import 'customs_widgets/CustomTextFormFieldWidget1.dart';
 import 'menu_login.dart';
 import 'package:http/http.dart' as http;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_webservice/places.dart';
+import 'package:google_api_headers/google_api_headers.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
 
 class RegisterYourBusiness extends StatefulWidget {
   const RegisterYourBusiness({super.key});
@@ -125,11 +129,15 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
   bool contactNumTwo = false;
   bool contactNumThree = false;
 
+  double? picklat;
+  double? picklng;
+
   //Close ContactNumber
   bool checkNumber = false; // Initial state of the checkbox
   bool checkBox = true; // Initial state of the checkbox
   bool checkTime = false; // Initial state of the checkbox
 
+  GoogleMapController? _mapController;
   // social media link
   bool socialMediaLink = false; // Initial state of the checkbox
   TextEditingController categoryController = TextEditingController();
@@ -1782,19 +1790,20 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                     height: MediaQuery.of(context).size.height / 3,
                     width: MediaQuery.of(context).size.width,
                     child: _currentPosition == null
-                        ? Center(child: CircularProgressIndicator())
-                        : GoogleMap(
-                      initialCameraPosition: CameraPosition(
-                        target: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-                        zoom: 15,
-                      ),
-                      onMapCreated: (GoogleMapController controller) {
-                        mapController = controller;
-                      },
-                      markers: _markers,
-                      myLocationEnabled: true,
-                      myLocationButtonEnabled: true,
-                    ),
+                      ? Center(child: CircularProgressIndicator())
+            : GoogleMap(
+    initialCameraPosition: CameraPosition(
+    target: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+    zoom: 15,
+    ),
+    onMapCreated: (GoogleMapController controller) {
+    _mapController = controller;
+    },
+    markers: _markers,
+    myLocationEnabled: true,
+    myLocationButtonEnabled: true,
+    ),
+
                   ),
                 ),
                 SizedBox(
@@ -1806,12 +1815,17 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                   fontSize: 14.sp,
                 ),
                 CustomTextFormFieldWidget1(
-                  // controller: addressController,
-                    onChanged: (val) {
-                      registerYourBusinessModel.address = _currentAddress;
-                    },
-                    hint: _currentAddress,
-                    borderRadius: 10),
+                  onChanged: (val) {
+                    setState(() {
+                      _currentAddress = val;
+                    });
+                  },
+                  hint: _currentAddress,
+                  borderRadius: 10,
+                ),
+                TextButton(onPressed: (){
+                  _showPlacePicker();
+                }, child: Text("Change Location")),
                 Divider(
                   color: greenColor2,
                   thickness: 2,
@@ -1958,8 +1972,8 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                             modelsForAllDays.add(model);
                           }
                           registerYourBusinessModel.id = 0;
-                          registerYourBusinessModel.lat = _currentPosition?.latitude;
-                          registerYourBusinessModel.lng = _currentPosition?.longitude;
+                          registerYourBusinessModel.lat = picklat;
+                          registerYourBusinessModel.lng = picklng;
                           registerYourBusinessModel.address = _currentAddress;
                           registerYourBusinessModel.openningHours = modelsForAllDays;
                           try {
@@ -2012,7 +2026,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                               ),
                             );
                             Navigator.pop(context);
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePage()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePage(categories: [],)));
                           }
                           else{
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -2119,35 +2133,110 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     setState(() {
-      _currentPosition = position;
+    _currentPosition = position;
+      picklat=position.latitude;
+      picklng=position.longitude;
       _updateMarkers();
       _getAddressFromLatLng();
+      _updateMapLocation();
     });
   }
 
   void _updateMarkers() {
     _markers.clear();
-    _markers.add(
-      Marker(
-        markerId: MarkerId("current_location"),
-        position: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-        infoWindow: InfoWindow(title: "Current Location"),
-      ),
-    );
+    if (_currentPosition != null) {
+      _markers.add(
+        Marker(
+          markerId: MarkerId("current_location"),
+          position: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+          infoWindow: InfoWindow(title: "Current Location"),
+        ),
+      );
+    }
   }
 
-  void _getAddressFromLatLng() async {
+  void _updateMapLocation() {
+    if (_mapController != null && _currentPosition != null) {
+      _mapController!.animateCamera(
+        CameraUpdate.newLatLng(
+          LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+        ),
+      );
+    }
+  }
+
+  Future<void> _getAddressFromLatLng() async {
     try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-          _currentPosition!.latitude, _currentPosition!.longitude);
-      Placemark place = placemarks[0];
-      setState(() {
-        _currentAddress =
-        "${place.street}, ${place.locality}, ${place.postalCode}, ${place.country}";
-      });
+      if (_currentPosition != null) {
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+          _currentPosition!.latitude,
+          _currentPosition!.longitude,
+        );
+
+        Placemark place = placemarks[0];
+        setState(() {
+          _currentAddress = "${place.street}, ${place.locality}, ${place.postalCode}, ${place.country}";
+        });
+      }
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<void> _showPlacePicker() async {
+    var place = await PlacesAutocomplete.show(
+      context: context,
+      apiKey: 'AIzaSyCLFYsLuixpirWLa--cSHA3RPwc9-dGprk',
+      mode: Mode.overlay,
+      types: [],
+      strictbounds: false,
+      components: [Component(Component.country, 'PK')],
+      onError: (err) {
+        print(err);
+      },
+    );
+
+    if (place != null) {
+      setState(() {
+        _currentAddress = place.description ?? '';
+      });
+
+      final plist = GoogleMapsPlaces(
+        apiKey: 'AIzaSyCLFYsLuixpirWLa--cSHA3RPwc9-dGprk',
+        apiHeaders: await GoogleApiHeaders().getHeaders(),
+      );
+
+      String placeid = place.placeId ?? "0";
+      final detail = await plist.getDetailsByPlaceId(placeid);
+      final geometry = detail.result.geometry!;
+
+      setState(() {
+        picklat = geometry.location.lat;
+        picklng = geometry.location.lng;
+      });
+
+      LatLng selectedLatLng = LatLng(picklat!, picklng!);
+      _updateMapCamera(selectedLatLng);
+      _updateMarkersWithNewPlace(selectedLatLng, place.description!);
+    }
+  }
+
+  void _updateMapCamera(LatLng position) {
+    _mapController!.animateCamera(
+      CameraUpdate.newLatLng(position),
+    );
+  }
+
+  void _updateMarkersWithNewPlace(LatLng position, String description) {
+    _markers.clear();
+    _markers.add(
+      Marker(
+        markerId: MarkerId("selected_location"),
+        position: position,
+        infoWindow: InfoWindow(title: description),
+      ),
+    );
+    setState(() {});
   }
   List<SubCategoryModel> _categories = [];
 
@@ -2159,26 +2248,6 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
           .toList();
     });
   }
-
-  // _openGallery(BuildContext context) async {
-  //   var picture = await imagePicker.pickImage(source: ImageSource.gallery);
-  //   if (picture != null) {
-  //     setState(() {
-  //       imageFile = File(picture.path); // Convert XFile to File
-  //     });
-  //   }
-  //   Navigator.pop(context);
-  // }
-  //
-  // _openCamera(BuildContext context) async {
-  //   var picture = await imagePicker.pickImage(source: ImageSource.camera);
-  //   if (picture != null) {
-  //     setState(() {
-  //       imageFile = File(picture.path); // Convert XFile to File
-  //     });
-  //   }
-  //   Navigator.pop(context);
-  // }
   Future<void> uploadImage(int id) async {
     var request = http.MultipartRequest('POST', Uri.parse('https://bopkapi.businessonline.pk/RegisterBusinesses/UploadImage?id=$id'));
     request.files.add(await http.MultipartFile.fromPath('files', imageFile.path));

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:businessonlinepk/view/customs_widgets/constant_color.dart';
 import 'package:businessonlinepk/view/customs_widgets/custom_appbar.dart';
@@ -150,7 +151,9 @@ class _MobileShopsState extends State<MobileShops> {
                     elevation: 0,
                     onSelected: (String choice) {
                       // Handle menu item selection here
-                      print("Selected: $choice");
+                      if (kDebugMode) {
+                        print("Selected: $choice");
+                      }
                     },
                     itemBuilder: (BuildContext context) {
                       return <PopupMenuEntry<String>>[
@@ -788,13 +791,19 @@ class _MobileShopsState extends State<MobileShops> {
                                                   launchUrl(Uri.parse(
                                                           whatsappUrl))
                                                       .then((value) {
-                                                    print(
+                                                    if (kDebugMode) {
+                                                      print(
                                                         "WhatsApp URL launched successfully");
-                                                    print(
+                                                    }
+                                                    if (kDebugMode) {
+                                                      print(
                                                         "Contact Phone: ${item.contactPhone}");
+                                                    }
                                                   }).catchError((error) {
-                                                    print(
+                                                    if (kDebugMode) {
+                                                      print(
                                                         "Error launching WhatsApp URL: $error");
+                                                    }
                                                     // Handle error (e.g., display a message to the user)
                                                   });
                                                 } else {
@@ -999,6 +1008,7 @@ class _MobileShopsState extends State<MobileShops> {
       throw 'Could not launch Google Maps navigation';
     }
   }
+
 
   void filterData(String query) {
     // Create a new list to hold the filtered items
