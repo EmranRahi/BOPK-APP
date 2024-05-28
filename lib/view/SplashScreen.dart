@@ -2,6 +2,7 @@ import 'package:businessonlinepk/Controllers/Api_Controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../globle_variable/CategoryService.dart';
 import '../model/HomePageMainCategory.dart';
 import 'HomePage_ofBopk.dart';
 import 'SplashServices/splashServices.dart';
@@ -14,9 +15,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  late List<Category> categories;
-  final APIController apiController = APIController();
-
   @override
   void initState() {
     super.initState();
@@ -24,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> fetchDataAndNavigate() async {
-    await apiController.fetchHomePageCategories();
+    await CategoryService.instance.fetchCategories();
 
     // Add a delay of 2 seconds before navigating
     await Future.delayed(Duration(seconds: 2));
@@ -32,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => HomePage(categories: apiController.categories),
+        builder: (context) => HomePage(),
       ),
     );
   }

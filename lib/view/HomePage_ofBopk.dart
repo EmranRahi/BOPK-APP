@@ -3,14 +3,12 @@ import 'dart:convert';
 import 'package:businessonlinepk/globle_variable/globle.dart';
 import 'package:businessonlinepk/model/HomePageMainCategory.dart';
 import 'package:businessonlinepk/view/customs_widgets/constant_color.dart';
-import 'package:businessonlinepk/view/customs_widgets/custom_textfield.dart';
 import 'package:businessonlinepk/view/mobile_shops.dart';
 import 'package:businessonlinepk/view/register_your_business.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
@@ -22,15 +20,14 @@ import 'package:upgrader/upgrader.dart';
 import '../Controllers/Api_Controller.dart';
 import '../Service/ApiResponse.dart';
 import '../Service/ApiService.dart';
+import '../globle_variable/CategoryService.dart';
 import '../model/BannerApiModel.dart';
 import '../model/HomeCategory.dart';
 import 'customs_widgets/custom_text.dart';
 import 'menu_login.dart';
 
 class HomePage extends StatefulWidget {
-  final List<HomePageMainCategory> categories;
-
-  HomePage({required this.categories});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -79,75 +76,13 @@ class _HomePageState extends State<HomePage> {
     checkLocationPermission();
     loadBanners();
     getLocation();
-    fetch();
+    // fetch();
   }
 
-  void loadBanners() async {
-    List<BannerApiModel> fetchedBanners = await APIController.getBanners();
-    // Filter banners to include only those with isMain set to true
-    List<BannerApiModel> mainBanners =
-        fetchedBanners.where((banner) => banner.isMain == true).toList();
-    setState(() {
-      banners = mainBanners;
-      bannersLoaded = true; // Set bannersLoaded to true once banners are loaded
-    });
-  }
-
-  Future<void> checkLocationPermission() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.deniedForever) {
-        // Permissions are denied forever, handle appropriately.
-        return;
-      }
-      if (permission == LocationPermission.denied) {
-        // Permissions are denied, handle appropriately.
-        return;
-      }
-    }
-    if (permission == LocationPermission.always ||
-        permission == LocationPermission.whileInUse) {
-      getLocation();
-    }
-  }
-
-  Future<void> _showPlacePicker() async {
-    var place = await PlacesAutocomplete.show(
-      context: context,
-      apiKey: 'AIzaSyCLFYsLuixpirWLa--cSHA3RPwc9-dGprk',
-      mode: Mode.overlay,
-      types: [],
-      strictbounds: false,
-      components: [Component(Component.country, 'PK')],
-      onError: (err) {
-        print(err);
-      },
-    );
-
-    if (place != null) {
-      setState(() {
-        _currentAddress = place.description ?? '';
-      });
-
-      final plist = GoogleMapsPlaces(
-        apiKey: 'AIzaSyCLFYsLuixpirWLa--cSHA3RPwc9-dGprk',
-        apiHeaders: await GoogleApiHeaders().getHeaders(),
-      );
-
-      String placeid = place.placeId ?? "0";
-      final detail = await plist.getDetailsByPlaceId(placeid);
-      final geometry = detail.result.geometry!;
-
-      setState(() {
-        lat = geometry.location.lat;
-        long = geometry.location.lng;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
+    List<HomePageMainCategory> categories = CategoryService.instance.categories;
     // Hide status bar icons by setting the system overlay style
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
@@ -529,19 +464,19 @@ class _HomePageState extends State<HomePage> {
                     keyboardDismissBehavior:
                         ScrollViewKeyboardDismissBehavior.onDrag,
                     scrollDirection: Axis.vertical,
-                    itemCount: widget.categories.length,
+                    itemCount: categories.length,
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          widget.categories[index].mainCategoryName == null
+                          categories[index].mainCategoryName == null
                               ? SizedBox.shrink()
                               : Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: CustomText(
-                                    title: widget.categories[index].mainCategoryName
+                                    title: categories[index].mainCategoryName
                                             .toString() ??
                                         "NO ",
                                     googleFont: 'Jost',
@@ -552,7 +487,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                           SizedBox(
                             height: 90,
-                            child: widget.categories[index].categories ==
+                            child: categories[index].categories ==
                                     null
                                 ? Center(
                                     child: CircularProgressIndicator(),
@@ -562,10 +497,10 @@ class _HomePageState extends State<HomePage> {
                                     keyboardDismissBehavior:
                                         ScrollViewKeyboardDismissBehavior
                                             .onDrag,
-                                    itemCount: widget.categories[index].categories!.length,
+                                    itemCount: categories[index].categories!.length,
                                     itemBuilder: (context, index1) {
                                       print(
-                                          "${"https://businessonline.pk/images/icons/"}${widget.categories[index].categories![index1].categoryName}.png");
+                                          "${"https://businessonline.pk/images/icons/"}${categories[index].categories![index1].categoryName}.png");
                                       // String? subCategoryName = _categoryList[index]["subCategories"][index1]["subCategoryName"];
                                       return GestureDetector(
                                         onTap: () {
@@ -573,22 +508,22 @@ class _HomePageState extends State<HomePage> {
                                               "Tapped on subcategory at index: $index1");
                                           // Add your navigation logic or other functionality here
                                           // For example:
-                                          print(widget.categories[index]
+                                          print(categories[index]
                                               .categories![index1].categoryId!);
-                                          Globle.subCategoryId = widget.categories[index]
+                                          Globle.subCategoryId = categories[index]
                                               .categories![index1]
                                               .categoryId!;
-                                          Globle.subCategoryName =widget.categories[index]
+                                          Globle.subCategoryName =categories[index]
                                               .categories![index1]
                                               .categoryName!;
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) => MobileShops(
-                                                  widget.categories[index]
+                                                  categories[index]
                                                       .categories![index1]
                                                       .categoryName,
-                                                  widget.categories[index]
+                                                  categories[index]
                                                       .categories![index1]
                                                       .categoryId,
                                                   lat,
@@ -627,7 +562,7 @@ class _HomePageState extends State<HomePage> {
                                                     ),
                                                     // Use the Image widget here with errorBuilder
                                                     child: Image.network(
-                                                      "${"https://businessonline.pk/images/icons/"}${widget.categories[index].categories![index1].categoryName}.png",
+                                                      "${"https://businessonline.pk/images/icons/"}${categories[index].categories![index1].categoryName}.png",
                                                       fit: BoxFit.cover,
                                                       errorBuilder: (context,
                                                           error, stackTrace) {
@@ -714,7 +649,7 @@ class _HomePageState extends State<HomePage> {
                                                                         .scaleDown,
                                                                     child:
                                                                         CustomText(
-                                                                      title:widget.categories[index]
+                                                                      title:categories[index]
                                                                               .categories![index1]
                                                                               .categoryName ??
                                                                           "ddd",
@@ -773,7 +708,7 @@ class _HomePageState extends State<HomePage> {
                                         //               image: DecorationImage(
                                         //                 fit: BoxFit.cover,
                                         //                 image: NetworkImage(
-                                        //                   "${"https://businessonline.pk/images/icons/"}${widget.categories[index].categories![index1].categoryName}.png",
+                                        //                   "${"https://businessonline.pk/images/icons/"}${categories[index].categories![index1].categoryName}.png",
                                         //                 ),
                                         //               ),
                                         //               borderRadius: BorderRadius.circular(10),
@@ -852,22 +787,22 @@ class _HomePageState extends State<HomePage> {
     return list;
   }
 
-  void _showEmptyDialog(String s) {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) => CupertinoAlertDialog(
-              content: Text("$s can't be empty"),
-              actions: <Widget>[
-                // ignore: deprecated_member_use
-                TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text("OK"))
-              ],
-            ));
-  }
+  // void _showEmptyDialog(String s) {
+  //   showDialog(
+  //       context: context,
+  //       barrierDismissible: false,
+  //       builder: (BuildContext context) => CupertinoAlertDialog(
+  //             content: Text("$s can't be empty"),
+  //             actions: <Widget>[
+  //               // ignore: deprecated_member_use
+  //               TextButton(
+  //                   onPressed: () {
+  //                     Navigator.of(context).pop();
+  //                   },
+  //                   child: const Text("OK"))
+  //             ],
+  //           ));
+  // }
 
   Future<void> getData(List data) async {
     final jsonData = jsonEncode(data);
@@ -962,8 +897,73 @@ class _HomePageState extends State<HomePage> {
             ));
   }
 
-  Future<void> fetch() async {
-    await controller.fetchHomePageCategories();
-    setState(() {});
+
+  void loadBanners() async {
+    List<BannerApiModel> fetchedBanners = await APIController.getBanners();
+    // Filter banners to include only those with isMain set to true
+    List<BannerApiModel> mainBanners =
+    fetchedBanners.where((banner) => banner.isMain == true).toList();
+    setState(() {
+      banners = mainBanners;
+      bannersLoaded = true; // Set bannersLoaded to true once banners are loaded
+    });
   }
+
+  Future<void> checkLocationPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.deniedForever) {
+        // Permissions are denied forever, handle appropriately.
+        return;
+      }
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, handle appropriately.
+        return;
+      }
+    }
+    if (permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse) {
+      getLocation();
+    }
+  }
+
+  Future<void> _showPlacePicker() async {
+    var place = await PlacesAutocomplete.show(
+      context: context,
+      apiKey: 'AIzaSyCLFYsLuixpirWLa--cSHA3RPwc9-dGprk',
+      mode: Mode.overlay,
+      types: [],
+      strictbounds: false,
+      components: [Component(Component.country, 'PK')],
+      onError: (err) {
+        print(err);
+      },
+    );
+
+    if (place != null) {
+      setState(() {
+        _currentAddress = place.description ?? '';
+      });
+
+      final plist = GoogleMapsPlaces(
+        apiKey: 'AIzaSyCLFYsLuixpirWLa--cSHA3RPwc9-dGprk',
+        apiHeaders: await GoogleApiHeaders().getHeaders(),
+      );
+
+      String placeid = place.placeId ?? "0";
+      final detail = await plist.getDetailsByPlaceId(placeid);
+      final geometry = detail.result.geometry!;
+
+      setState(() {
+        lat = geometry.location.lat;
+        long = geometry.location.lng;
+      });
+    }
+  }
+
+  // Future<void> fetch() async {
+  //   await controller.fetchHomePageCategories();
+  //   setState(() {});
+  // }
 }

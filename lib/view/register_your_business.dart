@@ -2026,7 +2026,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                               ),
                             );
                             Navigator.pop(context);
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePage(categories: [],)));
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePage()));
                           }
                           else{
                             ScaffoldMessenger.of(context).showSnackBar(
