@@ -62,6 +62,7 @@ dependencies:
   share: ^2.0.4
   photo_view: any
   shimmer: ^2.0.0
+  fluttertoast: any
 
 #  flutter_staggered_grid_view: ^0.7.0
 

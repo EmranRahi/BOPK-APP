@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:businessonlinepk/model/BannerApiModel.dart';
 import 'package:businessonlinepk/model/ContactUs_Model.dart';
+import 'package:businessonlinepk/model/LoginModel.dart';
 import 'package:businessonlinepk/model/OpeningAndClosingTimeModel.dart';
 import 'package:businessonlinepk/model/RegisterReviewRattingModel.dart';
 import 'package:flutter/foundation.dart';
@@ -22,6 +23,44 @@ import '../view/customs_widgets/constant_color.dart';
 
 class APIController{
 
+  Future<void> deleteKarobar(int karobarId) async {
+    final String apiUrl = 'https://bopkapi.businessonline.pk/Karobar/Delete?id=$karobarId';
+
+    try {
+      final response = await http.delete(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        print('Karobar deleted successfully');
+      } else {
+        print('Failed to delete karobar. Status code: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error deleting karobar: $error');
+    }
+  }
+
+
+  Future<LoginModel?> loginUser(String username, String password) async {
+    final url = Uri.parse('https://bopkapi.businessonline.pk/Authentication/Login?email=$username&password=$password');
+    https://bopkapi.businessonline.pk/Authentication/Login?email=03129641706&password=6733
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        return LoginModel.fromJson(responseData);
+      } else {
+        // Handle error response
+        print('Error: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      // Handle network errors
+      print('Network error: $e');
+      return null;
+    }
+  }
   Future<StaticListModel> searchBusiness(SearchBusinessModel model) async {
     final createJson = jsonEncode(model.toJson());
     final response = await http.post(
