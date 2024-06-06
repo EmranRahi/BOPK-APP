@@ -294,28 +294,30 @@ class _MenuLoginState extends State<MenuLogin> {
                       ),
                     ],
                   ),
-                  child: CustomTextFormFieldWidget(
-                    controller: _passwordController,
-                    hint: 'Enter Your Password',
-                    borderRadius: 6,
-                    borderSide: BorderSide.none,
-                    suffixIcon: IconButton(
-                      icon: Icon(_obscureText
-                          ? Icons.visibility_off
-                          : Icons.visibility),
-                      onPressed: () {
-                        setState(() {
-                          _obscureText = !_obscureText;
-                        });
+                  child: Padding(
+                    padding: EdgeInsets.all(6), // Adding padding of 6
+                    child: TextFormField(
+                      controller: _passwordController,
+                      obscureText: _obscureText,
+                      decoration: InputDecoration(
+                        hintText: 'Enter Your Password',
+                        border: InputBorder.none,
+                        suffixIcon: IconButton(
+                          icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
+                          onPressed: () {
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
+                        ),
+                      ),
+                      onChanged: (value) {
+                        _password = value;
                       },
                     ),
-                    onChanged: (value) {
-                      _obscureText = !_obscureText;
-                      _password = value;
-
-                    },
                   ),
                 ),
+
                 SizedBox(height: ScreenUtil().setHeight(20)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

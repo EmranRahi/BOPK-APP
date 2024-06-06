@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:businessonlinepk/globle_variable/globle.dart';
 import 'package:businessonlinepk/model/HomePageMainCategory.dart';
 import 'package:businessonlinepk/view/customs_widgets/constant_color.dart';
@@ -101,63 +102,53 @@ class _HomePageState extends State<HomePage> {
           body: Column(
             children: [
               SizedBox(
-                width: MediaQuery.of(context).size.width,
+                width: double.infinity,
                 height: MediaQuery.of(context).size.height / 3,
                 child: Stack(
+                  alignment: Alignment.topCenter,
                   children: [
-// Inside your widget build method
                     bannersLoaded
                         ? CarouselSlider(
-                            options: CarouselOptions(
-                              aspectRatio: 16 / 8,
-                              viewportFraction: 1.0,
-                              autoPlay: true,
-                              autoPlayInterval: Duration(seconds: 5),
-                              autoPlayAnimationDuration:
-                                  Duration(milliseconds: 800),
-                              autoPlayCurve: Curves.fastOutSlowIn,
-                              enlargeCenterPage: true,
-                            ),
-                            items: banners!.map((banner) {
-                              return Builder(
-                                builder: (BuildContext context) {
-                                  return Container(
-                                    margin:
-                                        EdgeInsets.symmetric(horizontal: 5.0),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      // Adjust the border radius as needed
-                                      child: Image.network(
-                                        "https://businessonline.pk/Image/Banners/${banner.bannerId!}/${banner.bannerName!}",
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                            }).toList(),
-                          )
-                        : Center(
-                            child: Shimmer.fromColors(
-                              baseColor: Colors.grey[300]!,
-                              highlightColor: Colors.grey,
-                              child: Container(
-                                margin: EdgeInsets.symmetric(horizontal: 5.0),
-                                width: MediaQuery.of(context).size.width,
-                                // Set the width to match the banner width
-                                height: MediaQuery.of(context).size.width *
-                                    (8 / 16),
-                                // Set the height based on aspect ratio
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  // Adjust the border radius as needed
-                                  color: Colors.grey[
-                                      300], // Match the shimmer color with baseColor
-                                ),
+                      options: CarouselOptions(
+                        aspectRatio: 16 / 7.7,
+                        viewportFraction: 1.3,
+                        autoPlay: true,
+                        autoPlayInterval: Duration(seconds: 5),
+                        autoPlayAnimationDuration:
+                        Duration(milliseconds: 800),
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        enlargeCenterPage: true,
+                      ),
+                      items: banners!.map((banner) {
+                        return Builder(
+                          builder: (BuildContext context) {
+                            return ClipRRect(
+                              child: Image.network(
+                                "https://businessonline.pk/Image/Banners/${banner.bannerId!}/${banner.bannerName!}",
+                                fit: BoxFit.contain,
                               ),
-                            ),
+                            );
+                          },
+                        );
+                      }).toList(),
+                    )
+                        : Center(
+                      child: Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey,
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 5.0),
+                          width: double.infinity,
+                          height:
+                          MediaQuery.of(context).size.width * (8 / 16),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30.0),
+                            color:
+                            Colors.grey[300],
                           ),
-
+                        ),
+                      ),
+                    ),
                     Positioned(
                       top: ScreenUtil().setHeight(20),
                       right: ScreenUtil().setWidth(5),
@@ -219,8 +210,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                     Positioned(
                       bottom: ScreenUtil().setHeight(24.h),
-                      left: ScreenUtil().setWidth(10.w),
-                      right: ScreenUtil().setWidth(10.w),
+                      left: ScreenUtil().setWidth(3.w),
+                      right: ScreenUtil().setWidth(3.w),
                       child: Container(
                         decoration: BoxDecoration(
                           boxShadow: [
@@ -533,7 +524,7 @@ class _HomePageState extends State<HomePage> {
                                         },
                                         // Replace the image loading code inside the GestureDetector's child with this:
                                         // Replace the image loading code inside the GestureDetector's child with this:
-                                        child: Container(
+                                        child: SizedBox(
                                           width: 80,
                                           child: Card(
                                             elevation: 0,
@@ -618,61 +609,103 @@ class _HomePageState extends State<HomePage> {
                                                           //     },
                                                           //   ),
                                                           // ),
-                                                          Container(
-                                                            width: 80,
-                                                            height: 30,
-                                                            // height: 15,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color:
-                                                                  greenColor2,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .only(
-                                                                bottomRight:
-                                                                    const Radius
-                                                                        .circular(
-                                                                        10.0),
-                                                                bottomLeft:
-                                                                    const Radius
-                                                                        .circular(
-                                                                        10.0),
-                                                              ),
-                                                            ),
-                                                            child: Center(
-                                                              child:
-                                                                  LayoutBuilder(
-                                                                builder: (context,
-                                                                    constraints) {
-                                                                  return FittedBox(
-                                                                    fit: BoxFit
-                                                                        .scaleDown,
-                                                                    child:
-                                                                        CustomText(
-                                                                      title:categories[index]
-                                                                              .categories![index1]
-                                                                              .categoryName ??
-                                                                          "ddd",
-                                                                      googleFont:
-                                                                          "Inter",
-                                                                      fontSize:
-                                                                          08,
-                                                                      color: Colors
-                                                                          .white,
-                                                                      maxLine:
-                                                                          3,
-                                                                      textOverflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
+
+                                                          Row(
+                                                            children: [
+                                                              Flexible(
+                                                                child: Container(
+                                                                  width: 80,
+                                                                  height: 30,
+                                                                  decoration: BoxDecoration(
+                                                                    color: greenColor2,
+                                                                    borderRadius: BorderRadius.only(
+                                                                      bottomRight: const Radius.circular(10.0),
+                                                                      bottomLeft: const Radius.circular(10.0),
                                                                     ),
-                                                                  );
-                                                                },
+                                                                  ),
+                                                                  child: Center(
+                                                                    child: LayoutBuilder(
+                                                                      builder: (context, constraints) {
+                                                                        return AutoSizeText(
+                                                                          categories[index].categories![index1].categoryName ?? "ddd",
+                                                                          style: TextStyle(
+                                                                            fontFamily: "Inter",
+                                                                            color: Colors.white,
+                                                                            fontWeight: FontWeight.bold,
+                                                                          ),
+                                                                          maxLines: 3,
+                                                                          overflow: TextOverflow.ellipsis,
+                                                                          minFontSize: 8, // Minimum font size
+                                                                          maxFontSize: 10, // Maximum font size
+                                                                          stepGranularity: 1, // Font size step
+                                                                          textAlign: TextAlign.center, // Align text to the center
+                                                                        );
+                                                                      },
+                                                                    ),
+                                                                  ),
+                                                                ),
                                                               ),
-                                                            ),
+                                                            ],
                                                           ),
+
+
+
+                                                          // Container(
+                                                          //   width: 80,
+                                                          //   height: 30,
+                                                          //   // height: 15,
+                                                          //   decoration:
+                                                          //       BoxDecoration(
+                                                          //     color:
+                                                          //         greenColor2,
+                                                          //     borderRadius:
+                                                          //         BorderRadius
+                                                          //             .only(
+                                                          //       bottomRight:
+                                                          //           const Radius
+                                                          //               .circular(
+                                                          //               10.0),
+                                                          //       bottomLeft:
+                                                          //           const Radius
+                                                          //               .circular(
+                                                          //               10.0),
+                                                          //     ),
+                                                          //   ),
+                                                          //   child: Center(
+                                                          //     child:
+                                                          //         LayoutBuilder(
+                                                          //       builder: (context,
+                                                          //           constraints) {
+                                                          //         return FittedBox(
+                                                          //           fit: BoxFit
+                                                          //               .scaleDown,
+                                                          //           child:
+                                                          //               CustomText(
+                                                          //             title:
+                                                          //             categories[index]
+                                                          //                     .categories![index1]
+                                                          //                     .categoryName ??
+                                                          //                 "ddd",
+                                                          //             googleFont:
+                                                          //                 "Inter",
+                                                          //             fontSize:
+                                                          //                 08,
+                                                          //             color: Colors
+                                                          //                 .white,
+                                                          //             maxLine:
+                                                          //                 3,
+                                                          //             textOverflow:
+                                                          //                 TextOverflow
+                                                          //                     .ellipsis,
+                                                          //             fontWeight:
+                                                          //                 FontWeight
+                                                          //                     .bold,
+                                                          //           ),
+                                                          //         );
+                                                          //       },
+                                                          //     ),
+                                                          //   ),
+                                                          // ),
                                                         ],
                                                       ),
                                                     ),

@@ -537,7 +537,10 @@ class _MobileShopsState extends State<MobileShops> {
             Expanded(
               child: Stack(
                 children: [
-                  AlignedGridView.count(
+                  if (dataList.isEmpty && !_loading) // Display message when dataList is empty and not loading
+                    Center(
+                      child: Text('No businesses available'),
+                    )else AlignedGridView.count(
                     itemCount: dataList.length + 1,
                     crossAxisCount: 2,
                     mainAxisSpacing: 2,
@@ -828,27 +831,27 @@ class _MobileShopsState extends State<MobileShops> {
 
                                             SizedBox(width: 10),
 
-                                            /// Email Icon Comment for play store
-                                            CustomContainer(
-                                              height: 30,
-                                              width: 30,
-                                              ontap: () {
-                                                if (item.email != null && item.email!.isNotEmpty) {
-                                                  launchUrl(Uri.parse('mailto:${item.email}'));
-                                                }
-                                              },
-                                              rd: 100,
-                                              color: item.email != null && item.email!.isEmpty ? Colors.grey : Colors.green,
-                                              boxShadow: true,
-                                              child: Image.asset(
-                                                item.email != null && item.email!.isEmpty
-                                                    ? 'assets/images/sms1.png'
-                                                    : 'assets/images/sms.png',
-                                              ),
-                                            ),
-
-
-                                            SizedBox(width: 10),
+                                            // /// Email Icon Comment for play store
+                                            // CustomContainer(
+                                            //   height: 30,
+                                            //   width: 30,
+                                            //   ontap: () {
+                                            //     if (item.email != null && item.email!.isNotEmpty) {
+                                            //       launchUrl(Uri.parse('mailto:${item.email}'));
+                                            //     }
+                                            //   },
+                                            //   rd: 100,
+                                            //   color: item.email != null && item.email!.isEmpty ? Colors.grey : Colors.green,
+                                            //   boxShadow: true,
+                                            //   child: Image.asset(
+                                            //     item.email != null && item.email!.isEmpty
+                                            //         ? 'assets/images/sms1.png'
+                                            //         : 'assets/images/sms.png',
+                                            //   ),
+                                            // ),
+                                            //
+                                            //
+                                            // SizedBox(width: 10),
 
                                             CustomContainer(
                                               height: 30,

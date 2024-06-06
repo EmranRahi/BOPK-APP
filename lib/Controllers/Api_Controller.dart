@@ -72,6 +72,7 @@ class APIController{
     );
 
     print(createJson);
+    print(response.body);
     if (response.statusCode == 200) {
       return StaticListModel.fromJson(jsonDecode(response.body));
     } else {
@@ -80,7 +81,7 @@ class APIController{
   }
 
   Future<List<DisplayReviewModel>> fetchReviews(int id) async {
-    final response = await http.get(Uri.parse('http://144.91.86.203/bopkapi/api/KarobarReview?id=$id'));
+    final response = await http.get(Uri.parse('https://bopkapi.businessonline.pk/KarobarReview?id=$id'));
     // final response = await http.get(Uri.parse('https://bopkapi.businessonline.pk/KarobarReview?id=$id'));
 print(response.statusCode);
 print(response.body);
@@ -236,82 +237,39 @@ print('https://bopkapi.businessonline.pk/KarobarReview?id=$id');
 
 
   /// Post Review Rating Api Business Register
-   static Future<RegisterReviewModel> registerReviewModel(RegisterReviewModel profileScreenModel,BuildContext context) async {
-      final createJson = jsonEncode(profileScreenModel);
-      final response = await http.post(Uri.parse('https://bopkapi.businessonline.pk/api/KarobarReview/Create'),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-        },
-        body: createJson,
-      );
+  static Future<RegisterReviewModel> registerReviewModel(RegisterReviewModel profileScreenModel) async {
+    final createJson = jsonEncode(profileScreenModel);
+    final response = await http.post(
+      Uri.parse('https://bopkapi.businessonline.pk/KarobarReview/Create'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: createJson,
+    );
 
-      if (kDebugMode) {
-        print("updateProfile$createJson");
-      }
-      if (kDebugMode) {
-        print("updateProfileBody${response.body}");
-      }
-      if (kDebugMode) {
-        print("Data Post successfully${response.statusCode}");
-      }
-      print(response.statusCode);
-      print(response.body);
-
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.transparent,
-
-            elevation: 0,
-            duration: Duration(seconds: 3),
-            content: Container(
-              width: MediaQuery.of(context).size.width * 0.90,
-              height: 50.h,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(
-                  "Submitted Your Review ",
-                  style: TextStyle(fontSize: 17,color: greenColor2),
-                ),
-              ),
-            ),
-          ),
-        );
-
-        return registerReviewModelFromJson(response.body);
-      } else {
-        // Show Snackbar with error message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            duration: Duration(seconds: 3),
-            content: Container(
-              width: MediaQuery.of(context).size.width * 0.90,
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(
-                  "Failed to submit response",
-                  style: TextStyle(fontSize: 17),
-                ),
-              ),
-            ),
-          ),
-        );
-        throw Exception('Failed to create customer');
-      }
-
+    if (kDebugMode) {
+      print("updateProfile$createJson");
     }
+    if (kDebugMode) {
+      print("updateProfileBody${response.body}");
+    }
+    if (kDebugMode) {
+      print("Data Post successfully${response.statusCode}");
+    }
+    print(response.statusCode);
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      return registerReviewModelFromJson(response.body);
+    } else {
+      // Throw exception with error message
+      throw Exception('Failed to create customer');
+    }
+  }
 
 
-    /// Post Contact us APi
+
+  /// Post Contact us APi
   static Future<ContactUsModel> contactUsPost(ContactUsModel profileScreenModel,BuildContext context) async {
     final createJson = jsonEncode(profileScreenModel);
     final response = await http.post(

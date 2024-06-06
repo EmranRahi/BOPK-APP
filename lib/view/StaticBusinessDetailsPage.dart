@@ -88,9 +88,14 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
   String? contact3 = "";
   String? contact4 = "";
   bool showFullText = false;
+  late PageController _pageController;
+  int activePageIndex = 0;
+  // late DisplayReviewModel review;
+  List<DisplayReviewModel> reviews = []; // Declare reviews globally
   @override
   void dispose() {
     _tabController.dispose();
+    _pageController.dispose();
     super.dispose();
   }
 
@@ -128,7 +133,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
       } else if (index == 1) {
         height = 400; // Height for index 1
       } else if (index == 2) {
-        height = 500; // Height for index 2
+        height = 300; // Height for index 2
       } else if (index == 3) {
         height = 480; // Height for index 3
       } else if (index == 4) {
@@ -222,7 +227,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
     // TODO: implement initState
     super.initState();
     getDetails(widget.karobarId);
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(_handleTabChange);
     // _tabController.addListener(_handleTabSelection);
     _fetchProducts();
@@ -232,7 +237,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    futureReviews = APIController().fetchReviews(widget.karobarId!.toInt());
+    // futureReviews = APIController().fetchReviews(widget.karobarId!.toInt());
     return Scaffold(
       backgroundColor: Color(0xffE4E4E4),
       key: _scaffoldKey,
@@ -367,67 +372,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                               child: CircularProgressIndicator(),
                             ),
                     ),
-                    Positioned(
-                      top: 130.h,
-                      left: 8.w,
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: businessModel != null &&
-                                    businessModel!.images != null &&
-                                    businessModel!.images!.isNotEmpty &&
-                                    businessModel!.images![0].imageName !=
-                                        null &&
-                                    businessModel!
-                                        .images![0].imageName!.isNotEmpty
-                                ? CircleAvatar(
-                                    radius: 30, // Radius of 30
-                                    backgroundImage: NetworkImage(
-                                      "https://businessonline.pk/Image/Business/Gallery/${businessModel!.karobarId}/${businessModel!.images![0].imageName}", // Assuming there's always at least one image in the first item
-                                    ),
-                                  )
-                                : CircleAvatar(
-                                    radius: 30, // Radius of 30
-                                    backgroundImage: AssetImage(
-                                      'assets/images/bopk1.png', // Path to your default image asset
-                                    ),
-                                  ),
-                          ),
-                        ],
-                      ),
-                    ),
 
-                    Positioned(
-                      top: 185,
-                      left: 80,
-                      child: CustomText(
-                        title: businessModel?.title ?? "",
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        color: Colors.black,
-                        maxLine: 2,
-                      ),
-                    ),
-                    Positioned(
-                      top: 200,
-                      left: 80,
-                      child: RatingBar.builder(
-                        itemSize: 20,
-                        initialRating: 0,
-                        minRating: 1,
-                        direction: Axis.horizontal,
-                        allowHalfRating: true,
-                        itemCount: 5,
-                        itemBuilder: (context, _) => Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                        ),
-                        onRatingUpdate: (rating) {
-                          print(rating);
-                        },
-                      ),
-                    ),
 
                     /// Navigation images comment for play store
                     Positioned(
@@ -437,7 +382,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          businessModel?.whatsAppNumber == null
+                          businessModel?.whatsAppNumber == ""
                               ? CustomContainer(
                                   height: 40,
                                   width: 40,
@@ -451,7 +396,13 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                               : CustomContainer(
                                   height: 40,
                                   width: 40,
-                                  ontap: () {},
+                                  ontap: () {
+                                    launchNavigation(
+                                        latitude:
+                                        businessModel!.lat!.toDouble(),
+                                        longitude:
+                                        businessModel!.lng!.toDouble());
+                                  },
                                   rd: 100,
                                   color: whiteColor,
                                   boxShadow: true,
@@ -459,13 +410,13 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                       'assets/images/navigation.png'),
                                 ),
                           SizedBox(width: 5.w),
-                          businessModel?.contactPhone == null
+                          businessModel?.contactPhone == ""
                               ? CustomContainer(
                                   height: 40,
                                   width: 40,
                                   ontap: () {
                                     print(businessModel?.contactPhone);
-                                    if (businessModel?.contactPhone != null) {
+                                    if (businessModel?.contactPhone != "") {
                                       String phoneUrl =
                                           'tel:${businessModel!.contactPhone}';
                                       launchUrl(Uri.parse(phoneUrl));
@@ -480,7 +431,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   width: 40,
                                   ontap: () {
                                     print(businessModel?.contactPhone);
-                                    if (businessModel?.contactPhone != null) {
+                                    if (businessModel?.contactPhone != "") {
                                       String phoneUrl =
                                           'tel:${businessModel?.contactPhone?.replaceAll(',', '')}';
                                       launchUrl(Uri.parse(phoneUrl));
@@ -491,36 +442,29 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   boxShadow: true,
                                   child: Image.asset('assets/images/call.png')),
                           SizedBox(width: 5.w),
+                          // businessModel?.whatsAppNumber == ""
+                          //     ? CustomContainer(
+                          //         height: 40,
+                          //         width: 40,
+                          //         ontap: () {},
+                          //         rd: 100,
+                          //         color: whiteColor,
+                          //         boxShadow: true,
+                          //         child: Image.asset('assets/images/sms1.png'))
+                          //     : CustomContainer(
+                          //         height: 40,
+                          //         width: 40,
+                          //         ontap: () {},
+                          //         rd: 100,
+                          //         color: whiteColor,
+                          //         boxShadow: true,
+                          //         child: Image.asset('assets/images/sms.png')),
+                          // SizedBox(width: 5.w),
                           businessModel?.whatsAppNumber == ""
                               ? CustomContainer(
                                   height: 40,
                                   width: 40,
-                                  ontap: () {},
-                                  rd: 100,
-                                  color: whiteColor,
-                                  boxShadow: true,
-                                  child: Image.asset('assets/images/sms1.png'))
-                              : CustomContainer(
-                                  height: 40,
-                                  width: 40,
-                                  ontap: () {},
-                                  rd: 100,
-                                  color: whiteColor,
-                                  boxShadow: true,
-                                  child: Image.asset('assets/images/sms.png')),
-                          SizedBox(width: 5.w),
-                          businessModel?.contactPhone == null
-                              ? CustomContainer(
-                                  height: 40,
-                                  width: 40,
                                   ontap: () {
-                                    print(businessModel?.contactPhone);
-                                    // String whatsappUrl = 'https://wa.me/+1${businessModel!.whatsAppNumber}';
-                                    if (businessModel?.whatsAppNumber != null) {
-                                      String whatsappUrl =
-                                          'https://wa.me/+1${businessModel!.whatsAppNumber}';
-                                      launchUrl(Uri.parse(whatsappUrl));
-                                    }
                                   },
                                   rd: 100,
                                   color: whiteColor,
@@ -532,11 +476,9 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   height: 40,
                                   width: 40,
                                   ontap: () {
-                                    print(businessModel?.contactPhone);
-                                    // String whatsappUrl = 'https://wa.me/+1${businessModel!.whatsAppNumber}';
-                                    if (businessModel?.whatsAppNumber != null) {
+                                    if (businessModel?.whatsAppNumber != "") {
                                       String whatsappUrl =
-                                          'https://wa.me/+1${businessModel!.whatsAppNumber}';
+                                          'https://wa.me/${businessModel!.whatsAppNumber}';
                                       launchUrl(Uri.parse(whatsappUrl));
                                     }
                                   },
@@ -633,12 +575,12 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                           //       scale: 2),
                           // ),
                           /// this is the facebook URL
-                          businessModel?.facebookUrl == null
+                          businessModel?.facebookUrl == ""
                               ? CustomContainer(
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.facebookUrl != null) {
+                                    if (businessModel?.facebookUrl != "") {
                                       String facebookUrl =
                                           'https://www.facebook.com/${businessModel!.facebookUrl}';
                                       launchUrl(Uri.parse(facebookUrl));
@@ -655,7 +597,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.facebookUrl != null) {
+                                    if (businessModel?.facebookUrl != "") {
                                       String facebookUrl =
                                           'https://www.facebook.com/${businessModel!.facebookUrl}';
                                       launchUrl(Uri.parse(facebookUrl));
@@ -670,12 +612,12 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                 ),
 
                           /// this is the YouTube URl
-                          businessModel?.youtubeUrl == null
+                          businessModel?.youtubeUrl == ""
                               ? CustomContainer(
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.youtubeUrl != null) {
+                                    if (businessModel?.youtubeUrl != "") {
                                       String youtubeUrl =
                                           'https://www.youtube.com/${businessModel!.youtubeUrl}';
                                       launchUrl(Uri.parse(youtubeUrl));
@@ -691,7 +633,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.youtubeUrl != null) {
+                                    if (businessModel?.youtubeUrl != "") {
                                       String youtubeUrl =
                                           'https://www.youtube.com/${businessModel!.youtubeUrl}';
                                       launchUrl(Uri.parse(youtubeUrl));
@@ -705,12 +647,12 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                 ),
 
                           /// this is the Twitter URl
-                          businessModel?.twitterUrl == null
+                          businessModel?.twitterUrl == ""
                               ? CustomContainer(
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.twitterUrl != null) {
+                                    if (businessModel?.twitterUrl != "") {
                                       String twitterUrl =
                                           'https://twitter.com/${businessModel!.twitterUrl}';
                                       launchUrl(Uri.parse(twitterUrl));
@@ -726,7 +668,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.twitterUrl != null) {
+                                    if (businessModel?.twitterUrl != "") {
                                       String twitterUrl =
                                           'https://twitter.com/${businessModel!.twitterUrl}';
                                       launchUrl(Uri.parse(twitterUrl));
@@ -740,12 +682,12 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                 ),
 
                           /// this is the instagram URL
-                          businessModel?.instagramUrl == null
+                          businessModel?.instagramUrl == ""
                               ? CustomContainer(
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.instagramUrl != null) {
+                                    if (businessModel?.instagramUrl != "") {
                                       String instagramUrl =
                                           'https://www.instagram.com/${businessModel!.instagramUrl}';
                                       launchUrl(Uri.parse(instagramUrl));
@@ -761,7 +703,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.instagramUrl != null) {
+                                    if (businessModel?.instagramUrl != "") {
                                       String instagramUrl =
                                           'https://www.instagram.com/${businessModel!.instagramUrl}';
                                       launchUrl(Uri.parse(instagramUrl));
@@ -775,12 +717,12 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                 ),
 
                           /// this is the linkedIn URL
-                          businessModel?.linkedInUrl == null
+                          businessModel?.linkedInUrl == ""
                               ? CustomContainer(
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.linkedInUrl != null) {
+                                    if (businessModel?.linkedInUrl != "") {
                                       String linkedinUrl =
                                           'https://www.linkedin.com/in/${businessModel!.linkedInUrl}';
                                       launchUrl(Uri.parse(linkedinUrl));
@@ -796,7 +738,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.linkedInUrl != null) {
+                                    if (businessModel?.linkedInUrl != "") {
                                       String linkedinUrl =
                                           'https://www.linkedin.com/in/${businessModel!.linkedInUrl}';
                                       launchUrl(Uri.parse(linkedinUrl));
@@ -815,23 +757,67 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                       ),
                       Padding(
                         padding:
-                            EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                            EdgeInsets.symmetric(vertical: 0, horizontal: 0),
                         child: Align(
                           alignment: Alignment.topLeft,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                          Row(
+                          children: [
+                          Padding(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: businessModel != null &&
+                              businessModel!.images != null &&
+                              businessModel!.images!.isNotEmpty &&
+                              businessModel!.images![0].imageName != null &&
+                              businessModel!.images![0].imageName!.isNotEmpty
+                              ? CircleAvatar(
+                            radius: 30, // Radius of 30
+                            backgroundImage: NetworkImage(
+                              "https://businessonline.pk/Image/Business/Gallery/${businessModel!.karobarId}/${businessModel!.images![0].imageName}",
+                            ),
+                          )
+                              : CircleAvatar(
+                            radius: 30, // Radius of 30
+                            backgroundImage: AssetImage(
+                              'assets/images/profile_image_default.png',
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 5.w,),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
                               CustomText(
-                                  title: businessModel?.title
-                                          ?.replaceAll(',', '') ??
-                                      "businessName",
-                                  fontWeight: FontWeight.bold,
-                                  googleFont: "Jost",
-                                  fontSize: 16.sp),
-                              SizedBox(
-                                height: 6,
+                                title: businessModel?.title?.replaceAll(',', '') ?? "businessName",
+                                fontWeight: FontWeight.bold,
+                                googleFont: "Jost",
+                                fontSize: 16.sp,
                               ),
+                              RatingBar.builder(
+                                itemSize: 20,
+                                initialRating: 0,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: true,
+                                itemCount: 5,
+                                itemBuilder: (context, _) => Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                ),
+                                onRatingUpdate: (rating) {
+                                  print(rating);
+                                },
+                              ),
+                            ],
+                          ),
+                          ),
+                        ],
+                          ),
+                              SizedBox(height: 5.h,),
                               Column(
                                 children: [
                                   Row(
@@ -863,7 +849,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                           : SizedBox.shrink(),
                                     ],
                                   ),
-                              SizedBox(height: 10), // Space between rows
+                              SizedBox(height: 5.h), // Space between rows
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
@@ -1034,70 +1020,47 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                       // Container(
                       //   height: 30, // Adjust the height of the tab container
                       //   decoration: BoxDecoration(
-                      //     // color: Colors.grey[300],
-                      //     borderRadius: BorderRadius.circular(
-                      //       25.0,
-                      //     ),
+                      //     borderRadius: BorderRadius.circular(25.0),
                       //   ),
-                      //   child:  TabBar(
+                      //   child: TabBar(
                       //     controller: _tabController,
                       //     isScrollable: true,
                       //     indicator: BoxDecoration(
-                      //       // borderRadius: BorderRadius.circular(25.0),
+                      //       borderRadius: BorderRadius.circular(25.0),
                       //       color: greenColor2, // Adjust the color as needed
                       //     ),
                       //     labelColor: Colors.white,
-                      //     unselectedLabelColor: Colors.green,
+                      //     unselectedLabelColor: greenColor2,
+                      //     labelPadding: EdgeInsets.symmetric(horizontal: 3.0),
                       //     tabs: [
-                      //       Tab(
-                      //         child: CustomText(
-                      //           title: 'Overview',
-                      //           fontWeight: FontWeight.bold,
-                      //           fontSize: 14,
+                      //       SizedBox( // Adjust the width as needed
+                      //         width: 100, // Example width
+                      //         child: Tab(
+                      //           child: CustomText(
+                      //             title: 'Overview',
+                      //             fontWeight: FontWeight.bold,
+                      //             fontSize: 14,
+                      //           ),
                       //         ),
                       //       ),
-                      //       Tab(
-                      //         child: CustomText(
-                      //           title: "Products",
-                      //           fontWeight: FontWeight.bold,
-                      //           fontSize: 14,
+                      //       SizedBox( // Adjust the width as needed
+                      //         width: 120, // Example width
+                      //         child: Tab(
+                      //           child: CustomText(
+                      //             title: "User Review",
+                      //             fontWeight: FontWeight.bold,
+                      //             fontSize: 14,
+                      //           ),
                       //         ),
                       //       ),
-                      //       Tab(
-                      //         child: CustomText(
-                      //           title: "Gallery",
-                      //           fontWeight: FontWeight.bold,
-                      //           fontSize: 14,
-                      //         ),
-                      //       ),
-                      //       Tab(
-                      //         child: Row(
-                      //           children: [
-                      //             Icon(
-                      //               Icons.access_time_rounded,
-                      //               size: 20,
-                      //             ),
-                      //             SizedBox(width: 10),
-                      //             CustomText(
-                      //               title: "Opening Hours",
-                      //               fontWeight: FontWeight.bold,
-                      //               fontSize: 14,
-                      //             ),
-                      //           ],
-                      //         ),
-                      //       ),
-                      //       Tab(
-                      //         child: CustomText(
-                      //           title: "User Review",
-                      //           fontWeight: FontWeight.bold,
-                      //           fontSize: 14,
-                      //         ),
-                      //       ),
-                      //       Tab(
-                      //         child: CustomText(
-                      //           title: "Contact us",
-                      //           fontWeight: FontWeight.bold,
-                      //           fontSize: 14,
+                      //       SizedBox( // Adjust the width as needed
+                      //         width: 120, // Example width
+                      //         child: Tab(
+                      //           child: CustomText(
+                      //             title: "Contact us",
+                      //             fontWeight: FontWeight.bold,
+                      //             fontSize: 14,
+                      //           ),
                       //         ),
                       //       ),
                       //     ],
@@ -1105,92 +1068,71 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                       //   ),
                       // ),
                       Container(
-                        height: 30, // Adjust the height of the tab container
+                        height: 45,
                         decoration: BoxDecoration(
+                          color: Colors.grey[300],
                           borderRadius: BorderRadius.circular(25.0),
                         ),
-                        child: TabBar(
-                          controller: _tabController,
-                          isScrollable: true,
-                          indicator: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25.0),
-                            color: greenColor2, // Adjust the color as needed
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: ListView(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            children: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width, // Set width to 1/3 of screen width
+                                child: TabBar(
+                                  controller: _tabController,
+                                  // give the indicator a decoration (color and border radius)
+                                  indicator: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(25.0),
+                                    color: greenColor2,
+                                  ),
+                                  labelColor: Colors.white,
+                                  unselectedLabelColor: Colors.black,
+                                  indicatorSize: TabBarIndicatorSize.tab, // Ensure indicator size matches tab size
+                                  tabs: const [
+                                    // first tab [you can add an icon using the icon property]
+                                    Tab(
+                                      // Apply smaller text size here
+                                      child: Text(
+                                        'Overview',
+                                        style: TextStyle(fontSize: 12), // Adjust the font size as needed
+                                      ),
+                                    ),
+
+                                    // second tab [you can add an icon using the icon property]
+                                    Tab(
+                                      // Apply smaller text size here
+                                      child: Text(
+                                        'User Review',
+                                        style: TextStyle(fontSize: 12), // Adjust the font size as needed
+                                      ),
+                                    ),
+
+                                    // third tab
+                                    Tab(
+                                      // Apply smaller text size here
+                                      child: Text(
+                                        'Gallery',
+                                        style: TextStyle(fontSize: 12), // Adjust the font size as needed
+                                      ),
+                                    ),
+                                    // fourth tab
+                                    Tab(
+                                      // Apply smaller text size here
+                                      child: Text(
+                                        'Contact us',
+                                        style: TextStyle(fontSize: 12), // Adjust the font size as needed
+                                      ),
+                                    ),
+                                  ],
+                                  onTap: _handleTabTap,
+                                ),
+                              ),
+
+                            ],
                           ),
-                          labelColor: Colors.white,
-                          unselectedLabelColor: greenColor2,
-                          labelPadding: EdgeInsets.symmetric(horizontal: 3.0),
-                          tabs: [
-                            SizedBox( // Adjust the width as needed
-                              width: 100, // Example width
-                              child: Tab(
-                                child: CustomText(
-                                  title: 'Overview',
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                            // Container( // Adjust the width as needed
-                            //   width: 100, // Example width
-                            //   child: Tab(
-                            //     child: CustomText(
-                            //       title: "Products",
-                            //       fontWeight: FontWeight.bold,
-                            //       fontSize: 14,
-                            //     ),
-                            //   ),
-                            // ),
-                            // Container( // Adjust the width as needed
-                            //   width: 100, // Example width
-                            //   child: Tab(
-                            //     child: CustomText(
-                            //       title: "Gallery",
-                            //       fontWeight: FontWeight.bold,
-                            //       fontSize: 14,
-                            //     ),
-                            //   ),
-                            // ),
-                            // Container( // Adjust the width as needed
-                            //   width: 150, // Example width
-                            //   child: Tab(
-                            //     child: Row(
-                            //       children: [
-                            //         Icon(
-                            //           Icons.access_time_rounded,
-                            //           size: 20,
-                            //         ),
-                            //         SizedBox(width: 10),
-                            //         CustomText(
-                            //           title: "Opening Hours",
-                            //           fontWeight: FontWeight.bold,
-                            //           fontSize: 14,
-                            //         ),
-                            //       ],
-                            //     ),
-                            //   ),
-                            // ),
-                            Container( // Adjust the width as needed
-                              width: 120, // Example width
-                              child: Tab(
-                                child: CustomText(
-                                  title: "User Review",
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                            SizedBox( // Adjust the width as needed
-                              width: 120, // Example width
-                              child: Tab(
-                                child: CustomText(
-                                  title: "Contact us",
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                          ],
-                          onTap: _handleTabTap,
                         ),
                       ),
 
@@ -1296,125 +1238,337 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                               ),
 
 
-
-                            FutureBuilder<List<DisplayReviewModel>>(
-                                future: futureReviews,
-                                builder: (context, snapshot) {
-                                  if (snapshot.connectionState == ConnectionState.waiting) {
-                                    return Center(child: CircularProgressIndicator());
-                                  } else if (snapshot.hasError) {
-                                    return Center(child: Text('Error: ${snapshot.error}'));
-                                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                                    return Center(child: Text('No reviews found'));
-                                  } else {
-                                    final reviews = snapshot.data!;
-                                    return Container(
-                                      alignment: Alignment.center,
-                                      margin: EdgeInsets.symmetric(vertical: 8),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.grey),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Padding(
-                                        padding: EdgeInsets.all(10),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            CustomText(
-                                              title: "USER REVIEWS",
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20,
-                                              color: greenColor2, // Assuming greenColor2 is defined as Colors.green
-                                            ),
-                                            Expanded(
-                                              child: ListView.builder(
-                                                physics: NeverScrollableScrollPhysics(),
-                                                itemCount: reviews.length > 3 ? 3 : reviews.length,
-                                                itemBuilder: (context, index) {
-                                                  final review = reviews[index];
-                                                  return Column(
-                                                    children: [
-                                                      Container(
-                                                        alignment: Alignment.center,
-                                                        margin: EdgeInsets.symmetric(vertical: 5),
-                                                        decoration: BoxDecoration(
-                                                          border: Border.all(color: Colors.grey),
-                                                          borderRadius: BorderRadius.circular(12),
-                                                        ),
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.all(3.0),
-                                                          child: Column(
-                                                            mainAxisAlignment: MainAxisAlignment.start,
+                            //
+                            // FutureBuilder<List<DisplayReviewModel>>(
+                            //     future: futureReviews,
+                            //     builder: (context, snapshot) {
+                            //       if (snapshot.connectionState == ConnectionState.waiting) {
+                            //         return Center(child: CircularProgressIndicator());
+                            //       } else if (snapshot.hasError) {
+                            //         return Center(child: Text('Error: ${snapshot.error}'));
+                            //       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                            //         return Center(child: Text('No reviews found'));
+                            //       } else {
+                            //         var reviews = snapshot.data!;
+                            //         return Container(
+                            //           alignment: Alignment.center,
+                            //           margin: EdgeInsets.symmetric(vertical: 8),
+                            //           decoration: BoxDecoration(
+                            //             border: Border.all(color: Colors.grey),
+                            //             borderRadius: BorderRadius.circular(12),
+                            //           ),
+                            //           child: Padding(
+                            //             padding: EdgeInsets.all(10),
+                            //             child: Column(
+                            //               mainAxisAlignment: MainAxisAlignment.start,
+                            //               crossAxisAlignment: CrossAxisAlignment.start,
+                            //               children: [
+                            //                 CustomText(
+                            //                   title: "USER REVIEWS",
+                            //                   fontWeight: FontWeight.bold,
+                            //                   fontSize: 20,
+                            //                   color: greenColor2, // Assuming greenColor2 is defined as Colors.green
+                            //                 ),
+                            //                 Expanded(
+                            //                   child: ListView.builder(
+                            //                     physics: NeverScrollableScrollPhysics(),
+                            //                     itemCount: reviews.length > 3 ? 3 : reviews.length,
+                            //                     itemBuilder: (context, index) {
+                            //                       DisplayReviewModel review = reviews[index]; // Access each review
+                            //                       return Column(
+                            //                         children: [
+                            //                           Container(
+                            //                             alignment: Alignment.center,
+                            //                             margin: EdgeInsets.symmetric(vertical: 5),
+                            //                             decoration: BoxDecoration(
+                            //                               border: Border.all(color: Colors.grey),
+                            //                               borderRadius: BorderRadius.circular(12),
+                            //                             ),
+                            //                             child: Padding(
+                            //                               padding: const EdgeInsets.all(3.0),
+                            //                               child: Column(
+                            //                                 mainAxisAlignment: MainAxisAlignment.start,
+                            //                                 children: [
+                            //                                   Row(
+                            //                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //                                     children: [
+                            //                                       CustomText(
+                            //                                         title: review.fullName ?? 'No Name',
+                            //                                       ),
+                            //                                       CustomText(
+                            //                                         title: review.dated != null
+                            //                                             ? '${review.dated!.day}/${review.dated!.month}/${review.dated!.year}'
+                            //                                             : 'No Date',
+                            //                                       ),
+                            //                                     ],
+                            //                                   ),
+                            //                                   Align(
+                            //                                     alignment: Alignment.centerLeft,
+                            //                                     child: Text(
+                            //                                       review.review ?? 'No Review',
+                            //                                     ),
+                            //                                   ),
+                            //                                   RatingBarIndicator(
+                            //                                     rating: review.rating != null ? review.rating!.toDouble() : 0.0,
+                            //                                     itemBuilder: (context, index) => Icon(
+                            //                                       Icons.star,
+                            //                                       color: Colors.amber,
+                            //                                     ),
+                            //                                     itemCount: 5,
+                            //                                     itemSize: 30.0,
+                            //                                     direction: Axis.horizontal,
+                            //                                   ),
+                            //                                 ],
+                            //                               ),
+                            //                             ),
+                            //                           ),
+                            //                         ],
+                            //                       );
+                            //                     },
+                            //                   ),
+                            //                 ),
+                            //                 if (reviews.length > 3)
+                            //                   Align(
+                            //                     alignment: Alignment.centerRight,
+                            //                     child: Padding(
+                            //                       padding: const EdgeInsets.all(8.0),
+                            //                       child: GestureDetector(
+                            //                         onTap: () {
+                            //                           Navigator.push(
+                            //                             context,
+                            //                             MaterialPageRoute(
+                            //                               builder: (context) => AllReviewsScreen(reviews: reviews),
+                            //                             ),
+                            //                           );
+                            //                         },
+                            //                         child: Text(
+                            //                           'View More',
+                            //                           style: TextStyle(
+                            //                             color: Colors.blue,
+                            //                             fontWeight: FontWeight.bold,
+                            //                           ),
+                            //                         ),
+                            //                       ),
+                            //                     ),
+                            //                   ),
+                            //               ],
+                            //             ),
+                            //           ),
+                            //         );
+                            //       }
+                            //     },
+                            //   ),
+                          FutureBuilder<List<DisplayReviewModel>>(
+                            future: futureReviews,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return Center(child: CircularProgressIndicator());
+                              } else if (snapshot.hasError) {
+                                return Center(child: Text('Error: ${snapshot.error}'));
+                              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                return Center(child: Text('No reviews found'));
+                              } else {
+                                reviews = snapshot.data!; // Update global reviews variable
+                                return Container(
+                                  alignment: Alignment.center,
+                                  margin: EdgeInsets.symmetric(vertical: 8),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.grey),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        CustomText(
+                                          title: "USER REVIEWS",
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                          color: greenColor2, // Assuming greenColor2 is defined as Colors.green
+                                        ),
+                                        Expanded(
+                                          child: ListView.builder(
+                                            physics: NeverScrollableScrollPhysics(),
+                                            itemCount: reviews.length > 3 ? 3 : reviews.length,
+                                            itemBuilder: (context, index) {
+                                              DisplayReviewModel review = reviews[index]; // Access each review
+                                              return Column(
+                                                children: [
+                                                  Container(
+                                                    alignment: Alignment.center,
+                                                    margin: EdgeInsets.symmetric(vertical: 5),
+                                                    decoration: BoxDecoration(
+                                                      border: Border.all(color: Colors.grey),
+                                                      borderRadius: BorderRadius.circular(12),
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(3.0),
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        children: [
+                                                          Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                             children: [
-                                                              Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                children: [
-                                                                  CustomText(
-                                                                    title: review.fullName ?? 'No Name',
-                                                                  ),
-                                                                  CustomText(
-                                                                    title: review.dated != null
-                                                                        ? '${review.dated!.day}/${review.dated!.month}/${review.dated!.year}'
-                                                                        : 'No Date',
-                                                                  ),
-                                                                ],
+                                                              CustomText(
+                                                                title: review.name ?? 'No Name',
                                                               ),
-                                                              Align(
-                                                                alignment: Alignment.centerLeft,
-                                                                child: Text(
-                                                                  review.review ?? 'No Review',
-                                                                ),
-                                                              ),
-                                                              RatingBarIndicator(
-                                                                rating: review.rating != null ? review.rating!.toDouble() : 0.0,
-                                                                itemBuilder: (context, index) => Icon(
-                                                                  Icons.star,
-                                                                  color: Colors.amber,
-                                                                ),
-                                                                itemCount: 5,
-                                                                itemSize: 30.0,
-                                                                direction: Axis.horizontal,
+                                                              CustomText(
+                                                                title: review.dateTime != null
+                                                                    ? '${review.dateTime!.day}/${review.dateTime!.month}/${review.dateTime!.year}'
+                                                                    : 'No Date',
                                                               ),
                                                             ],
                                                           ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                            if (reviews.length > 3)
-                                              Align(
-                                                alignment: Alignment.centerRight,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: GestureDetector(
-                                                    onTap: () {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) => AllReviewsScreen(reviews: reviews),
-                                                        ),
-                                                      );
-                                                    },
-                                                    child: Text(
-                                                      'View More',
-                                                      style: TextStyle(
-                                                        color: Colors.blue,
-                                                        fontWeight: FontWeight.bold,
+                                                          Align(
+                                                            alignment: Alignment.centerLeft,
+                                                            child: Text(
+                                                              review.review ?? 'No Review',
+                                                            ),
+                                                          ),
+                                                          RatingBarIndicator(
+                                                            rating: review.rating != null ? review.rating!.toDouble() : 0.0,
+                                                            itemBuilder: (context, index) => Icon(
+                                                              Icons.star,
+                                                              color: Colors.amber,
+                                                            ),
+                                                            itemCount: 5,
+                                                            itemSize: 30.0,
+                                                            direction: Axis.horizontal,
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
                                                   ),
+                                                ],
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        if (reviews.length > 3)
+                                          Align(
+                                            alignment: Alignment.centerRight,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => AllReviewsScreen(widget.karobarId),
+                                                    ),
+                                                  );
+                                                },
+                                                child: Text(
+                                                  'View More',
+                                                  style: TextStyle(
+                                                    color: Colors.blue,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
                                               ),
-                                          ],
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                              Container(
+                                alignment: Alignment.center,
+                                margin: EdgeInsets.symmetric(vertical: 8),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: grayColor2),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: SingleChildScrollView(
+                                  // Wrap the Column with SingleChildScrollView
+                                  child: Column(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      // CustomText(
+                                      //   title: "GALLERY",
+                                      //   fontWeight: FontWeight.bold,
+                                      //   fontSize: 14,
+                                      //   color: greenColor2,
+                                      // ),
+                                      // Divider(
+                                      //   color: greenColor2,
+                                      //   thickness: 2,
+                                      //   indent: 1,
+                                      //   endIndent: 250,
+                                      // ),
+                                      CarouselSlider.builder(
+                                        options: CarouselOptions(
+                                          viewportFraction: 1.0,
+                                          enlargeCenterPage: false,
+                                          autoPlay: true,
                                         ),
+                                        itemCount: businessModel?.images?.length ?? 0,
+                                        itemBuilder: (BuildContext context, int index, int realIndex) {
+                                          final String? imageUrl = businessModel?.images != null &&
+                                              businessModel!.images!.isNotEmpty &&
+                                              index < businessModel!.images!.length &&
+                                              businessModel!.images![index].imageName != null &&
+                                              businessModel!.images![index].imageName!.isNotEmpty
+                                              ? "https://businessonline.pk/Image/Business/Gallery/${businessModel!.karobarId}/${businessModel!.images![index].imageName}"
+                                              : null;
+
+                                          return InkWell(
+                                            onTap: () {
+                                              if (imageUrl != null) {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => FullScreenImage(imageUrl: imageUrl),
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                            child: SizedBox(
+                                              width: MediaQuery.of(context).size.width,
+                                              child: imageUrl != null
+                                                  ? FutureBuilder(
+                                                future: precacheImage(NetworkImage(imageUrl), context),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot.connectionState == ConnectionState.done) {
+                                                    return PhotoView(
+                                                      imageProvider: NetworkImage(imageUrl),
+                                                      backgroundDecoration: BoxDecoration(
+                                                        color: Theme.of(context).canvasColor,
+                                                      ),
+                                                      minScale: PhotoViewComputedScale.covered,
+                                                      maxScale: PhotoViewComputedScale.covered * 2,
+                                                      initialScale: PhotoViewComputedScale.contained,
+                                                      loadingBuilder: (context, event) => Center(
+                                                        child: CircularProgressIndicator(),
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    return Center(
+                                                      child: CircularProgressIndicator(),
+                                                    );
+                                                  }
+                                                },
+                                              )
+                                                  : Image.asset(
+                                                'assets/images/Image_not_available.png',
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          );
+                                        },
                                       ),
-                                    );
-                                  }
-                                },
+
+                                    ],
+                                  ),
+                                ),
                               ),
                               Container(
                                 alignment: Alignment.center,
@@ -1987,7 +2141,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                           },
                                         )
                                             : Image.asset(
-                                          'assets/images/gallery.jpg',
+                                          'assets/images/Image_not_available.png',
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -2216,7 +2370,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                 controller: nameController,
                                 onChanged: (val) {
                                   // whatsAppController.text=val;
-                                  _reviewModel.fullName = val;
+                                  _reviewModel.name = val;
                                 },
                                 hint: "User Name",
                                 borderRadius: 10.r,
@@ -2253,19 +2407,73 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                               SizedBox(
                                 height: ScreenUtil().setHeight(10),
                               ),
+                              // Adjust your submit button onTap callback
                               Custom_Button_Widget(
                                 height: ScreenUtil().setHeight(30.h),
                                 ontap: () async {
-
                                   _reviewModel.fkKarobarId = widget.karobarId;
                                   _reviewModel.reviewId = 0;
-                                  _reviewModel.dated = DateTime.now();
-                                  APIController.registerReviewModel(
-                                      _reviewModel, context);
-                                  nameController.clear();
-                                  emailController.clear();
-                                  descriptionController.clear();
-                                  // Clear the review model
+                                  // _reviewModel. = DateTime.now();
+
+                                  try {
+                                    // Call the API function to submit the review
+                                    await APIController.registerReviewModel(_reviewModel);
+                                    nameController.clear();
+                                    emailController.clear();
+                                    descriptionController.clear();
+
+                                    // Show success Snackbar
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        duration: Duration(seconds: 3),
+                                        content: Container(
+                                          width: MediaQuery.of(context).size.width * 0.90,
+                                          height: 50.h,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(15),
+                                          ),
+                                          child: Align(
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              "Submitted Your Review",
+                                              style: TextStyle(fontSize: 17, color: greenColor2),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+
+                                    // Navigate to the AllReviewsScreen
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => AllReviewsScreen(widget.karobarId),
+                                      ),
+                                    );
+                                  } catch (error) {
+                                    // Show error Snackbar
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        duration: Duration(seconds: 3),
+                                        content: Container(
+                                          width: MediaQuery.of(context).size.width * 0.90,
+                                          height:45,
+                                          decoration: BoxDecoration(
+                                            color: Colors.red,
+                                            borderRadius: BorderRadius.circular(15),
+                                          ),
+                                          child: Align(
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              "Failed to submit response",
+                                              style: TextStyle(fontSize: 17),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
                                 },
                                 rd: 10,
                                 color: greenColor2,
@@ -2273,7 +2481,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   title: "Submit Review",
                                   color: whiteColor,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 15.sp,
+                                  fontSize: 12.sp,
                                 ),
                               ),
                             ],
@@ -2344,7 +2552,16 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
     await Share.share(data);
   }
 }
-
+void launchNavigation(
+    {required double latitude, required double longitude}) async {
+  final url =
+      'https://www.google.com/maps/dir/?api=1&destination=$latitude,$longitude';
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch Google Maps navigation';
+  }
+}
 class FullScreenImage extends StatelessWidget {
   final String imageUrl;
 

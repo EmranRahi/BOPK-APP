@@ -1,5 +1,6 @@
 import 'package:businessonlinepk/view/HomePage_ofBopk.dart';
 import 'package:businessonlinepk/view/customs_widgets/ToastUtil.dart';
+import 'package:businessonlinepk/view/customs_widgets/constant_color.dart';
 import 'package:businessonlinepk/view/register_your_business.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -98,6 +99,49 @@ class _BusinessDashboardState extends State<BusinessDashboard> {
             },
           ),
           _buildOption(
+            icon: Icons.edit,
+            label: 'Edit Profile',
+            onTap: () {
+              // Add your logic for editing profile here
+              print('Edit Profile tapped');
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => EditProfile(),
+              //   ),
+              // );
+            },
+          ),
+          _buildOption(
+            icon: Icons.photo_album,
+            label: '  Add Gallery',
+            onTap: () {
+              // Add your logic for the gallery here
+              print('Gallery tapped');
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => Gallery(),
+              //   ),
+              // );
+            },
+          ),
+          _buildOption(
+            icon: Icons.add_photo_alternate,
+            label: 'Add Banner',
+            onTap: () {
+              // Add your logic for adding a banner here
+              print('Add Banner tapped');
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => AddBanner(),
+              //   ),
+              // );
+            },
+          ),
+
+          _buildOption(
             icon: Icons.delete,
             label: 'Delete Account',
             onTap: () {
@@ -126,7 +170,7 @@ class _BusinessDashboardState extends State<BusinessDashboard> {
             Icon(
               icon,
               size: 48,
-              color: Colors.blue,
+              color: greenColor2,
             ),
             SizedBox(height: 8),
             Text(

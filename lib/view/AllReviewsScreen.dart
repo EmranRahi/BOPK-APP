@@ -1,12 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
+import '../Controllers/Api_Controller.dart';
 import '../model/DisplayReviewModel.dart';
 
-class AllReviewsScreen extends StatelessWidget {
-  final List<DisplayReviewModel> reviews;
+class AllReviewsScreen extends StatefulWidget {
+  const AllReviewsScreen(this.karobarId, {super.key});
+  final  int? karobarId;
 
-  AllReviewsScreen({required this.reviews});
+  @override
+  State<AllReviewsScreen> createState() => _AllReviewsScreenState();
+}
+
+class _AllReviewsScreenState extends State<AllReviewsScreen> {
+  List<DisplayReviewModel> reviews = []; // Declare reviews globally
+  late Future<List<DisplayReviewModel>> futureReviews;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    futureReviews = APIController().fetchReviews(
+        widget.karobarId!.toInt()); // Use the appropriate ID
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,21 +31,36 @@ class AllReviewsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('All Reviews'),
       ),
-      body: ListView.builder(
-        itemCount: reviews.length,
-        itemBuilder: (context, index) {
-          final review = reviews[index];
-          return Container(
-            margin: const EdgeInsets.all(8.0),
-            child: ReviewItem(review: review),
-          );
+      body: FutureBuilder<List<DisplayReviewModel>>(
+        future: futureReviews,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          } else {
+            reviews = snapshot.data ?? []; // Update reviews list
+            return ListView.builder(
+              itemCount: reviews.length,
+              itemBuilder: (context, index) {
+                final review = reviews[index];
+                return Container(
+                  margin: const EdgeInsets.all(8.0),
+                  child: ReviewItem(review: review),
+                );
+              },
+            );
+          }
         },
       ),
     );
   }
 }
-
-class ReviewItem extends StatelessWidget {
+  class ReviewItem extends StatelessWidget {
   final DisplayReviewModel review;
 
   ReviewItem({required this.review});
@@ -50,12 +82,12 @@ class ReviewItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  review.fullName ?? 'No Name',
+                  review.name ?? 'No Name',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  review.dated != null
-                      ? '${review.dated!.day}/${review.dated!.month}/${review.dated!.year}'
+                  review.dateTime != null
+                      ? '${review.dateTime!.day}/${review.dateTime!.month}/${review.dateTime!.year}'
                       : 'No Date',
                 ),
               ],
