@@ -256,8 +256,7 @@ class _HomePageState extends State<HomePage> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(
-                                      40), // Ensuring circular shape
+                                  borderRadius: BorderRadius.circular(40), // Ensuring circular shape
                                 ),
                                 child: TextField(
                                   onChanged: (value) {
@@ -266,16 +265,13 @@ class _HomePageState extends State<HomePage> {
                                   textInputAction: TextInputAction.search,
                                   // Add search button to keyboard
                                   onSubmitted: (value) {
-                                    _searchByKey.text = value;
+                                    String trimmedValue = value.trim(); // Trim the input text
+                                    _searchByKey.text = trimmedValue;
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) {
-                                          return MobileShops(
-                                              _searchByKey.text.toString(),
-                                              0,
-                                              lat,
-                                              long);
+                                          return MobileShops(trimmedValue, 0, lat, long);
                                         },
                                       ),
                                     );
@@ -290,27 +286,24 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     suffixIcon: IconButton(
                                       onPressed: () {
+                                        String trimmedValue = _searchByKey.text.trim(); // Trim the input text
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) {
-                                              return MobileShops(
-                                                  _searchByKey.text.toString(),
-                                                  0,
-                                                  lat,
-                                                  long);
+                                              return MobileShops(trimmedValue, 0, lat, long);
                                             },
                                           ),
                                         );
                                       },
                                       icon: Icon(Icons.search),
                                     ),
-                                    contentPadding:
-                                        EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                    contentPadding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                                   ),
                                 ),
                               ),
                             ),
+
                           ],
                         ),
                       ),

@@ -1995,7 +1995,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                               // Now you can use the karobarId as needed
                               print('karobarId: $karobarId');
 
-                            await uploadImages(karobarId);
+                            await APIController().uploadImages(karobarId,selectedImagePaths);
                             // Clear fields and image
                             setState(() {
                               imageFile = File('path/to/default/image.png');
@@ -2248,23 +2248,6 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
           .toList();
     });
   }
-  Future<void> uploadImage(int id) async {
-    var request = http.MultipartRequest('POST', Uri.parse('https://bopkapi.businessonline.pk/RegisterBusinesses/UploadImage?id=$id'));
-    request.files.add(await http.MultipartFile.fromPath('files', imageFile.path));
-    // request.files.add(await http.MultipartFile.fromPath('files', 'fcyf_h38s/Group 431.png'));
-    // request.files.add(await http.MultipartFile.fromPath('files', 'fcyf_h38s/Group 432.png'));
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      print(await response.stream.bytesToString());
-      print('Image uploaded successfully');
-    }
-    else {
-      print(response.reasonPhrase);
-      print('error Image uploaded successfully');
-    }
-  }
   // Future<void> _showChoiceDialoge(BuildContext context) {
   //   return showDialog(
   //     context: context,
@@ -2461,31 +2444,31 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
       },
     );
   }
-   uploadImages(int id) async {
-    var request = http.MultipartRequest(
-        'POST',
-        Uri.parse(
-            'https://bopkapi.businessonline.pk/RegisterBusinesses/UploadImage?id=$id'));
-
-    for (var i = 0; i < selectedImagePaths.length; i++) {
-      print("hamad ${selectedImagePaths[i]}");
-      // Add each image to the request
-      File imageFile = File(selectedImagePaths[i]);
-      request.files.add(await http.MultipartFile.fromPath(
-          'files', imageFile.path,
-          filename: 'image_$i.jpg'));
-    }
-
-    try {
-      http.StreamedResponse response = await request.send();
-      print(response.statusCode);
-      if (response.statusCode == 200) {
-        print(await response.stream.bytesToString());
-      } else {
-        print(response.reasonPhrase);
-      }
-    } catch (e) {
-      print('Error uploading images: $e');
-    }
-  }
+  //  uploadImages(int id) async {
+  //   var request = http.MultipartRequest(
+  //       'POST',
+  //       Uri.parse(
+  //           'https://bopkapi.businessonline.pk/RegisterBusinesses/UploadImage?id=$id'));
+  //
+  //   for (var i = 0; i < selectedImagePaths.length; i++) {
+  //     print("hamad ${selectedImagePaths[i]}");
+  //     // Add each image to the request
+  //     File imageFile = File(selectedImagePaths[i]);
+  //     request.files.add(await http.MultipartFile.fromPath(
+  //         'files', imageFile.path,
+  //         filename: 'image_$i.jpg'));
+  //   }
+  //
+  //   try {
+  //     http.StreamedResponse response = await request.send();
+  //     print(response.statusCode);
+  //     if (response.statusCode == 200) {
+  //       print(await response.stream.bytesToString());
+  //     } else {
+  //       print(response.reasonPhrase);
+  //     }
+  //   } catch (e) {
+  //     print('Error uploading images: $e');
+  //   }
+  // }
 }

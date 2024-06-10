@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:businessonlinepk/model/BannerApiModel.dart';
 import 'package:businessonlinepk/model/ContactUs_Model.dart';
 import 'package:businessonlinepk/model/LoginModel.dart';
@@ -267,10 +268,7 @@ print('https://bopkapi.businessonline.pk/KarobarReview?id=$id');
     }
   }
 
-
-
-  /// Post Contact us APi
-  static Future<ContactUsModel> contactUsPost(ContactUsModel profileScreenModel,BuildContext context) async {
+  static Future<http.Response> contactUsPost(ContactUsModel profileScreenModel) async {
     final createJson = jsonEncode(profileScreenModel);
     final response = await http.post(
       Uri.parse('https://apipython.highperformancecomputing.co.uk/Contacts/Create'),
@@ -280,57 +278,130 @@ print('https://bopkapi.businessonline.pk/KarobarReview?id=$id');
       },
       body: createJson,
     );
-    if (kDebugMode) {
-      print("updateProfile$createJson");
-    }
-    if (kDebugMode) {
-      print("updateProfileBody${response.body}");
-    }
-    if (kDebugMode) {
-      print("Contact Data Post successfully${response.statusCode}");
-    }
 
-    if (response.statusCode == 200) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Success'),
-            content: Text('Your response has been submitted successfully.'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-      return contactUsModelFromJson(response.body);
-    } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text('Failed to submit response.'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-      throw Exception('Failed to create customer');
-    }
-
+    return response;
   }
+
+  Future<void> uploadImages(int id, List<String> selectedImagePaths) async {
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('https://bopkapi.businessonline.pk/RegisterBusinesses/UploadImage?id=$id'),
+    );
+
+    for (var i = 0; i < selectedImagePaths.length; i++) {
+      print("hamad ${selectedImagePaths[i]}");
+      File imageFile = File(selectedImagePaths[i]);
+      request.files.add(await http.MultipartFile.fromPath(
+        'files',
+        imageFile.path,
+        filename: 'image_$i.jpg',
+      ));
+    }
+
+    try {
+      http.StreamedResponse response = await request.send();
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        print(await response.stream.bytesToString());
+      } else {
+        print(response.reasonPhrase);
+      }
+    } catch (e) {
+      print('Error uploading images: $e');
+    }
+  }
+
+  Future<void> uploadBanners(int id, List<String> selectedImagePaths) async {
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('https://bopkapi.businessonline.pk/api/KarobarBanner/UploadImage?id=$id'),
+    );
+
+    for (var i = 0; i < selectedImagePaths.length; i++) {
+      print("hamad ${selectedImagePaths[i]}");
+      File imageFile = File(selectedImagePaths[i]);
+      request.files.add(await http.MultipartFile.fromPath(
+        'files',
+        imageFile.path,
+        filename: 'image_$i.jpg',
+      ));
+    }
+
+    try {
+      http.StreamedResponse response = await request.send();
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        print(await response.stream.bytesToString());
+      } else {
+        print(response.reasonPhrase);
+      }
+    } catch (e) {
+      print('Error uploading images: $e');
+    }
+  }
+
+  // /// Post Contact us APi
+  // static Future<ContactUsModel> contactUsPost(ContactUsModel profileScreenModel,BuildContext context) async {
+  //   final createJson = jsonEncode(profileScreenModel);
+  //   final response = await http.post(
+  //     Uri.parse('https://apipython.highperformancecomputing.co.uk/Contacts/Create'),
+  //     headers: <String, String>{
+  //       'Content-Type': 'application/json',
+  //       "Project":"7"
+  //     },
+  //     body: createJson,
+  //   );
+  //   if (kDebugMode) {
+  //     print("updateProfile$createJson");
+  //   }
+  //   if (kDebugMode) {
+  //     print("updateProfileBody${response.body}");
+  //   }
+  //   if (kDebugMode) {
+  //     print("Contact Data Post successfully${response.statusCode}");
+  //   }
+  //
+  //   if (response.statusCode == 200) {
+  //     showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           title: Text('Success'),
+  //           content: Text('Your response has been submitted successfully.'),
+  //           actions: <Widget>[
+  //             TextButton(
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //               child: Text('OK'),
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     );
+  //     return contactUsModelFromJson(response.body);
+  //   } else {
+  //     showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           title: Text('Error'),
+  //           content: Text('Failed to submit response.'),
+  //           actions: <Widget>[
+  //             TextButton(
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //               child: Text('OK'),
+  //             ),
+  //           ],
+  //         );
+  //       },
+  //     );
+  //     throw Exception('Failed to create customer');
+  //   }
+  //
+  // }
 
   /// product OR Item API in Details
     static Future<List<DetailsPageProductModel>> fetchProducts() async {

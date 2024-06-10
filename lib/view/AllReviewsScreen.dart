@@ -5,11 +5,11 @@ import '../Controllers/Api_Controller.dart';
 import '../model/DisplayReviewModel.dart';
 
 class AllReviewsScreen extends StatefulWidget {
-  const AllReviewsScreen(this.karobarId, {super.key});
-  final  int? karobarId;
+  const AllReviewsScreen(this.karobarId, {Key? key}) : super(key: key);
+  final int? karobarId;
 
   @override
-  State<AllReviewsScreen> createState() => _AllReviewsScreenState();
+  _AllReviewsScreenState createState() => _AllReviewsScreenState();
 }
 
 class _AllReviewsScreenState extends State<AllReviewsScreen> {
@@ -18,11 +18,8 @@ class _AllReviewsScreenState extends State<AllReviewsScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    futureReviews = APIController().fetchReviews(
-        widget.karobarId!.toInt()); // Use the appropriate ID
-    setState(() {});
+    futureReviews = APIController().fetchReviews(widget.karobarId!.toInt());
   }
 
   @override
@@ -43,24 +40,31 @@ class _AllReviewsScreenState extends State<AllReviewsScreen> {
               child: Text('Error: ${snapshot.error}'),
             );
           } else {
-            reviews = snapshot.data ?? []; // Update reviews list
-            return ListView.builder(
-              itemCount: reviews.length,
-              itemBuilder: (context, index) {
-                final review = reviews[index];
-                return Container(
-                  margin: const EdgeInsets.all(8.0),
-                  child: ReviewItem(review: review),
-                );
-              },
-            );
+            reviews = snapshot.data ?? [];
+            if (reviews.isEmpty) {
+              return Center(
+                child: Text('No reviews available.'),
+              );
+            } else {
+              return ListView.builder(
+                itemCount: reviews.length,
+                itemBuilder: (context, index) {
+                  final review = reviews[index];
+                  return Container(
+                    margin: const EdgeInsets.all(8.0),
+                    child: ReviewItem(review: review),
+                  );
+                },
+              );
+            }
           }
         },
       ),
     );
   }
 }
-  class ReviewItem extends StatelessWidget {
+
+class ReviewItem extends StatelessWidget {
   final DisplayReviewModel review;
 
   ReviewItem({required this.review});

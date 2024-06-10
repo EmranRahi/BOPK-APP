@@ -1,3 +1,5 @@
+import 'package:businessonlinepk/UpdateProfile/UpdateBanner.dart';
+import 'package:businessonlinepk/UpdateProfile/UpdateGallery.dart';
 import 'package:businessonlinepk/view/HomePage_ofBopk.dart';
 import 'package:businessonlinepk/view/customs_widgets/ToastUtil.dart';
 import 'package:businessonlinepk/view/customs_widgets/constant_color.dart';
@@ -118,12 +120,12 @@ class _BusinessDashboardState extends State<BusinessDashboard> {
             onTap: () {
               // Add your logic for the gallery here
               print('Gallery tapped');
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => Gallery(),
-              //   ),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UpdateGallery(widget.fkKarobarId),
+                ),
+              );
             },
           ),
           _buildOption(
@@ -132,12 +134,12 @@ class _BusinessDashboardState extends State<BusinessDashboard> {
             onTap: () {
               // Add your logic for adding a banner here
               print('Add Banner tapped');
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => AddBanner(),
-              //   ),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UpdateBanner(widget.fkKarobarId),
+                ),
+              );
             },
           ),
 

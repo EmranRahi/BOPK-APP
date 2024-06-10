@@ -25,6 +25,7 @@ import '../model/DisplayReviewModel.dart';
 import '../model/OpenningHour.dart';
 import 'AllProductsScreen.dart';
 import 'AllReviewsScreen.dart';
+import 'customs_widgets/MessageDialog.dart';
 import 'menu_login.dart';
 
 class StaticBusinessDetailsPage extends StatefulWidget {
@@ -995,20 +996,18 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                               //     //               )
                               //                 : SizedBox.shrink(),
 
-                              Column(
-                                children: [
-                                  (phoneNumb1 != null && phoneNumb1!.isNotEmpty)
-                                      ? Text('Ph#: $phoneNumb1')
-                                      : SizedBox.shrink(),
-                                  (phoneNumb2 != null && phoneNumb2!.isNotEmpty)
-                                      ? Text('Ph#: $phoneNumb2')
-                                      : SizedBox.shrink(),
-                                  (phoneNumb3 != null && phoneNumb3!.isNotEmpty)
-                                      ? Text('Ph#: $phoneNumb3')
-                                      : SizedBox.shrink(),
-                                ],
-                              )
-
+                              (phoneNumb1 != null && phoneNumb1!.isNotEmpty)
+                                  ? Text('Ph#: $phoneNumb1')
+                                  : SizedBox.shrink(),
+                              (phoneNumb2 != null && phoneNumb2!.isNotEmpty)
+                                  ? Text('Ph#: $phoneNumb2')
+                                  : SizedBox.shrink(),
+                              (phoneNumb3 != null && phoneNumb3!.isNotEmpty)
+                                  ? Text('Ph#: $phoneNumb3')
+                                  : SizedBox.shrink(),
+                              Divider(
+                                thickness: 1,
+                              ),
 
                             ],
                           ),
@@ -1708,10 +1707,42 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                         SizedBox(
                                           height: 20,
                                         ),
+                                        // Center(
+                                        //   child: Custom_Button_Widget(
+                                        //     height:
+                                        //         ScreenUtil().setHeight(30.h),
+                                        //     ontap: () async {
+                                        //       contactUsModel.contactId = 0;
+                                        //       contactUsModel.fkCityId = 0;
+                                        //       contactUsModel.fkServiceId = 0;
+                                        //       contactUsModel.fkProgramId = 0;
+                                        //       contactUsModel.fkCountryId = 0;
+                                        //       contactUsModel.fkPackageId = 0;
+                                        //       contactUsModel.timing = "";
+                                        //       contactUsModel.budget = 0;
+                                        //       contactUsModel.area = "";
+                                        //       contactUsModel.token = "";
+                                        //       print(contactUsModel.user!.name);
+                                        //       APIController.contactUsPost(
+                                        //           contactUsModel, context);
+                                        //       nameForContactus.clear();
+                                        //       emailForContactus.clear();
+                                        //       phoneController.clear();
+                                        //       messageController.clear();
+                                        //     },
+                                        //     rd: 10,
+                                        //     color: greenColor2,
+                                        //     child: CustomText(
+                                        //       title: "Send",
+                                        //       color: whiteColor,
+                                        //       fontWeight: FontWeight.bold,
+                                        //       fontSize: 15.sp,
+                                        //     ),
+                                        //   ),
+                                        // ),
                                         Center(
                                           child: Custom_Button_Widget(
-                                            height:
-                                                ScreenUtil().setHeight(30.h),
+                                            height: ScreenUtil().setHeight(30.h),
                                             ontap: () async {
                                               contactUsModel.contactId = 0;
                                               contactUsModel.fkCityId = 0;
@@ -1724,12 +1755,35 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                               contactUsModel.area = "";
                                               contactUsModel.token = "";
                                               print(contactUsModel.user!.name);
-                                              APIController.contactUsPost(
-                                                  contactUsModel, context);
-                                              nameForContactus.clear();
-                                              emailForContactus.clear();
-                                              phoneController.clear();
-                                              messageController.clear();
+
+                                              var response = await APIController.contactUsPost(contactUsModel);
+
+                                              if (response.statusCode == 200) {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (BuildContext context) {
+                                                    return MessageDialog(
+                                                      title: 'Success',
+                                                      content: 'Thank you for reaching out to us. We have received your message, and our team will contact you soon..',
+                                                    );
+                                                  },
+                                                );
+                                                nameForContactus.clear();
+                                                emailForContactus.clear();
+                                                phoneController.clear();
+                                                messageController.clear();
+                                              } else {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (BuildContext context) {
+                                                    return MessageDialog(
+                                                      title: 'Error',
+                                                      content: 'Failed to submit Form.',
+                                                    );
+                                                  },
+                                                );
+                                              }
+
                                             },
                                             rd: 10,
                                             color: greenColor2,
@@ -1741,6 +1795,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                             ),
                                           ),
                                         ),
+
                                       ],
                                     ),
                                   ),
@@ -2408,57 +2463,93 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                 height: ScreenUtil().setHeight(10),
                               ),
                               // Adjust your submit button onTap callback
+                              // Custom_Button_Widget(
+                              //   height: ScreenUtil().setHeight(30.h),
+                              //   ontap: () async {
+                              //     _reviewModel.fkKarobarId = widget.karobarId;
+                              //     _reviewModel.reviewId = 0;
+                              //     // _reviewModel. = DateTime.now();
+                              //
+                              //     try {
+                              //       // Call the API function to submit the review
+                              //       await APIController.registerReviewModel(_reviewModel);
+                              //       nameController.clear();
+                              //       emailController.clear();
+                              //       descriptionController.clear();
+                              //
+                              //       // Show success Snackbar
+                              //       ScaffoldMessenger.of(context).showSnackBar(
+                              //         SnackBar(
+                              //           duration: Duration(seconds: 3),
+                              //           content: Container(
+                              //             width: MediaQuery.of(context).size.width * 0.90,
+                              //             height: 50.h,
+                              //             decoration: BoxDecoration(
+                              //               color: Colors.white,
+                              //               borderRadius: BorderRadius.circular(15),
+                              //             ),
+                              //             child: Align(
+                              //               alignment: Alignment.center,
+                              //               child: Text(
+                              //                 "Submitted Your Review",
+                              //                 style: TextStyle(fontSize: 17, color: greenColor2),
+                              //               ),
+                              //             ),
+                              //           ),
+                              //         ),
+                              //       );
+                              //
+                              //       // Navigate to the AllReviewsScreen
+                              //       Navigator.push(
+                              //         context,
+                              //         MaterialPageRoute(
+                              //           builder: (context) => AllReviewsScreen(widget.karobarId),
+                              //         ),
+                              //       );
+                              //     } catch (error) {
+                              //       // Show error Snackbar
+                              //       ScaffoldMessenger.of(context).showSnackBar(
+                              //         SnackBar(
+                              //           duration: Duration(seconds: 3),
+                              //           content: Container(
+                              //             width: MediaQuery.of(context).size.width * 0.90,
+                              //             height:45,
+                              //             decoration: BoxDecoration(
+                              //               color: Colors.red,
+                              //               borderRadius: BorderRadius.circular(15),
+                              //             ),
+                              //             child: Align(
+                              //               alignment: Alignment.center,
+                              //               child: Text(
+                              //                 "Failed to submit response",
+                              //                 style: TextStyle(fontSize: 17),
+                              //               ),
+                              //             ),
+                              //           ),
+                              //         ),
+                              //       );
+                              //     }
+                              //   },
+                              //   rd: 10,
+                              //   color: greenColor2,
+                              //   child: CustomText(
+                              //     title: "Submit Review",
+                              //     color: whiteColor,
+                              //     fontWeight: FontWeight.bold,
+                              //     fontSize: 12.sp,
+                              //   ),
+                              // ),
                               Custom_Button_Widget(
                                 height: ScreenUtil().setHeight(30.h),
                                 ontap: () async {
-                                  _reviewModel.fkKarobarId = widget.karobarId;
-                                  _reviewModel.reviewId = 0;
-                                  // _reviewModel. = DateTime.now();
-
-                                  try {
-                                    // Call the API function to submit the review
-                                    await APIController.registerReviewModel(_reviewModel);
-                                    nameController.clear();
-                                    emailController.clear();
-                                    descriptionController.clear();
-
-                                    // Show success Snackbar
+                                  if (_reviewModel.rating == null || _reviewModel.rating == 0) {
+                                    // Show a Snackbar indicating that the user needs to select a rating
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         duration: Duration(seconds: 3),
                                         content: Container(
                                           width: MediaQuery.of(context).size.width * 0.90,
-                                          height: 50.h,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(15),
-                                          ),
-                                          child: Align(
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              "Submitted Your Review",
-                                              style: TextStyle(fontSize: 17, color: greenColor2),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    );
-
-                                    // Navigate to the AllReviewsScreen
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => AllReviewsScreen(widget.karobarId),
-                                      ),
-                                    );
-                                  } catch (error) {
-                                    // Show error Snackbar
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        duration: Duration(seconds: 3),
-                                        content: Container(
-                                          width: MediaQuery.of(context).size.width * 0.90,
-                                          height:45,
+                                          height: 45,
                                           decoration: BoxDecoration(
                                             color: Colors.red,
                                             borderRadius: BorderRadius.circular(15),
@@ -2466,13 +2557,77 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                           child: Align(
                                             alignment: Alignment.center,
                                             child: Text(
-                                              "Failed to submit response",
+                                              "Please select a rating",
                                               style: TextStyle(fontSize: 17),
                                             ),
                                           ),
                                         ),
                                       ),
                                     );
+                                  } else {
+                                    // Proceed with submitting the review
+                                    _reviewModel.fkKarobarId = widget.karobarId;
+                                    _reviewModel.reviewId = 0;
+
+                                    try {
+                                      // Call the API function to submit the review
+                                      await APIController.registerReviewModel(_reviewModel);
+                                      nameController.clear();
+                                      emailController.clear();
+                                      descriptionController.clear();
+
+                                      // Show success Snackbar
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          duration: Duration(seconds: 3),
+                                          content: Container(
+                                            width: MediaQuery.of(context).size.width * 0.90,
+                                            height: 50.h,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(15),
+                                            ),
+                                            child: Align(
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                "Submitted Your Review",
+                                                style: TextStyle(fontSize: 17, color: greenColor2),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+
+                                      // Navigate to the AllReviewsScreen
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => AllReviewsScreen(widget.karobarId),
+                                        ),
+                                      );
+                                    } catch (error) {
+                                      // Show error Snackbar
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          duration: Duration(seconds: 3),
+                                          content: Container(
+                                            width: MediaQuery.of(context).size.width * 0.90,
+                                            height: 45,
+                                            decoration: BoxDecoration(
+                                              color: Colors.red,
+                                              borderRadius: BorderRadius.circular(15),
+                                            ),
+                                            child: Align(
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                "Failed to submit Review",
+                                                style: TextStyle(fontSize: 17),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }
                                   }
                                 },
                                 rd: 10,
@@ -2484,6 +2639,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   fontSize: 12.sp,
                                 ),
                               ),
+
                             ],
                           ),
                         ),
