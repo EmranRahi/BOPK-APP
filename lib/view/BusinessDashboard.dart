@@ -1,14 +1,14 @@
-import 'package:businessonlinepk/UpdateProfile/UpdateBanner.dart';
-import 'package:businessonlinepk/UpdateProfile/UpdateGallery.dart';
 import 'package:businessonlinepk/view/HomePage_ofBopk.dart';
+import 'package:businessonlinepk/view/Products/AddProduct.dart';
+import 'package:businessonlinepk/view/Products/EditProduct.dart';
 import 'package:businessonlinepk/view/customs_widgets/ToastUtil.dart';
 import 'package:businessonlinepk/view/customs_widgets/constant_color.dart';
 import 'package:businessonlinepk/view/register_your_business.dart';
-import 'package:flutter/cupertino.dart';
-
 import 'package:flutter/material.dart';
 
-import 'Controllers/Api_Controller.dart';
+import '../Controllers/Api_Controller.dart';
+import 'UpdateProfile/UpdateBanner.dart';
+import 'UpdateProfile/UpdateGallery.dart';
 
 class BusinessDashboard extends StatefulWidget {
   const BusinessDashboard(this.fkKarobarId, {Key? key}) : super(key: key);
@@ -87,19 +87,19 @@ class _BusinessDashboardState extends State<BusinessDashboard> {
       body: GridView.count(
         crossAxisCount: 2,
         children: [
-          _buildOption(
-            icon: Icons.business,
-            label: 'Register Business',
-            onTap: () {
-              // Add your logic for registering a business here
-              print('Register Business tapped');
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          RegisterYourBusiness()));
-            },
-          ),
+          // _buildOption(
+          //   icon: Icons.business,
+          //   label: 'Register Business',
+          //   onTap: () {
+          //     // Add your logic for registering a business here
+          //     print('Register Business tapped');
+          //     Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //             builder: (context) =>
+          //                 RegisterYourBusiness()));
+          //   },
+          // ),
           _buildOption(
             icon: Icons.edit,
             label: 'Edit Profile',
@@ -138,6 +138,34 @@ class _BusinessDashboardState extends State<BusinessDashboard> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => UpdateBanner(widget.fkKarobarId),
+                ),
+              );
+            },
+          ),
+          _buildOption(
+            icon: Icons.add_a_photo_outlined,
+            label: 'Add Product',
+            onTap: () {
+              // Add your logic for adding a banner here
+              print('Add Banner tapped');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddProduct(widget.fkKarobarId!.toInt()),
+                ),
+              );
+            },
+          ),
+          _buildOption(
+            icon: Icons.edit_note_sharp,
+            label: 'Edit Product',
+            onTap: () {
+              // Add your logic for adding a banner here
+              print('Add Banner tapped');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditProduct(widget.fkKarobarId!.toInt()),
                 ),
               );
             },

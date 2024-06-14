@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart' as picker;
 import 'package:image_picker/image_picker.dart';
-import '../Controllers/Api_Controller.dart';
-import '../view/customs_widgets/constant_color.dart';
-import '../view/customs_widgets/custom_button.dart';
-import '../view/customs_widgets/custom_text.dart';
+
+import '../../Controllers/Api_Controller.dart';
+import '../customs_widgets/constant_color.dart';
+import '../customs_widgets/custom_button.dart';
+import '../customs_widgets/custom_text.dart';
 
 class UpdateGallery extends StatefulWidget {
    UpdateGallery(this.fkKarobarId);
@@ -133,7 +134,7 @@ class _UpdateGalleryState extends State<UpdateGallery> {
             child: Custom_Button_Widget(
               width: MediaQuery.of(context).size.width / 1.0,
               ontap: () async {
-                await APIController().uploadImages(widget.fkKarobarId!.toInt(),selectedImagePaths);
+                await APIController().uploadImages(widget.fkKarobarId!.toInt(),selectedImagePaths,"https://bopkapi.businessonline.pk/RegisterBusinesses/UploadImage?id=");
               },
               rd: 7,
               color: greenColor2,

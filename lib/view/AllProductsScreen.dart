@@ -1,15 +1,16 @@
-import 'package:businessonlinepk/view/customs_widgets/constant_color.dart';
-import 'package:businessonlinepk/view/product_deatils_screen/product_details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../model/DetailsPageProductModel.dart';
+import '../model/DetailStaticBusinessModel.dart';
+import '../model/ProductDetail.dart';
+import 'Products/ProductDetailPage.dart';
+import 'customs_widgets/constant_color.dart';
 import 'customs_widgets/custom_button.dart';
 import 'customs_widgets/custom_text.dart';
 
 class AllProductsScreen extends StatelessWidget {
-  final List<DetailsPageProductModel> products;
+  final DetailStaticBusinessModel products;
 
   AllProductsScreen({required this.products});
 
@@ -26,17 +27,37 @@ class AllProductsScreen extends StatelessWidget {
           crossAxisSpacing: 3,
           mainAxisSpacing: 4,
         ),
-        itemCount: products.length,
+        itemCount: products.karobarItems?.length,
         itemBuilder: (context, index) {
-          final product = products[index];
+          final product = products.karobarItems;
           return Padding(
             padding: const EdgeInsets.all(3.0),
             child: InkWell(
               onTap: () {
+                // Create an empty list to hold image URLs
+                List<String> imageUrls = [];
+                for (int i = 0; i < (product.length ?? 0); i++) {
+                  final karobarItem = product[i];
+                  if (karobarItem.images != null && karobarItem!.images!.isNotEmpty) {
+                    String imageUrl = "https://businessonline.pk/Image/Business/Items/${karobarItem.fkKarobarId}/${karobarItem.images![0].imageName}";
+                    imageUrls.add(imageUrl);
+                  } else {
+                    // If there are no images for the product, add a placeholder image URL
+                    imageUrls.add('assets/images/prodc.jpg');
+                  }
+                }
+
+                // Navigate to the ProductDetailPage and pass the list of image URLs
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ProductScreen(),
+                    builder: (context) => ProductDetailPage(
+                      imageUrls: imageUrls,
+                      name: product![index].name.toString(),
+                      price: product[index].price!.toDouble(),
+                      description: product[index].description.toString(),
+                      whatsappNumber: "03319234730",
+                    ),
                   ),
                 );
               },
@@ -49,14 +70,22 @@ class AllProductsScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Center(
+                    SizedBox(
+                      width: double.infinity, // Adjust the width as needed
+                      height: 90, // Adjust the height as needed
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8.0),
-                        child: Image.asset(
-                          product.images != null && product.images!.isNotEmpty
-                              ? product.images![0]
+                        child: Image.network(
+                          (product?[index].images != null && product![index].images!.isNotEmpty)
+                              ? "https://businessonline.pk/Image/Business/Items/${product[index].fkKarobarId}/${product[index].images![0].imageName}"
                               : 'assets/images/prodc.jpg',
-                          scale: 3,
+                          fit: BoxFit.cover, // Adjust the fit as needed
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              'assets/images/prodc.jpg',
+                              fit: BoxFit.cover,
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -64,7 +93,7 @@ class AllProductsScreen extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(left: 5),
                       child: CustomText(
-                        title: product.itemName ?? 'Iphone',
+                        title: product![index].name ?? 'Iphone',
                         color: Colors.grey,
                       ),
                     ),
@@ -72,7 +101,7 @@ class AllProductsScreen extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(left: 5),
                       child: CustomText(
-                        title: 'Rs.${product.price}',
+                        title: 'Rs.${product![index].price}',
                         color: greenColor2,
                         fontWeight: FontWeight.bold,
                       ),
@@ -86,9 +115,9 @@ class AllProductsScreen extends StatelessWidget {
                             child: Custom_Button_Widget(
                               ontap: () {
                                 // if (product?.contactPhone != null) {
-                                  String whatsappUrl = 'https://wa.me/+923319234730';
-                                  // String whatsappUrl = 'https://wa.me/+92${product!.contactPhone?.replaceAll(',', '')}';
-                                  launchUrl(Uri.parse(whatsappUrl));
+                                String whatsappUrl = 'https://wa.me/+923319234730';
+                                // String whatsappUrl = 'https://wa.me/+92${product!.contactPhone?.replaceAll(',', '')}';
+                                launchUrl(Uri.parse(whatsappUrl));
                                 // }
                               },
                               rd: 4.0,
@@ -108,9 +137,9 @@ class AllProductsScreen extends StatelessWidget {
                             child: Custom_Button_Widget(
                               ontap: () {
                                 // if (product?.contactPhone != null) {
-                                  String phoneUrl = 'tel:+923319234730)}';
-                                  // String phoneUrl = 'tel:${product!.contactPhone?.replaceAll(",", ",")}';
-                                  launchUrl(Uri.parse(phoneUrl));
+                                String phoneUrl = 'tel:+923319234730)}';
+                                // String phoneUrl = 'tel:${product!.contactPhone?.replaceAll(",", ",")}';
+                                launchUrl(Uri.parse(phoneUrl));
                                 // }
                               },
                               rd: 4.0,

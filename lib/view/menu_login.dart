@@ -1,4 +1,4 @@
-import 'package:businessonlinepk/BusinessDashboard.dart';
+import 'package:businessonlinepk/view/BusinessDashboard.dart';
 import 'package:businessonlinepk/model/LoginModel.dart';
 import 'package:businessonlinepk/view/customs_widgets/custom_appbar.dart';
 import 'package:businessonlinepk/view/customs_widgets/custom_button.dart';

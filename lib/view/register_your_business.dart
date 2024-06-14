@@ -1995,7 +1995,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                               // Now you can use the karobarId as needed
                               print('karobarId: $karobarId');
 
-                            await APIController().uploadImages(karobarId,selectedImagePaths);
+                            await APIController().uploadImages(karobarId,selectedImagePaths,"https://bopkapi.businessonline.pk/RegisterBusinesses/UploadImage?id=");
                             // Clear fields and image
                             setState(() {
                               imageFile = File('path/to/default/image.png');

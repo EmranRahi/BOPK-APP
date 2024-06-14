@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../Service/ApiResponse.dart';
 import '../Service/ApiService.dart';
+import '../model/AddProductModel.dart';
 import '../model/DetailStaticBusinessModel.dart';
 import '../model/DetailsPageProductModel.dart';
 import '../model/DisplayReviewModel.dart';
@@ -282,10 +283,10 @@ print('https://bopkapi.businessonline.pk/KarobarReview?id=$id');
     return response;
   }
 
-  Future<void> uploadImages(int id, List<String> selectedImagePaths) async {
+  Future<void> uploadImages(int id, List<String> selectedImagePaths,String url) async {
     var request = http.MultipartRequest(
       'POST',
-      Uri.parse('https://bopkapi.businessonline.pk/RegisterBusinesses/UploadImage?id=$id'),
+      Uri.parse('$url$id'),
     );
 
     for (var i = 0; i < selectedImagePaths.length; i++) {

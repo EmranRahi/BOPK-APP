@@ -39,7 +39,7 @@ class ApiService {
       }
       if (response.statusCode == 200) {
         obj.StatusCode = response.statusCode;
-        obj.Response = json.decode(response.body);
+        obj.Response = json.decode(response.body).toString();
       } else if (response.statusCode == 401) {
         obj.StatusCode = 1;
       } else {

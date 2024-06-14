@@ -2,13 +2,13 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:businessonlinepk/Controllers/Api_Controller.dart';
 import 'package:businessonlinepk/model/ContactUs_Model.dart';
 import 'package:businessonlinepk/model/RegisterReviewRattingModel.dart';
+import 'package:businessonlinepk/view/Products/ProductDetailPage.dart';
 import 'package:businessonlinepk/view/customs_widgets/constant_color.dart';
 import 'package:businessonlinepk/view/customs_widgets/custom_appbar.dart';
 import 'package:businessonlinepk/view/customs_widgets/custom_button.dart';
 import 'package:businessonlinepk/view/customs_widgets/custom_containers_design.dart';
 import 'package:businessonlinepk/view/customs_widgets/custom_text.dart';
 import 'package:businessonlinepk/view/customs_widgets/custom_textfield.dart';
-import 'package:businessonlinepk/view/product_deatils_screen/product_details.dart';
 import 'package:businessonlinepk/view/register_your_business.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +31,7 @@ import 'menu_login.dart';
 class StaticBusinessDetailsPage extends StatefulWidget {
   StaticBusinessDetailsPage(
     this.karobarId,
-    this.title,
+    this.title, {super.key}
   );
 
   int? karobarId = 0;
@@ -63,10 +63,11 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
   void _onMapCreated(GoogleMapController controller) {
     myController = controller;
   }
+
   List<OpenningHour> openningHours = [];
   List<bool> checkboxValues =
       List.generate(30, (index) => false); // 30 checkboxess
-  DetailStaticBusinessModel? businessModel = DetailStaticBusinessModel();
+  DetailStaticBusinessModel businessModel = DetailStaticBusinessModel();
   List<String> items = [
     'Select report category',
     'Nudity',
@@ -77,13 +78,13 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
 
   late Future<List<DisplayReviewModel>> futureReviews;
 
-   late TabController _tabController;
+  late TabController _tabController;
   String? phoneNumb1 = "";
   String? phoneNumb2 = "";
   String? phoneNumb3 = "";
   String? phoneNumb4 = "";
-  int specialtyCount =0;
-  double totalHeight=0;
+  int specialtyCount = 0;
+  double totalHeight = 0;
   String? contact1 = "";
   String? contact2 = "";
   String? contact3 = "";
@@ -91,6 +92,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
   bool showFullText = false;
   late PageController _pageController;
   int activePageIndex = 0;
+
   // late DisplayReviewModel review;
   List<DisplayReviewModel> reviews = []; // Declare reviews globally
   @override
@@ -148,45 +150,27 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
       print(index);
     });
   }
-  // void _handleTabTap(int index) {
-  //   setState(() {
-  //     if (index == 0) {
-  //       height = 250; // Height for index 0
-  //     } else if (index == 1) {
-  //       height = 400; // Height for index 2
-  //     } else if (index == 2) {
-  //       height = 260; // Height for index 2
-  //     } else if (index == 3) {
-  //       height = 480; // Height for index 2
-  //     } else if (index == 4) {
-  //       height = 400; // Height for index 2
-  //     } else if (index == 5) {
-  //       height = 430; // Height for index 2
-  //     } else {
-  //       height = 480; // Default height for other indices
-  //       _isAboutTabSelected = _tabController.index == 6;
-  //     }
-  //     print(index);
-  //   });
-  // }
-
   Future<void> getDetails(int? karobarId) async {
     APIController controller = APIController();
-    businessModel = await controller.fetchDataDetails(karobarId);
+    businessModel = (await controller.fetchDataDetails(karobarId))!;
 
-    if (businessModel != null && businessModel!.lat != null && businessModel!.lng != null) {
+    if (businessModel != null &&
+        businessModel.lat != null &&
+        businessModel.lng != null) {
       _center = LatLng(
-        businessModel!.lat!.toDouble(),
-        businessModel!.lng!.toDouble(),
+        businessModel.lat!.toDouble(),
+        businessModel.lng!.toDouble(),
       );
-      if (businessModel?.openningHours == null || businessModel!.openningHours!.isEmpty) {
+      if (businessModel?.openningHours == null ||
+          businessModel.openningHours!.isEmpty) {
         setDefaultOpenningHours();
         print("gggggggggggggggggg" + openningHours.toString());
       } else {
-        openningHours = businessModel!.openningHours!;
+        openningHours = businessModel.openningHours!;
         print("hhhhhhhhhhmmmmmmmmm" + openningHours.length.toString());
       }
-      setState(() {}); // Rebuild the widget tree to reflect the updated _center value
+      setState(
+          () {}); // Rebuild the widget tree to reflect the updated _center value
 
       // Specialty code
       specialtyCount = businessModel?.speciality?.split(',').length ?? 0;
@@ -212,17 +196,39 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
     }
   }
 
-   setDefaultOpenningHours() {
+  setDefaultOpenningHours() {
     openningHours = [
-      OpenningHour(dayOfWeek: 'Monday', openingTime: '10:00 AM', closingTime: '10:00 PM'),
-      OpenningHour(dayOfWeek: 'Tuesday', openingTime: '10:00 AM', closingTime: '10:00 PM'),
-      OpenningHour(dayOfWeek: 'Wednesday', openingTime: '10:00 AM', closingTime: '10:00 PM'),
-      OpenningHour(dayOfWeek: 'Thursday', openingTime: '10:00 AM', closingTime: '10:00 PM'),
-      OpenningHour(dayOfWeek: 'Friday', openingTime: '10:00 AM', closingTime: '10:00 PM'),
-      OpenningHour(dayOfWeek: 'Saturday', openingTime: '10:00 AM', closingTime: '10:00 PM'),
-      OpenningHour(dayOfWeek: 'Sunday', openingTime: '10:00 AM', closingTime: '10:00 PM'),
+      OpenningHour(
+          dayOfWeek: 'Monday',
+          openingTime: '10:00 AM',
+          closingTime: '10:00 PM'),
+      OpenningHour(
+          dayOfWeek: 'Tuesday',
+          openingTime: '10:00 AM',
+          closingTime: '10:00 PM'),
+      OpenningHour(
+          dayOfWeek: 'Wednesday',
+          openingTime: '10:00 AM',
+          closingTime: '10:00 PM'),
+      OpenningHour(
+          dayOfWeek: 'Thursday',
+          openingTime: '10:00 AM',
+          closingTime: '10:00 PM'),
+      OpenningHour(
+          dayOfWeek: 'Friday',
+          openingTime: '10:00 AM',
+          closingTime: '10:00 PM'),
+      OpenningHour(
+          dayOfWeek: 'Saturday',
+          openingTime: '10:00 AM',
+          closingTime: '10:00 PM'),
+      OpenningHour(
+          dayOfWeek: 'Sunday',
+          openingTime: '10:00 AM',
+          closingTime: '10:00 PM'),
     ];
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -232,7 +238,8 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
     _tabController.addListener(_handleTabChange);
     // _tabController.addListener(_handleTabSelection);
     _fetchProducts();
-    futureReviews = APIController().fetchReviews(widget.karobarId!.toInt());  // Use the appropriate ID
+    futureReviews = APIController()
+        .fetchReviews(widget.karobarId!.toInt()); // Use the appropriate ID
     setState(() {});
   }
 
@@ -374,7 +381,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                             ),
                     ),
 
-
                     /// Navigation images comment for play store
                     Positioned(
                       top: 190.h,
@@ -400,9 +406,9 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   ontap: () {
                                     launchNavigation(
                                         latitude:
-                                        businessModel!.lat!.toDouble(),
+                                            businessModel.lat!.toDouble(),
                                         longitude:
-                                        businessModel!.lng!.toDouble());
+                                            businessModel.lng!.toDouble());
                                   },
                                   rd: 100,
                                   color: whiteColor,
@@ -419,7 +425,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                     print(businessModel?.contactPhone);
                                     if (businessModel?.contactPhone != "") {
                                       String phoneUrl =
-                                          'tel:${businessModel!.contactPhone}';
+                                          'tel:${businessModel.contactPhone}';
                                       launchUrl(Uri.parse(phoneUrl));
                                     }
                                   },
@@ -465,8 +471,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                               ? CustomContainer(
                                   height: 40,
                                   width: 40,
-                                  ontap: () {
-                                  },
+                                  ontap: () {},
                                   rd: 100,
                                   color: whiteColor,
                                   boxShadow: true,
@@ -479,7 +484,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   ontap: () {
                                     if (businessModel?.whatsAppNumber != "") {
                                       String whatsappUrl =
-                                          'https://wa.me/${businessModel!.whatsAppNumber}';
+                                          'https://wa.me/${businessModel.whatsAppNumber}';
                                       launchUrl(Uri.parse(whatsappUrl));
                                     }
                                   },
@@ -495,10 +500,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                             ontap: () {
                               // whatsapp();
                               String shareData =
-                                  "${businessModel!.title}\n${businessModel!.description}\n${businessModel!.speciality!
-                                          .replaceAll(',', '')}\n${businessModel!.contactPhone!
-                                          .replaceAll(',', '')}\n${businessModel!.contactName!
-                                          .replaceAll(',', '')}\n${businessModel!.address!}\n${businessModel!.url}";
+                                  "${businessModel.title}\n${businessModel.description}\n${businessModel.speciality!.replaceAll(',', '')}\n${businessModel.contactPhone!.replaceAll(',', '')}\n${businessModel.contactName!.replaceAll(',', '')}\n${businessModel.address!}\n${businessModel.url}";
                               _shareData(shareData);
                             },
                             rd: 100,
@@ -532,15 +534,12 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                           //   child: Image.asset('assets/media/gallery1.png',
                           //       scale: 3),
                           // ),
-                          businessModel?.email == ""
+                          businessModel?.email == null
                               ? CustomContainer(
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.email != null) {
-                                      launchUrl(Uri.parse(
-                                          'mailto:${businessModel!.email}'));
-                                    }
+
                                   },
                                   rd: 100,
                                   color: Colors.transparent,
@@ -554,7 +553,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   ontap: () {
                                     if (businessModel?.email != null) {
                                       launchUrl(Uri.parse(
-                                          'mailto:${businessModel!.email}'));
+                                          'mailto:${businessModel.email}'));
                                     }
                                   },
                                   rd: 100,
@@ -576,16 +575,12 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                           //       scale: 2),
                           // ),
                           /// this is the facebook URL
-                          businessModel?.facebookUrl == ""
+                          businessModel?.facebookUrl == null
                               ? CustomContainer(
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.facebookUrl != "") {
-                                      String facebookUrl =
-                                          'https://www.facebook.com/${businessModel!.facebookUrl}';
-                                      launchUrl(Uri.parse(facebookUrl));
-                                    }
+
                                   },
                                   rd: 100,
                                   color: Colors.transparent,
@@ -598,9 +593,9 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.facebookUrl != "") {
+                                    if (businessModel?.facebookUrl != null) {
                                       String facebookUrl =
-                                          'https://www.facebook.com/${businessModel!.facebookUrl}';
+                                          'https://www.facebook.com/${businessModel.facebookUrl}';
                                       launchUrl(Uri.parse(facebookUrl));
                                     }
                                   },
@@ -613,16 +608,12 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                 ),
 
                           /// this is the YouTube URl
-                          businessModel?.youtubeUrl == ""
+                          businessModel?.youtubeUrl == null
                               ? CustomContainer(
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.youtubeUrl != "") {
-                                      String youtubeUrl =
-                                          'https://www.youtube.com/${businessModel!.youtubeUrl}';
-                                      launchUrl(Uri.parse(youtubeUrl));
-                                    }
+
                                   },
                                   rd: 100,
                                   color: Colors.transparent,
@@ -634,9 +625,9 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.youtubeUrl != "") {
+                                    if (businessModel?.youtubeUrl != null) {
                                       String youtubeUrl =
-                                          'https://www.youtube.com/${businessModel!.youtubeUrl}';
+                                          'https://www.youtube.com/${businessModel.youtubeUrl}';
                                       launchUrl(Uri.parse(youtubeUrl));
                                     }
                                   },
@@ -648,16 +639,12 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                 ),
 
                           /// this is the Twitter URl
-                          businessModel?.twitterUrl == ""
+                          businessModel?.twitterUrl == null
                               ? CustomContainer(
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.twitterUrl != "") {
-                                      String twitterUrl =
-                                          'https://twitter.com/${businessModel!.twitterUrl}';
-                                      launchUrl(Uri.parse(twitterUrl));
-                                    }
+
                                   },
                                   rd: 100,
                                   color: Colors.transparent,
@@ -669,30 +656,26 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.twitterUrl != "") {
+                                    if (businessModel?.twitterUrl != null) {
                                       String twitterUrl =
-                                          'https://twitter.com/${businessModel!.twitterUrl}';
+                                          'https://twitter.com/${businessModel.twitterUrl}';
                                       launchUrl(Uri.parse(twitterUrl));
                                     }
                                   },
                                   rd: 100,
                                   color: Colors.transparent,
                                   // boxShadow: true,
-                                  child: Image.asset('assets/media/twitte.png',
+                                  child: Image.asset('assets/media/twitter.png',
                                       scale: 3),
                                 ),
 
                           /// this is the instagram URL
-                          businessModel?.instagramUrl == ""
+                          businessModel?.instagramUrl == null
                               ? CustomContainer(
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.instagramUrl != "") {
-                                      String instagramUrl =
-                                          'https://www.instagram.com/${businessModel!.instagramUrl}';
-                                      launchUrl(Uri.parse(instagramUrl));
-                                    }
+
                                   },
                                   rd: 100,
                                   color: Colors.transparent,
@@ -704,9 +687,9 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.instagramUrl != "") {
+                                    if (businessModel?.instagramUrl != null) {
                                       String instagramUrl =
-                                          'https://www.instagram.com/${businessModel!.instagramUrl}';
+                                          'https://www.instagram.com/${businessModel.instagramUrl}';
                                       launchUrl(Uri.parse(instagramUrl));
                                     }
                                   },
@@ -718,16 +701,12 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                 ),
 
                           /// this is the linkedIn URL
-                          businessModel?.linkedInUrl == ""
+                          businessModel?.linkedInUrl == null
                               ? CustomContainer(
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.linkedInUrl != "") {
-                                      String linkedinUrl =
-                                          'https://www.linkedin.com/in/${businessModel!.linkedInUrl}';
-                                      launchUrl(Uri.parse(linkedinUrl));
-                                    }
+
                                   },
                                   rd: 100,
                                   color: Colors.transparent,
@@ -739,9 +718,9 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.linkedInUrl != "") {
+                                    if (businessModel?.linkedInUrl != null) {
                                       String linkedinUrl =
-                                          'https://www.linkedin.com/in/${businessModel!.linkedInUrl}';
+                                          'https://www.linkedin.com/in/${businessModel.linkedInUrl}';
                                       launchUrl(Uri.parse(linkedinUrl));
                                     }
                                   },
@@ -765,114 +744,132 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                          Row(
-                          children: [
-                          Padding(
-                          padding: const EdgeInsets.only(top: 5.0),
-                          child: businessModel != null &&
-                              businessModel!.images != null &&
-                              businessModel!.images!.isNotEmpty &&
-                              businessModel!.images![0].imageName != null &&
-                              businessModel!.images![0].imageName!.isNotEmpty
-                              ? CircleAvatar(
-                            radius: 30, // Radius of 30
-                            backgroundImage: NetworkImage(
-                              "https://businessonline.pk/Image/Business/Gallery/${businessModel!.karobarId}/${businessModel!.images![0].imageName}",
-                            ),
-                          )
-                              : CircleAvatar(
-                            radius: 30, // Radius of 30
-                            backgroundImage: AssetImage(
-                              'assets/images/profile_image_default.png',
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 5.w,),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomText(
-                                title: businessModel?.title?.replaceAll(',', '') ?? "businessName",
-                                fontWeight: FontWeight.bold,
-                                googleFont: "Jost",
-                                fontSize: 16.sp,
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 5.0),
+                                    child: businessModel != null &&
+                                            businessModel.images != null &&
+                                            businessModel.images!.isNotEmpty &&
+                                            businessModel
+                                                    .images![0].imageName !=
+                                                null &&
+                                            businessModel.images![0].imageName!
+                                                .isNotEmpty
+                                        ? CircleAvatar(
+                                            radius: 30, // Radius of 30
+                                            backgroundImage: NetworkImage(
+                                              "https://businessonline.pk/Image/Business/Gallery/${businessModel.karobarId}/${businessModel.images![0].imageName}",
+                                            ),
+                                          )
+                                        : CircleAvatar(
+                                            radius: 30, // Radius of 30
+                                            backgroundImage: AssetImage(
+                                              'assets/images/profile_image_default.png',
+                                            ),
+                                          ),
+                                  ),
+                                  SizedBox(
+                                    width: 5.w,
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        CustomText(
+                                          title: businessModel?.title
+                                                  ?.replaceAll(',', '') ??
+                                              "businessName",
+                                          fontWeight: FontWeight.bold,
+                                          googleFont: "Jost",
+                                          fontSize: 16.sp,
+                                        ),
+                                        RatingBar.builder(
+                                          itemSize: 20,
+                                          initialRating: 0,
+                                          minRating: 1,
+                                          direction: Axis.horizontal,
+                                          allowHalfRating: true,
+                                          itemCount: 5,
+                                          itemBuilder: (context, _) => Icon(
+                                            Icons.star,
+                                            color: Colors.amber,
+                                          ),
+                                          onRatingUpdate: (rating) {
+                                            print(rating);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
-                              RatingBar.builder(
-                                itemSize: 20,
-                                initialRating: 0,
-                                minRating: 1,
-                                direction: Axis.horizontal,
-                                allowHalfRating: true,
-                                itemCount: 5,
-                                itemBuilder: (context, _) => Icon(
-                                  Icons.star,
-                                  color: Colors.amber,
-                                ),
-                                onRatingUpdate: (rating) {
-                                  print(rating);
-                                },
+                              SizedBox(
+                                height: 5.h,
                               ),
-                            ],
-                          ),
-                          ),
-                        ],
-                          ),
-                              SizedBox(height: 5.h,),
                               Column(
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       (contact1 != null && contact1!.isNotEmpty)
                                           ? Flexible(
-                                        child: CustomText(
-                                          title: "Owner Name: ${contact1!}",
-                                          fontWeight: FontWeight.bold,
-                                          googleFont: "Jost",
-                                          fontSize: 14.sp,
-                                          maxLine: 4,
-                                          textOverflow: TextOverflow.ellipsis, // Add this to handle overflow
-                                        ),
-                                      )
+                                              child: CustomText(
+                                                title:
+                                                    "Owner Name: ${contact1!}",
+                                                fontWeight: FontWeight.bold,
+                                                googleFont: "Jost",
+                                                fontSize: 14.sp,
+                                                maxLine: 4,
+                                                textOverflow: TextOverflow
+                                                    .ellipsis, // Add this to handle overflow
+                                              ),
+                                            )
                                           : SizedBox.shrink(),
                                       (contact2 != null && contact2!.isNotEmpty)
                                           ? Flexible(
-                                        child: CustomText(
-                                          title: "Owner Name: ${contact2!}",
-                                          fontWeight: FontWeight.bold,
-                                          googleFont: "Jost",
-                                          fontSize: 14.sp,
-                                          maxLine: 4,
-                                          textOverflow: TextOverflow.ellipsis, // Add this to handle overflow
-                                        ),
-                                      )
+                                              child: CustomText(
+                                                title:
+                                                    "Owner Name: ${contact2!}",
+                                                fontWeight: FontWeight.bold,
+                                                googleFont: "Jost",
+                                                fontSize: 14.sp,
+                                                maxLine: 4,
+                                                textOverflow: TextOverflow
+                                                    .ellipsis, // Add this to handle overflow
+                                              ),
+                                            )
                                           : SizedBox.shrink(),
                                     ],
                                   ),
-                              SizedBox(height: 5.h), // Space between rows
+                                  SizedBox(height: 5.h), // Space between rows
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       (contact3 != null && contact3!.isNotEmpty)
-                                          ?  CustomText(
-                                    title:"Owner Name: ${contact3!}" ??
-                                        "Imran Khan",
-                                    fontWeight: FontWeight.bold,
-                                    googleFont: "Jost",
-                                    fontSize: 14.sp,
-                                    maxLine: 4,
-                                  )
+                                          ? CustomText(
+                                              title:
+                                                  "Owner Name: ${contact3!}" ??
+                                                      "Imran Khan",
+                                              fontWeight: FontWeight.bold,
+                                              googleFont: "Jost",
+                                              fontSize: 14.sp,
+                                              maxLine: 4,
+                                            )
                                           : SizedBox.shrink(),
                                       (contact4 != null && contact4!.isNotEmpty)
-                                          ?  CustomText(
-                                        title: "Owner Name: ${contact4!}" ??
-                                            "Imran Khan",
-                                        fontWeight: FontWeight.bold,
-                                        googleFont: "Jost",
-                                        fontSize: 14.sp,
-                                        maxLine: 4,
-                                      )
+                                          ? CustomText(
+                                              title:
+                                                  "Owner Name: ${contact4!}" ??
+                                                      "Imran Khan",
+                                              fontWeight: FontWeight.bold,
+                                              googleFont: "Jost",
+                                              fontSize: 14.sp,
+                                              maxLine: 4,
+                                            )
                                           : SizedBox.shrink(),
                                     ],
                                   ),
@@ -1008,7 +1005,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                               Divider(
                                 thickness: 1,
                               ),
-
                             ],
                           ),
                         ),
@@ -1079,7 +1075,9 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                             scrollDirection: Axis.horizontal,
                             children: [
                               SizedBox(
-                                width: MediaQuery.of(context).size.width, // Set width to 1/3 of screen width
+                                width: MediaQuery.of(context)
+                                    .size
+                                    .width, // Set width to 1/3 of screen width
                                 child: TabBar(
                                   controller: _tabController,
                                   // give the indicator a decoration (color and border radius)
@@ -1089,14 +1087,17 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   ),
                                   labelColor: Colors.white,
                                   unselectedLabelColor: Colors.black,
-                                  indicatorSize: TabBarIndicatorSize.tab, // Ensure indicator size matches tab size
+                                  indicatorSize: TabBarIndicatorSize.tab,
+                                  // Ensure indicator size matches tab size
                                   tabs: const [
                                     // first tab [you can add an icon using the icon property]
                                     Tab(
                                       // Apply smaller text size here
                                       child: Text(
                                         'Overview',
-                                        style: TextStyle(fontSize: 12), // Adjust the font size as needed
+                                        style: TextStyle(
+                                            fontSize:
+                                                12), // Adjust the font size as needed
                                       ),
                                     ),
 
@@ -1105,7 +1106,9 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                       // Apply smaller text size here
                                       child: Text(
                                         'User Review',
-                                        style: TextStyle(fontSize: 12), // Adjust the font size as needed
+                                        style: TextStyle(
+                                            fontSize:
+                                                12), // Adjust the font size as needed
                                       ),
                                     ),
 
@@ -1114,7 +1117,9 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                       // Apply smaller text size here
                                       child: Text(
                                         'Gallery',
-                                        style: TextStyle(fontSize: 12), // Adjust the font size as needed
+                                        style: TextStyle(
+                                            fontSize:
+                                                12), // Adjust the font size as needed
                                       ),
                                     ),
                                     // fourth tab
@@ -1122,14 +1127,15 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                       // Apply smaller text size here
                                       child: Text(
                                         'Contact us',
-                                        style: TextStyle(fontSize: 12), // Adjust the font size as needed
+                                        style: TextStyle(
+                                            fontSize:
+                                                12), // Adjust the font size as needed
                                       ),
                                     ),
                                   ],
                                   onTap: _handleTabTap,
                                 ),
                               ),
-
                             ],
                           ),
                         ),
@@ -1152,7 +1158,8 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   padding: const EdgeInsets.all(8.0),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       CustomText(
                                         title: "OVERVIEW",
@@ -1167,8 +1174,8 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                         endIndent: 250,
                                       ),
                                       Text(
-                                        businessModel!.description??"",
-                                        maxLines: showFullText ? null :1,
+                                        businessModel.description ?? "",
+                                        maxLines: showFullText ? null : 1,
                                       ),
                                       // SizedBox(
                                       //   height: 20,
@@ -1181,38 +1188,55 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                               builder: (BuildContext context) {
                                                 return Dialog(
                                                   shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(12.0),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12.0),
                                                   ),
                                                   child: SingleChildScrollView(
                                                     child: Padding(
-                                                      padding: const EdgeInsets.all(12.0),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              12.0),
                                                       child: Column(
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
                                                         children: [
                                                           CustomText(
                                                             title: "OVERVIEW",
-                                                            fontWeight: FontWeight.bold,
+                                                            fontWeight:
+                                                                FontWeight.bold,
                                                             fontSize: 14,
-                                                            color: Colors.green, // replace greenColor2 with Colors.green
+                                                            color: Colors
+                                                                .green, // replace greenColor2 with Colors.green
                                                           ),
                                                           Divider(
-                                                            color: Colors.green, // replace greenColor2 with Colors.green
+                                                            color: Colors.green,
+                                                            // replace greenColor2 with Colors.green
                                                             thickness: 2,
                                                             indent: 1,
                                                             endIndent: 250,
                                                           ),
                                                           Text(
-                                                            businessModel!.description.toString(),
+                                                            businessModel
+                                                                .description
+                                                                .toString(),
                                                           ),
                                                           SizedBox(height: 20),
                                                           Align(
-                                                            alignment: Alignment.centerRight,
-                                                            child: ElevatedButton(
+                                                            alignment: Alignment
+                                                                .centerRight,
+                                                            child:
+                                                                ElevatedButton(
                                                               onPressed: () {
-                                                                Navigator.of(context).pop();
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop();
                                                               },
-                                                              child: Text("Close"),
+                                                              child:
+                                                                  Text("Close"),
                                                             ),
                                                           ),
                                                         ],
@@ -1227,7 +1251,8 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                             'View More',
                                             style: TextStyle(
                                               color: Colors.blue,
-                                              decoration: TextDecoration.underline,
+                                              decoration:
+                                                  TextDecoration.underline,
                                             ),
                                           ),
                                         ),
@@ -1236,246 +1261,296 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                 ),
                               ),
 
-
-                            //
-                            // FutureBuilder<List<DisplayReviewModel>>(
-                            //     future: futureReviews,
-                            //     builder: (context, snapshot) {
-                            //       if (snapshot.connectionState == ConnectionState.waiting) {
-                            //         return Center(child: CircularProgressIndicator());
-                            //       } else if (snapshot.hasError) {
-                            //         return Center(child: Text('Error: ${snapshot.error}'));
-                            //       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                            //         return Center(child: Text('No reviews found'));
-                            //       } else {
-                            //         var reviews = snapshot.data!;
-                            //         return Container(
-                            //           alignment: Alignment.center,
-                            //           margin: EdgeInsets.symmetric(vertical: 8),
-                            //           decoration: BoxDecoration(
-                            //             border: Border.all(color: Colors.grey),
-                            //             borderRadius: BorderRadius.circular(12),
-                            //           ),
-                            //           child: Padding(
-                            //             padding: EdgeInsets.all(10),
-                            //             child: Column(
-                            //               mainAxisAlignment: MainAxisAlignment.start,
-                            //               crossAxisAlignment: CrossAxisAlignment.start,
-                            //               children: [
-                            //                 CustomText(
-                            //                   title: "USER REVIEWS",
-                            //                   fontWeight: FontWeight.bold,
-                            //                   fontSize: 20,
-                            //                   color: greenColor2, // Assuming greenColor2 is defined as Colors.green
-                            //                 ),
-                            //                 Expanded(
-                            //                   child: ListView.builder(
-                            //                     physics: NeverScrollableScrollPhysics(),
-                            //                     itemCount: reviews.length > 3 ? 3 : reviews.length,
-                            //                     itemBuilder: (context, index) {
-                            //                       DisplayReviewModel review = reviews[index]; // Access each review
-                            //                       return Column(
-                            //                         children: [
-                            //                           Container(
-                            //                             alignment: Alignment.center,
-                            //                             margin: EdgeInsets.symmetric(vertical: 5),
-                            //                             decoration: BoxDecoration(
-                            //                               border: Border.all(color: Colors.grey),
-                            //                               borderRadius: BorderRadius.circular(12),
-                            //                             ),
-                            //                             child: Padding(
-                            //                               padding: const EdgeInsets.all(3.0),
-                            //                               child: Column(
-                            //                                 mainAxisAlignment: MainAxisAlignment.start,
-                            //                                 children: [
-                            //                                   Row(
-                            //                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            //                                     children: [
-                            //                                       CustomText(
-                            //                                         title: review.fullName ?? 'No Name',
-                            //                                       ),
-                            //                                       CustomText(
-                            //                                         title: review.dated != null
-                            //                                             ? '${review.dated!.day}/${review.dated!.month}/${review.dated!.year}'
-                            //                                             : 'No Date',
-                            //                                       ),
-                            //                                     ],
-                            //                                   ),
-                            //                                   Align(
-                            //                                     alignment: Alignment.centerLeft,
-                            //                                     child: Text(
-                            //                                       review.review ?? 'No Review',
-                            //                                     ),
-                            //                                   ),
-                            //                                   RatingBarIndicator(
-                            //                                     rating: review.rating != null ? review.rating!.toDouble() : 0.0,
-                            //                                     itemBuilder: (context, index) => Icon(
-                            //                                       Icons.star,
-                            //                                       color: Colors.amber,
-                            //                                     ),
-                            //                                     itemCount: 5,
-                            //                                     itemSize: 30.0,
-                            //                                     direction: Axis.horizontal,
-                            //                                   ),
-                            //                                 ],
-                            //                               ),
-                            //                             ),
-                            //                           ),
-                            //                         ],
-                            //                       );
-                            //                     },
-                            //                   ),
-                            //                 ),
-                            //                 if (reviews.length > 3)
-                            //                   Align(
-                            //                     alignment: Alignment.centerRight,
-                            //                     child: Padding(
-                            //                       padding: const EdgeInsets.all(8.0),
-                            //                       child: GestureDetector(
-                            //                         onTap: () {
-                            //                           Navigator.push(
-                            //                             context,
-                            //                             MaterialPageRoute(
-                            //                               builder: (context) => AllReviewsScreen(reviews: reviews),
-                            //                             ),
-                            //                           );
-                            //                         },
-                            //                         child: Text(
-                            //                           'View More',
-                            //                           style: TextStyle(
-                            //                             color: Colors.blue,
-                            //                             fontWeight: FontWeight.bold,
-                            //                           ),
-                            //                         ),
-                            //                       ),
-                            //                     ),
-                            //                   ),
-                            //               ],
-                            //             ),
-                            //           ),
-                            //         );
-                            //       }
-                            //     },
-                            //   ),
-                          FutureBuilder<List<DisplayReviewModel>>(
-                            future: futureReviews,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return Center(child: CircularProgressIndicator());
-                              } else if (snapshot.hasError) {
-                                return Center(child: Text('Error: ${snapshot.error}'));
-                              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                                return Center(child: Text('No reviews found'));
-                              } else {
-                                reviews = snapshot.data!; // Update global reviews variable
-                                return Container(
-                                  alignment: Alignment.center,
-                                  margin: EdgeInsets.symmetric(vertical: 8),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(10),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        CustomText(
-                                          title: "USER REVIEWS",
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20,
-                                          color: greenColor2, // Assuming greenColor2 is defined as Colors.green
-                                        ),
-                                        Expanded(
-                                          child: ListView.builder(
-                                            physics: NeverScrollableScrollPhysics(),
-                                            itemCount: reviews.length > 3 ? 3 : reviews.length,
-                                            itemBuilder: (context, index) {
-                                              DisplayReviewModel review = reviews[index]; // Access each review
-                                              return Column(
-                                                children: [
-                                                  Container(
-                                                    alignment: Alignment.center,
-                                                    margin: EdgeInsets.symmetric(vertical: 5),
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(color: Colors.grey),
-                                                      borderRadius: BorderRadius.circular(12),
-                                                    ),
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.all(3.0),
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Row(
-                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              //
+                              // FutureBuilder<List<DisplayReviewModel>>(
+                              //     future: futureReviews,
+                              //     builder: (context, snapshot) {
+                              //       if (snapshot.connectionState == ConnectionState.waiting) {
+                              //         return Center(child: CircularProgressIndicator());
+                              //       } else if (snapshot.hasError) {
+                              //         return Center(child: Text('Error: ${snapshot.error}'));
+                              //       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              //         return Center(child: Text('No reviews found'));
+                              //       } else {
+                              //         var reviews = snapshot.data!;
+                              //         return Container(
+                              //           alignment: Alignment.center,
+                              //           margin: EdgeInsets.symmetric(vertical: 8),
+                              //           decoration: BoxDecoration(
+                              //             border: Border.all(color: Colors.grey),
+                              //             borderRadius: BorderRadius.circular(12),
+                              //           ),
+                              //           child: Padding(
+                              //             padding: EdgeInsets.all(10),
+                              //             child: Column(
+                              //               mainAxisAlignment: MainAxisAlignment.start,
+                              //               crossAxisAlignment: CrossAxisAlignment.start,
+                              //               children: [
+                              //                 CustomText(
+                              //                   title: "USER REVIEWS",
+                              //                   fontWeight: FontWeight.bold,
+                              //                   fontSize: 20,
+                              //                   color: greenColor2, // Assuming greenColor2 is defined as Colors.green
+                              //                 ),
+                              //                 Expanded(
+                              //                   child: ListView.builder(
+                              //                     physics: NeverScrollableScrollPhysics(),
+                              //                     itemCount: reviews.length > 3 ? 3 : reviews.length,
+                              //                     itemBuilder: (context, index) {
+                              //                       DisplayReviewModel review = reviews[index]; // Access each review
+                              //                       return Column(
+                              //                         children: [
+                              //                           Container(
+                              //                             alignment: Alignment.center,
+                              //                             margin: EdgeInsets.symmetric(vertical: 5),
+                              //                             decoration: BoxDecoration(
+                              //                               border: Border.all(color: Colors.grey),
+                              //                               borderRadius: BorderRadius.circular(12),
+                              //                             ),
+                              //                             child: Padding(
+                              //                               padding: const EdgeInsets.all(3.0),
+                              //                               child: Column(
+                              //                                 mainAxisAlignment: MainAxisAlignment.start,
+                              //                                 children: [
+                              //                                   Row(
+                              //                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              //                                     children: [
+                              //                                       CustomText(
+                              //                                         title: review.fullName ?? 'No Name',
+                              //                                       ),
+                              //                                       CustomText(
+                              //                                         title: review.dated != null
+                              //                                             ? '${review.dated!.day}/${review.dated!.month}/${review.dated!.year}'
+                              //                                             : 'No Date',
+                              //                                       ),
+                              //                                     ],
+                              //                                   ),
+                              //                                   Align(
+                              //                                     alignment: Alignment.centerLeft,
+                              //                                     child: Text(
+                              //                                       review.review ?? 'No Review',
+                              //                                     ),
+                              //                                   ),
+                              //                                   RatingBarIndicator(
+                              //                                     rating: review.rating != null ? review.rating!.toDouble() : 0.0,
+                              //                                     itemBuilder: (context, index) => Icon(
+                              //                                       Icons.star,
+                              //                                       color: Colors.amber,
+                              //                                     ),
+                              //                                     itemCount: 5,
+                              //                                     itemSize: 30.0,
+                              //                                     direction: Axis.horizontal,
+                              //                                   ),
+                              //                                 ],
+                              //                               ),
+                              //                             ),
+                              //                           ),
+                              //                         ],
+                              //                       );
+                              //                     },
+                              //                   ),
+                              //                 ),
+                              //                 if (reviews.length > 3)
+                              //                   Align(
+                              //                     alignment: Alignment.centerRight,
+                              //                     child: Padding(
+                              //                       padding: const EdgeInsets.all(8.0),
+                              //                       child: GestureDetector(
+                              //                         onTap: () {
+                              //                           Navigator.push(
+                              //                             context,
+                              //                             MaterialPageRoute(
+                              //                               builder: (context) => AllReviewsScreen(reviews: reviews),
+                              //                             ),
+                              //                           );
+                              //                         },
+                              //                         child: Text(
+                              //                           'View More',
+                              //                           style: TextStyle(
+                              //                             color: Colors.blue,
+                              //                             fontWeight: FontWeight.bold,
+                              //                           ),
+                              //                         ),
+                              //                       ),
+                              //                     ),
+                              //                   ),
+                              //               ],
+                              //             ),
+                              //           ),
+                              //         );
+                              //       }
+                              //     },
+                              //   ),
+                              FutureBuilder<List<DisplayReviewModel>>(
+                                future: futureReviews,
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return Center(
+                                        child: CircularProgressIndicator());
+                                  } else if (snapshot.hasError) {
+                                    return Center(
+                                        child:
+                                            Text('Error: ${snapshot.error}'));
+                                  } else if (!snapshot.hasData ||
+                                      snapshot.data!.isEmpty) {
+                                    return Center(
+                                        child: Text('No reviews found'));
+                                  } else {
+                                    reviews = snapshot
+                                        .data!; // Update global reviews variable
+                                    return Container(
+                                      alignment: Alignment.center,
+                                      margin: EdgeInsets.symmetric(vertical: 8),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsets.all(10),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            CustomText(
+                                              title: "USER REVIEWS",
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20,
+                                              color:
+                                                  greenColor2, // Assuming greenColor2 is defined as Colors.green
+                                            ),
+                                            Expanded(
+                                              child: ListView.builder(
+                                                physics:
+                                                    NeverScrollableScrollPhysics(),
+                                                itemCount: reviews.length > 3
+                                                    ? 3
+                                                    : reviews.length,
+                                                itemBuilder: (context, index) {
+                                                  DisplayReviewModel review =
+                                                      reviews[
+                                                          index]; // Access each review
+                                                  return Column(
+                                                    children: [
+                                                      Container(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        margin: EdgeInsets
+                                                            .symmetric(
+                                                                vertical: 5),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          border: Border.all(
+                                                              color:
+                                                                  Colors.grey),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(12),
+                                                        ),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(3.0),
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
                                                             children: [
-                                                              CustomText(
-                                                                title: review.name ?? 'No Name',
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  CustomText(
+                                                                    title: review
+                                                                            .name ??
+                                                                        'No Name',
+                                                                  ),
+                                                                  CustomText(
+                                                                    title: review.dateTime !=
+                                                                            null
+                                                                        ? '${review.dateTime!.day}/${review.dateTime!.month}/${review.dateTime!.year}'
+                                                                        : 'No Date',
+                                                                  ),
+                                                                ],
                                                               ),
-                                                              CustomText(
-                                                                title: review.dateTime != null
-                                                                    ? '${review.dateTime!.day}/${review.dateTime!.month}/${review.dateTime!.year}'
-                                                                    : 'No Date',
+                                                              Align(
+                                                                alignment: Alignment
+                                                                    .centerLeft,
+                                                                child: Text(
+                                                                  review.review ??
+                                                                      'No Review',
+                                                                ),
+                                                              ),
+                                                              RatingBarIndicator(
+                                                                rating: review
+                                                                            .rating !=
+                                                                        null
+                                                                    ? review
+                                                                        .rating!
+                                                                        .toDouble()
+                                                                    : 0.0,
+                                                                itemBuilder:
+                                                                    (context,
+                                                                            index) =>
+                                                                        Icon(
+                                                                  Icons.star,
+                                                                  color: Colors
+                                                                      .amber,
+                                                                ),
+                                                                itemCount: 5,
+                                                                itemSize: 30.0,
+                                                                direction: Axis
+                                                                    .horizontal,
                                                               ),
                                                             ],
                                                           ),
-                                                          Align(
-                                                            alignment: Alignment.centerLeft,
-                                                            child: Text(
-                                                              review.review ?? 'No Review',
-                                                            ),
-                                                          ),
-                                                          RatingBarIndicator(
-                                                            rating: review.rating != null ? review.rating!.toDouble() : 0.0,
-                                                            itemBuilder: (context, index) => Icon(
-                                                              Icons.star,
-                                                              color: Colors.amber,
-                                                            ),
-                                                            itemCount: 5,
-                                                            itemSize: 30.0,
-                                                            direction: Axis.horizontal,
-                                                          ),
-                                                        ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                            if (reviews.length > 3)
+                                              Align(
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              AllReviewsScreen(
+                                                                  widget
+                                                                      .karobarId),
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: Text(
+                                                      'View More',
+                                                      style: TextStyle(
+                                                        color: Colors.blue,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                       ),
                                                     ),
                                                   ),
-                                                ],
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        if (reviews.length > 3)
-                                          Align(
-                                            alignment: Alignment.centerRight,
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) => AllReviewsScreen(widget.karobarId),
-                                                    ),
-                                                  );
-                                                },
-                                                child: Text(
-                                                  'View More',
-                                                  style: TextStyle(
-                                                    color: Colors.blue,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }
-                            },
-                          ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
                               Container(
                                 alignment: Alignment.center,
                                 margin: EdgeInsets.symmetric(vertical: 8),
@@ -1486,10 +1561,9 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                 child: SingleChildScrollView(
                                   // Wrap the Column with SingleChildScrollView
                                   child: Column(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       // CustomText(
                                       //   title: "GALLERY",
@@ -1509,14 +1583,24 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                           enlargeCenterPage: false,
                                           autoPlay: true,
                                         ),
-                                        itemCount: businessModel?.images?.length ?? 0,
-                                        itemBuilder: (BuildContext context, int index, int realIndex) {
-                                          final String? imageUrl = businessModel?.images != null &&
-                                              businessModel!.images!.isNotEmpty &&
-                                              index < businessModel!.images!.length &&
-                                              businessModel!.images![index].imageName != null &&
-                                              businessModel!.images![index].imageName!.isNotEmpty
-                                              ? "https://businessonline.pk/Image/Business/Gallery/${businessModel!.karobarId}/${businessModel!.images![index].imageName}"
+                                        itemCount:
+                                            businessModel?.images?.length ?? 0,
+                                        itemBuilder: (BuildContext context,
+                                            int index, int realIndex) {
+                                          final String? imageUrl = businessModel
+                                                          ?.images !=
+                                                      null &&
+                                                  businessModel
+                                                      .images!.isNotEmpty &&
+                                                  index <
+                                                      businessModel
+                                                          .images!.length &&
+                                                  businessModel.images![index]
+                                                          .imageName !=
+                                                      null &&
+                                                  businessModel.images![index]
+                                                      .imageName!.isNotEmpty
+                                              ? "https://businessonline.pk/Image/Business/Gallery/${businessModel.karobarId}/${businessModel.images![index].imageName}"
                                               : null;
 
                                           return InkWell(
@@ -1525,46 +1609,73 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                    builder: (context) => FullScreenImage(imageUrl: imageUrl),
+                                                    builder: (context) =>
+                                                        FullScreenImage(
+                                                            imageUrl: imageUrl),
                                                   ),
                                                 );
                                               }
                                             },
                                             child: SizedBox(
-                                              width: MediaQuery.of(context).size.width,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
                                               child: imageUrl != null
                                                   ? FutureBuilder(
-                                                future: precacheImage(NetworkImage(imageUrl), context),
-                                                builder: (context, snapshot) {
-                                                  if (snapshot.connectionState == ConnectionState.done) {
-                                                    return PhotoView(
-                                                      imageProvider: NetworkImage(imageUrl),
-                                                      backgroundDecoration: BoxDecoration(
-                                                        color: Theme.of(context).canvasColor,
-                                                      ),
-                                                      minScale: PhotoViewComputedScale.covered,
-                                                      maxScale: PhotoViewComputedScale.covered * 2,
-                                                      initialScale: PhotoViewComputedScale.contained,
-                                                      loadingBuilder: (context, event) => Center(
-                                                        child: CircularProgressIndicator(),
-                                                      ),
-                                                    );
-                                                  } else {
-                                                    return Center(
-                                                      child: CircularProgressIndicator(),
-                                                    );
-                                                  }
-                                                },
-                                              )
+                                                      future: precacheImage(
+                                                          NetworkImage(
+                                                              imageUrl),
+                                                          context),
+                                                      builder:
+                                                          (context, snapshot) {
+                                                        if (snapshot
+                                                                .connectionState ==
+                                                            ConnectionState
+                                                                .done) {
+                                                          return PhotoView(
+                                                            imageProvider:
+                                                                NetworkImage(
+                                                                    imageUrl),
+                                                            backgroundDecoration:
+                                                                BoxDecoration(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .canvasColor,
+                                                            ),
+                                                            minScale:
+                                                                PhotoViewComputedScale
+                                                                    .covered,
+                                                            maxScale:
+                                                                PhotoViewComputedScale
+                                                                        .covered *
+                                                                    2,
+                                                            initialScale:
+                                                                PhotoViewComputedScale
+                                                                    .contained,
+                                                            loadingBuilder:
+                                                                (context,
+                                                                        event) =>
+                                                                    Center(
+                                                              child:
+                                                                  CircularProgressIndicator(),
+                                                            ),
+                                                          );
+                                                        } else {
+                                                          return Center(
+                                                            child:
+                                                                CircularProgressIndicator(),
+                                                          );
+                                                        }
+                                                      },
+                                                    )
                                                   : Image.asset(
-                                                'assets/images/Image_not_available.png',
-                                                fit: BoxFit.cover,
-                                              ),
+                                                      'assets/images/Image_not_available.png',
+                                                      fit: BoxFit.cover,
+                                                    ),
                                             ),
                                           );
                                         },
                                       ),
-
                                     ],
                                   ),
                                 ),
@@ -1742,7 +1853,8 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                         // ),
                                         Center(
                                           child: Custom_Button_Widget(
-                                            height: ScreenUtil().setHeight(30.h),
+                                            height:
+                                                ScreenUtil().setHeight(30.h),
                                             ontap: () async {
                                               contactUsModel.contactId = 0;
                                               contactUsModel.fkCityId = 0;
@@ -1756,15 +1868,19 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                               contactUsModel.token = "";
                                               print(contactUsModel.user!.name);
 
-                                              var response = await APIController.contactUsPost(contactUsModel);
+                                              var response = await APIController
+                                                  .contactUsPost(
+                                                      contactUsModel);
 
                                               if (response.statusCode == 200) {
                                                 showDialog(
                                                   context: context,
-                                                  builder: (BuildContext context) {
+                                                  builder:
+                                                      (BuildContext context) {
                                                     return MessageDialog(
                                                       title: 'Success',
-                                                      content: 'Thank you for reaching out to us. We have received your message, and our team will contact you soon..',
+                                                      content:
+                                                          'Thank you for reaching out to us. We have received your message, and our team will contact you soon..',
                                                     );
                                                   },
                                                 );
@@ -1775,15 +1891,16 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                               } else {
                                                 showDialog(
                                                   context: context,
-                                                  builder: (BuildContext context) {
+                                                  builder:
+                                                      (BuildContext context) {
                                                     return MessageDialog(
                                                       title: 'Error',
-                                                      content: 'Failed to submit Form.',
+                                                      content:
+                                                          'Failed to submit Form.',
                                                     );
                                                   },
                                                 );
                                               }
-
                                             },
                                             rd: 10,
                                             color: greenColor2,
@@ -1795,7 +1912,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                             ),
                                           ),
                                         ),
-
                                       ],
                                     ),
                                   ),
@@ -1850,270 +1966,320 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                           ),
                         ),
                       ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0),
-                        child: CustomText(
-                          title: "SPECIALITIES",
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                          color: greenColor2,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0),
-                        child: Divider(
-                          color: greenColor2,
-                          thickness: 2,
-                          indent: 1,
-                          endIndent: 250,
-                        ),
-                      ),
-                      // Container(
-                      //   alignment: Alignment.center,
-                      //   height: specialtyCount == 0 ? 50.0 : totalHeight,
-                      //   margin: EdgeInsets.symmetric(vertical: 8),
-                      //   decoration: BoxDecoration(
-                      //     border: Border.all(color: Colors.grey),
-                      //     borderRadius: BorderRadius.circular(12),
-                      //   ),
-                      //   child: Padding(
-                      //     padding: EdgeInsets.only(top: 10.0), // Adjust as needed
-                      //     child: specialtyCount == 0
-                      //         ? Center(
-                      //       child: CustomText(
-                      //         title: "No specialties available.",
-                      //         fontWeight: FontWeight.bold,
-                      //         fontSize: 14,
-                      //         color: Colors.grey, // Or any other color
-                      //       ),
-                      //     )
-                      //        :
-                  ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true, // Allow the ListView to wrap its content
-                    itemCount: specialtyCount,
-                    itemBuilder: (context, index) {
-                      List<String>? specialties = businessModel?.speciality?.split(',');
-                      String? specialty = specialties?[index].trim();
-                      if (specialty != null && specialty.isNotEmpty) {
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 7, left: 7, right: 12),
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                Image.asset(
-                                  'assets/images/checkicon.png',
-                                  scale: 30,
-                                ),
-                                SizedBox(width: 10),
-                                AutoSizeText(
-                                  specialty,
-                                  style: TextStyle(fontSize: 12, color: grayColor),
-                                  minFontSize: 10,
-                                  stepGranularity: 10,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      } else {
-                        // Return an empty container if there's no specialty
-                        return Container();
-                      }
-                    },
-                  ),
-                  ],
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    height: _products.isEmpty ? null : 480.0, // Adjust as needed for products
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 10.0), // Adjust as needed
-                      child: _products.isEmpty
-                          ? Center(
-                        child: CustomText(
-                          title: "Currently, there are no products available.",
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                          color: Colors.red, // Or any other color
-                        ),
-                      )
-                          : Column(
+                      Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(left: 5),
+                            padding: const EdgeInsets.only(left: 5.0),
                             child: CustomText(
-                              title: "PRODUCT",
+                              title: "SPECIALITIES",
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
-                              color: greenColor2, // Assuming greenColor2 is defined as Colors.green
+                              color: greenColor2,
                             ),
                           ),
-                          Divider(
-                            color: greenColor2, // Assuming greenColor2 is defined as Colors.green
-                            thickness: 2,
-                            indent: 1,
-                            endIndent: 250,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 5.0),
+                            child: Divider(
+                              color: greenColor2,
+                              thickness: 2,
+                              indent: 1,
+                              endIndent: 250,
+                            ),
                           ),
-                          Expanded(
-                            child: GridView.builder(
-                              padding: EdgeInsets.all(0.3),
-                              physics: NeverScrollableScrollPhysics(),
-                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisSpacing: 1,
-                                mainAxisSpacing: 4,
-                                crossAxisCount: 2,
-                              ),
-                              itemCount: _products.length > 4 ? 4 : _products.length,
-                              itemBuilder: (context, index) {
-                                final product = _products[index];
+                          // Container(
+                          //   alignment: Alignment.center,
+                          //   height: specialtyCount == 0 ? 50.0 : totalHeight,
+                          //   margin: EdgeInsets.symmetric(vertical: 8),
+                          //   decoration: BoxDecoration(
+                          //     border: Border.all(color: Colors.grey),
+                          //     borderRadius: BorderRadius.circular(12),
+                          //   ),
+                          //   child: Padding(
+                          //     padding: EdgeInsets.only(top: 10.0), // Adjust as needed
+                          //     child: specialtyCount == 0
+                          //         ? Center(
+                          //       child: CustomText(
+                          //         title: "No specialties available.",
+                          //         fontWeight: FontWeight.bold,
+                          //         fontSize: 14,
+                          //         color: Colors.grey, // Or any other color
+                          //       ),
+                          //     )
+                          //        :
+                          ListView.builder(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            // Allow the ListView to wrap its content
+                            itemCount: specialtyCount,
+                            itemBuilder: (context, index) {
+                              List<String>? specialties =
+                                  businessModel?.speciality?.split(',');
+                              String? specialty = specialties?[index].trim();
+                              if (specialty != null && specialty.isNotEmpty) {
                                 return Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => ProductScreen(),
+                                  padding: const EdgeInsets.only(
+                                      top: 7, left: 7, right: 12),
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: [
+                                        Image.asset(
+                                          'assets/images/checkicon.png',
+                                          scale: 30,
                                         ),
-                                      );
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10.0),
-                                        border: Border.all(color: Colors.grey),
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Center(
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(8.0),
-                                              child: Image.asset(
-                                                product.images != null && product.images!.isNotEmpty
-                                                    ? product.images![0]
-                                                    : 'assets/images/prodc.jpg',
-                                                scale: 2,
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(height: 2),
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 5),
-                                            child: CustomText(
-                                              title: product.itemName ?? 'Iphone',
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                          SizedBox(height: 2),
-                                          Padding(
-                                            padding: const EdgeInsets.only(left: 5),
-                                            child: CustomText(
-                                              title: 'Rs.${product.price}',
-                                              color: greenColor2,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(5.0),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                              children: [
-                                                Expanded(
-                                                  child: Custom_Button_Widget(
-                                                    ontap: () {
-                                                      if (businessModel?.contactPhone != null) {
-                                                        String whatsappUrl = 'https://wa.me/+92${businessModel!.contactPhone?.replaceAll(',', '')}';
-                                                        launchUrl(Uri.parse(whatsappUrl));
-                                                      }
-                                                    },
-                                                    rd: 4.0,
-                                                    height: 30.0,
-                                                    width: 50.0,
-                                                    color: greenColor2,
-                                                    child: CustomText(
-                                                      title: "WhatsApp",
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 10,
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(width: 5,),
-                                                Expanded(
-                                                  child: Custom_Button_Widget(
-                                                    ontap: () {
-                                                      if (businessModel?.contactPhone != null) {
-                                                        String phoneUrl = 'tel:${businessModel!.contactPhone?.replaceAll(",", ",")}';
-                                                        launchUrl(Uri.parse(phoneUrl));
-                                                      }
-                                                    },
-                                                    rd: 4.0,
-                                                    height: 30.0,
-                                                    width: 50.0,
-                                                    color: greenColor2,
-                                                    child: CustomText(
-                                                      title: "Call",
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 10,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                        SizedBox(width: 10),
+                                        AutoSizeText(
+                                          specialty,
+                                          style: TextStyle(
+                                              fontSize: 12, color: grayColor),
+                                          minFontSize: 10,
+                                          stepGranularity: 10,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 );
-                              },
-                            ),
+                              } else {
+                                // Return an empty container if there's no specialty
+                                return Container();
+                              }
+                            },
                           ),
-                          if (_products.length > 4)
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => AllProductsScreen(products: _products),
-                                      ),
-                                    );
-                                  },
-                                  child: Text(
-                                    'View More',
-                                    style: TextStyle(
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
                         ],
                       ),
-                    ),
-                  ),
-                  Container(
+                      Container(
+                        alignment: Alignment.center,
+                        height: businessModel?.karobarItems?.length != null ? 480.0 : null,
+                        // Adjust as needed for products
+                        margin: EdgeInsets.symmetric(vertical: 8),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 10.0),
+                          // Adjust as needed
+                          child: businessModel?.karobarItems == null || businessModel.karobarItems!.isEmpty
+                              ? Center(
+                                  child: CustomText(
+                                    title:
+                                        "Currently, there are no products available.",
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: Colors.red, // Or any other color
+                                  ),
+                                )
+                              : Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 5),
+                                      child: CustomText(
+                                        title: "PRODUCT",
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        color:
+                                            greenColor2, // Assuming greenColor2 is defined as Colors.green
+                                      ),
+                                    ),
+                                    Divider(
+                                      color: greenColor2,
+                                      // Assuming greenColor2 is defined as Colors.green
+                                      thickness: 2,
+                                      indent: 1,
+                                      endIndent: 250,
+                                    ),
+                                    Expanded(
+                                      child: GridView.builder(
+                                        padding: EdgeInsets.all(0.3),
+                                        physics: NeverScrollableScrollPhysics(),
+                                        gridDelegate:
+                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisSpacing: 1,
+                                          mainAxisSpacing: 4,
+                                          crossAxisCount: 2,
+                                        ),
+                                        itemCount: (businessModel?.karobarItems?.length ?? 0) > 4
+                                            ? 4
+                                            : (businessModel?.karobarItems?.length ?? 0),
+                                        itemBuilder: (context, index) {
+                                          final product = businessModel?.karobarItems?[index];
+                                          return Padding(
+                                            padding: const EdgeInsets.all(3.0),
+                                            child: InkWell(
+                                              onTap: () {
+                                                // Create an empty list to hold image URLs
+                                                List<String> imageUrls = [];
+
+// Populate the list with image URLs from the karobarItems
+                                                for (int i = 0; i < (businessModel?.karobarItems?.length ?? 0); i++) {
+                                                  final product = businessModel?.karobarItems?[i];
+                                                  if (product?.images != null && product!.images!.isNotEmpty) {
+                                                    String imageUrl = "https://businessonline.pk/Image/Business/Items/${product.fkKarobarId}/${product.images![0].imageName}";
+                                                    imageUrls.add(imageUrl);
+                                                  } else {
+                                                    // If there are no images for the product, add a placeholder image URL
+                                                    imageUrls.add('assets/images/prodc.jpg');
+                                                  }
+                                                }
+
+// Navigate to the ProductDetailPage and pass the list of image URLs
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => ProductDetailPage(
+                                                      imageUrls: imageUrls,
+                                                      name: product!.name.toString(),
+                                                      price: product.price!.toDouble(),
+                                                      description: product.description.toString(),
+                                                      whatsappNumber: businessModel.contactPhone.toString(),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(10.0),
+                                                  border: Border.all(color: Colors.grey),
+                                                ),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    SizedBox(
+                                                      width: double.infinity, // Adjust the width as needed
+                                                      height: 90, // Adjust the height as needed
+                                                      child: ClipRRect(
+                                                        borderRadius: BorderRadius.circular(8.0),
+                                                        child: Image.network(
+                                                          (product?.images != null && product!.images!.isNotEmpty)
+                                                              ? "https://businessonline.pk/Image/Business/Items/${product.fkKarobarId}/${product.images![0].imageName}"
+                                                              : 'assets/images/prodc.jpg',
+                                                          fit: BoxFit.cover, // Adjust the fit as needed
+                                                          errorBuilder: (context, error, stackTrace) {
+                                                            return Image.asset(
+                                                              'assets/images/prodc.jpg',
+                                                              fit: BoxFit.cover,
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 2),
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(left: 5),
+                                                      child: CustomText(
+                                                        title: product?.name ?? 'Iphone',
+                                                        color: Colors.grey,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 2),
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(left: 5),
+                                                      child: CustomText(
+                                                        title: 'Rs.${product?.price}',
+                                                        color: greenColor2,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(5.0),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Custom_Button_Widget(
+                                                              ontap: () {
+                                                                if (businessModel?.contactPhone != null) {
+                                                                  String whatsappUrl =
+                                                                      'https://wa.me/+92${businessModel.contactPhone?.replaceAll(',', '')}';
+                                                                  launchUrl(Uri.parse(whatsappUrl));
+                                                                }
+                                                              },
+                                                              rd: 4.0,
+                                                              height: 30.0,
+                                                              width: 50.0,
+                                                              color: greenColor2,
+                                                              child: CustomText(
+                                                                title: "WhatsApp",
+                                                                color: Colors.white,
+                                                                fontWeight: FontWeight.bold,
+                                                                fontSize: 10,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 5),
+                                                          Expanded(
+                                                            child: Custom_Button_Widget(
+                                                              ontap: () {
+                                                                if (businessModel?.contactPhone != null) {
+                                                                  String phoneUrl =
+                                                                      'tel:${businessModel.contactPhone?.replaceAll(",", ",")}';
+                                                                  launchUrl(Uri.parse(phoneUrl));
+                                                                }
+                                                              },
+                                                              rd: 4.0,
+                                                              height: 30.0,
+                                                              width: 50.0,
+                                                              color: greenColor2,
+                                                              child: CustomText(
+                                                                title: "Call",
+                                                                color: Colors.white,
+                                                                fontWeight: FontWeight.bold,
+                                                                fontSize: 10,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          );
+
+
+                                        },
+                                      ),
+                                    ),
+                                    if ((businessModel?.karobarItems!.length ?? 0) > 4)
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Align(
+                                          alignment: Alignment.centerRight,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      AllProductsScreen(
+                                                        products: businessModel,
+                                                      ),
+                                                ),
+                                              );
+
+                                            },
+                                            child: Text(
+                                              'View More',
+                                              style: TextStyle(
+                                                color: Colors.blue,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                        ),
+                      ),
+                      Container(
                         alignment: Alignment.center,
                         margin: EdgeInsets.symmetric(vertical: 8),
                         decoration: BoxDecoration(
@@ -2125,10 +2291,8 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                           child: SingleChildScrollView(
                             // Wrap the Column with SingleChildScrollView
                             child: Column(
-                              mainAxisAlignment:
-                              MainAxisAlignment.start,
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CustomText(
                                   title: "GALLERY",
@@ -2149,13 +2313,20 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                     autoPlay: true,
                                   ),
                                   itemCount: businessModel?.images?.length ?? 0,
-                                  itemBuilder: (BuildContext context, int index, int realIndex) {
-                                    final String? imageUrl = businessModel?.images != null &&
-                                        businessModel!.images!.isNotEmpty &&
-                                        index < businessModel!.images!.length &&
-                                        businessModel!.images![index].imageName != null &&
-                                        businessModel!.images![index].imageName!.isNotEmpty
-                                        ? "https://businessonline.pk/Image/Business/Gallery/${businessModel!.karobarId}/${businessModel!.images![index].imageName}"
+                                  itemBuilder: (BuildContext context, int index,
+                                      int realIndex) {
+                                    final String? imageUrl = businessModel
+                                                    ?.images !=
+                                                null &&
+                                            businessModel.images!.isNotEmpty &&
+                                            index <
+                                                businessModel.images!.length &&
+                                            businessModel
+                                                    .images![index].imageName !=
+                                                null &&
+                                            businessModel.images![index]
+                                                .imageName!.isNotEmpty
+                                        ? "https://businessonline.pk/Image/Business/Gallery/${businessModel.karobarId}/${businessModel.images![index].imageName}"
                                         : null;
 
                                     return InkWell(
@@ -2164,46 +2335,67 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) => FullScreenImage(imageUrl: imageUrl),
+                                              builder: (context) =>
+                                                  FullScreenImage(
+                                                      imageUrl: imageUrl),
                                             ),
                                           );
                                         }
                                       },
                                       child: SizedBox(
-                                        width: MediaQuery.of(context).size.width,
+                                        width:
+                                            MediaQuery.of(context).size.width,
                                         child: imageUrl != null
                                             ? FutureBuilder(
-                                          future: precacheImage(NetworkImage(imageUrl), context),
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState == ConnectionState.done) {
-                                              return PhotoView(
-                                                imageProvider: NetworkImage(imageUrl),
-                                                backgroundDecoration: BoxDecoration(
-                                                  color: Theme.of(context).canvasColor,
-                                                ),
-                                                minScale: PhotoViewComputedScale.covered,
-                                                maxScale: PhotoViewComputedScale.covered * 2,
-                                                initialScale: PhotoViewComputedScale.contained,
-                                                loadingBuilder: (context, event) => Center(
-                                                  child: CircularProgressIndicator(),
-                                                ),
-                                              );
-                                            } else {
-                                              return Center(
-                                                child: CircularProgressIndicator(),
-                                              );
-                                            }
-                                          },
-                                        )
+                                                future: precacheImage(
+                                                    NetworkImage(imageUrl),
+                                                    context),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot
+                                                          .connectionState ==
+                                                      ConnectionState.done) {
+                                                    return PhotoView(
+                                                      imageProvider:
+                                                          NetworkImage(
+                                                              imageUrl),
+                                                      backgroundDecoration:
+                                                          BoxDecoration(
+                                                        color: Theme.of(context)
+                                                            .canvasColor,
+                                                      ),
+                                                      minScale:
+                                                          PhotoViewComputedScale
+                                                              .covered,
+                                                      maxScale:
+                                                          PhotoViewComputedScale
+                                                                  .covered *
+                                                              2,
+                                                      initialScale:
+                                                          PhotoViewComputedScale
+                                                              .contained,
+                                                      loadingBuilder:
+                                                          (context, event) =>
+                                                              Center(
+                                                        child:
+                                                            CircularProgressIndicator(),
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    return Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    );
+                                                  }
+                                                },
+                                              )
                                             : Image.asset(
-                                          'assets/images/Image_not_available.png',
-                                          fit: BoxFit.cover,
-                                        ),
+                                                'assets/images/Image_not_available.png',
+                                                fit: BoxFit.cover,
+                                              ),
                                       ),
                                     );
                                   },
                                 ),
-
                               ],
                             ),
                           ),
@@ -2214,19 +2406,15 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                         // height: ScreenUtil().screenHeight / 2.4,
                         margin: EdgeInsets.symmetric(vertical: 8),
                         decoration: BoxDecoration(
-                          // color: Colors.blue,
+                            // color: Colors.blue,
                             border: Border.all(color: grayColor2),
                             borderRadius: BorderRadius.circular(12)),
                         child: Padding(
                           padding: EdgeInsets.only(
-                              top: 10.h,
-                              left: 10.w,
-                              bottom: 10,
-                              right: 10.w),
+                              top: 10.h, left: 10.w, bottom: 10, right: 10.w),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment:
-                            CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
@@ -2244,123 +2432,137 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   ),
                                 ],
                               ),
-                              businessModel?.openningHours == null || businessModel!.openningHours!.isEmpty?Center(
-                                child: DataTable(
-                                  columnSpacing: 20,
+                              businessModel?.openningHours == null ||
+                                      businessModel.openningHours!.isEmpty
+                                  ? Center(
+                                      child: DataTable(
+                                        columnSpacing: 20,
+                                        columns: const <DataColumn>[
+                                          DataColumn(
+                                            label: Text('Day'),
+                                          ),
+                                          DataColumn(
+                                            label: Text('Opening Time'),
+                                          ),
+                                          DataColumn(
+                                            label: Text('Closing Time'),
+                                          ),
+                                        ],
+                                        rows: const <DataRow>[
+                                          DataRow(
+                                            cells: <DataCell>[
+                                              DataCell(Text('Monday')),
+                                              DataCell(Text('9:00 AM')),
+                                              DataCell(Text('6:00 PM')),
+                                            ],
+                                          ),
+                                          DataRow(
+                                            cells: <DataCell>[
+                                              DataCell(Text('Tuesday')),
+                                              DataCell(Text('9:00 AM')),
+                                              DataCell(Text('6:00 PM')),
+                                            ],
+                                          ),
+                                          DataRow(
+                                            cells: <DataCell>[
+                                              DataCell(Text('Wednesday')),
+                                              DataCell(Text('9:00 AM')),
+                                              DataCell(Text('6:00 PM')),
+                                            ],
+                                          ),
+                                          DataRow(
+                                            cells: <DataCell>[
+                                              DataCell(Text('Thursday')),
+                                              DataCell(Text('9:00 AM')),
+                                              DataCell(Text('6:00 PM')),
+                                            ],
+                                          ),
+                                          DataRow(
+                                            cells: <DataCell>[
+                                              DataCell(Text('Friday')),
+                                              DataCell(Text('9:00 AM')),
+                                              DataCell(Text('6:00 PM')),
+                                            ],
+                                          ),
+                                          DataRow(
+                                            cells: <DataCell>[
+                                              DataCell(Text('Saturday')),
+                                              DataCell(Text('9:00 AM')),
+                                              DataCell(Text('6:00 PM')),
+                                            ],
+                                          ),
+                                          DataRow(
+                                            cells: <DataCell>[
+                                              DataCell(Text('Sunday')),
+                                              DataCell(Text('Closed')),
+                                              DataCell(Text('Closed')),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : SingleChildScrollView(
+                                      scrollDirection: Axis.vertical,
+                                      physics: ScrollPhysics(),
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Card(
+                                          child: DataTable(
+                                            columnSpacing: 20,
+                                            columns: const [
+                                              DataColumn(label: Text('Day')),
+                                              DataColumn(
+                                                  label: Text('Opening Time')),
+                                              DataColumn(
+                                                  label: Text('Closing Time')),
+                                            ],
+                                            rows: openningHours
+                                                .map((OpenningHour hour) {
+                                              final dayOfWeek =
+                                                  hour.dayOfWeek ?? '';
+                                              String openingTime;
+                                              String closingTime;
 
-                                  columns: const <DataColumn>[
-                                    DataColumn(
-                                      label: Text('Day'),
-                                    ),
-                                    DataColumn(
-                                      label: Text('Opening Time'),
-                                    ),
-                                    DataColumn(
-                                      label: Text('Closing Time'),
-                                    ),
-                                  ],
-                                  rows: const <DataRow>[
-                                    DataRow(
+                                              if (hour.isOpen == true) {
+                                                if (hour.openingTime ==
+                                                        "24Hours" ||
+                                                    hour.closingTime ==
+                                                        "24Hours") {
+                                                  openingTime = "24Hours";
+                                                  closingTime = "24Hours";
+                                                } else {
+                                                  openingTime =
+                                                      hour.openingTime ??
+                                                          'Closed';
+                                                  closingTime =
+                                                      hour.closingTime ??
+                                                          'Closed';
+                                                }
+                                              } else {
+                                                openingTime = 'Closed';
+                                                closingTime = 'Closed';
+                                              }
 
-                                      cells: <DataCell>[
-                                        DataCell(Text('Monday')),
-                                        DataCell(Text('9:00 AM')),
-                                        DataCell(Text('6:00 PM')),
-                                      ],
+                                              return DataRow(
+                                                color: MaterialStateProperty
+                                                    .resolveWith<Color?>(
+                                                        (Set<MaterialState>
+                                                            states) {
+                                                  return Colors.grey[
+                                                      200]; // Set your desired background color here
+                                                }),
+                                                selected: true,
+                                                cells: <DataCell>[
+                                                  DataCell(Text(dayOfWeek)),
+                                                  DataCell(Text(openingTime)),
+                                                  DataCell(Text(closingTime)),
+                                                ],
+                                              );
+                                            }).toList(),
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                    DataRow(
-                                      cells: <DataCell>[
-                                        DataCell(Text('Tuesday')),
-                                        DataCell(Text('9:00 AM')),
-                                        DataCell(Text('6:00 PM')),
-                                      ],
-                                    ),
-                                    DataRow(
-                                      cells: <DataCell>[
-                                        DataCell(Text('Wednesday')),
-                                        DataCell(Text('9:00 AM')),
-                                        DataCell(Text('6:00 PM')),
-                                      ],
-                                    ),
-                                    DataRow(
-                                      cells: <DataCell>[
-                                        DataCell(Text('Thursday')),
-                                        DataCell(Text('9:00 AM')),
-                                        DataCell(Text('6:00 PM')),
-                                      ],
-                                    ),
-                                    DataRow(
-                                      cells: <DataCell>[
-                                        DataCell(Text('Friday')),
-                                        DataCell(Text('9:00 AM')),
-                                        DataCell(Text('6:00 PM')),
-                                      ],
-                                    ),
-                                    DataRow(
-                                      cells: <DataCell>[
-                                        DataCell(Text('Saturday')),
-                                        DataCell(Text('9:00 AM')),
-                                        DataCell(Text('6:00 PM')),
-                                      ],
-                                    ),
-                                    DataRow(
-                                      cells: <DataCell>[
-                                        DataCell(Text('Sunday')),
-                                        DataCell(Text('Closed')),
-                                        DataCell(Text('Closed')),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ): SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                physics: ScrollPhysics(),
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Card(
-                                    child: DataTable(
-                                      columnSpacing: 20,
-                                      columns: const [
-                                        DataColumn(label: Text('Day')),
-                                        DataColumn(label: Text('Opening Time')),
-                                        DataColumn(label: Text('Closing Time')),
-                                      ],
-                                      rows: openningHours.map((OpenningHour hour) {
-                                        final dayOfWeek = hour.dayOfWeek ?? '';
-                                        String openingTime;
-                                        String closingTime;
-
-                                        if (hour.isOpen == true) {
-                                          if (hour.openingTime == "24Hours" || hour.closingTime == "24Hours") {
-                                            openingTime = "24Hours";
-                                            closingTime = "24Hours";
-                                          } else {
-                                            openingTime = hour.openingTime ?? 'Closed';
-                                            closingTime = hour.closingTime ?? 'Closed';
-                                          }
-                                        } else {
-                                          openingTime = 'Closed';
-                                          closingTime = 'Closed';
-                                        }
-
-                                        return DataRow(
-                                          color: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
-                                            return Colors.grey[200]; // Set your desired background color here
-                                          }),
-                                          selected: true,
-                                          cells: <DataCell>[
-                                            DataCell(Text(dayOfWeek)),
-                                            DataCell(Text(openingTime)),
-                                            DataCell(Text(closingTime)),
-                                          ],
-                                        );
-                                      }).toList(),
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-
                             ],
                           ),
                         ),
@@ -2394,7 +2596,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                 endIndent: 200,
                               ),
                               CustomText(
-                                title: "Your Ratting For this Business",
+                                title: "Your Rating For this Business",
                                 color: grayColor,
                                 fontWeight: FontWeight.bold,
                                 fontStyle: FontStyle.italic,
@@ -2542,17 +2744,22 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                               Custom_Button_Widget(
                                 height: ScreenUtil().setHeight(30.h),
                                 ontap: () async {
-                                  if (_reviewModel.rating == null || _reviewModel.rating == 0) {
+                                  if (_reviewModel.rating == null ||
+                                      _reviewModel.rating == 0) {
                                     // Show a Snackbar indicating that the user needs to select a rating
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         duration: Duration(seconds: 3),
                                         content: Container(
-                                          width: MediaQuery.of(context).size.width * 0.90,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.90,
                                           height: 45,
                                           decoration: BoxDecoration(
                                             color: Colors.red,
-                                            borderRadius: BorderRadius.circular(15),
+                                            borderRadius:
+                                                BorderRadius.circular(15),
                                           ),
                                           child: Align(
                                             alignment: Alignment.center,
@@ -2571,27 +2778,35 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
 
                                     try {
                                       // Call the API function to submit the review
-                                      await APIController.registerReviewModel(_reviewModel);
+                                      await APIController.registerReviewModel(
+                                          _reviewModel);
                                       nameController.clear();
                                       emailController.clear();
                                       descriptionController.clear();
 
                                       // Show success Snackbar
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         SnackBar(
                                           duration: Duration(seconds: 3),
                                           content: Container(
-                                            width: MediaQuery.of(context).size.width * 0.90,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.90,
                                             height: 50.h,
                                             decoration: BoxDecoration(
                                               color: Colors.white,
-                                              borderRadius: BorderRadius.circular(15),
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
                                             ),
                                             child: Align(
                                               alignment: Alignment.center,
                                               child: Text(
                                                 "Submitted Your Review",
-                                                style: TextStyle(fontSize: 17, color: greenColor2),
+                                                style: TextStyle(
+                                                    fontSize: 17,
+                                                    color: greenColor2),
                                               ),
                                             ),
                                           ),
@@ -2602,20 +2817,27 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => AllReviewsScreen(widget.karobarId),
+                                          builder: (context) =>
+                                              AllReviewsScreen(
+                                                  widget.karobarId),
                                         ),
                                       );
                                     } catch (error) {
                                       // Show error Snackbar
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         SnackBar(
                                           duration: Duration(seconds: 3),
                                           content: Container(
-                                            width: MediaQuery.of(context).size.width * 0.90,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.90,
                                             height: 45,
                                             decoration: BoxDecoration(
                                               color: Colors.red,
-                                              borderRadius: BorderRadius.circular(15),
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
                                             ),
                                             child: Align(
                                               alignment: Alignment.center,
@@ -2639,7 +2861,6 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   fontSize: 12.sp,
                                 ),
                               ),
-
                             ],
                           ),
                         ),
@@ -2708,6 +2929,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
     await Share.share(data);
   }
 }
+
 void launchNavigation(
     {required double latitude, required double longitude}) async {
   final url =
@@ -2718,6 +2940,7 @@ void launchNavigation(
     throw 'Could not launch Google Maps navigation';
   }
 }
+
 class FullScreenImage extends StatelessWidget {
   final String imageUrl;
 

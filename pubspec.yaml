@@ -63,6 +63,7 @@ dependencies:
   photo_view: any
   shimmer: ^2.0.0
   fluttertoast: any
+  flutter_spinkit: ^5.0.0
 
 #  flutter_staggered_grid_view: ^0.7.0
 

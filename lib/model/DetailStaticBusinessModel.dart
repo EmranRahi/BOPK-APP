@@ -560,7 +560,12 @@
 
 import 'dart:convert';
 
+import 'package:businessonlinepk/model/LocationModel.dart';
+
+import 'Authentication.dart';
+import 'GalleryImageDetail.dart';
 import 'OpenningHour.dart';
+import 'ProductDetail.dart';
 
 DetailStaticBusinessModel detailStaticBusinessModelFromJson(String str) => DetailStaticBusinessModel.fromJson(json.decode(str));
 
@@ -597,11 +602,12 @@ class DetailStaticBusinessModel {
   bool? isVerified;
   String? whatsAppNumber;
   int? fkCategoryId;
-  Location? location;
+  LocationModel? location;
   List<OpenningHour>? openningHours;
-  List<ImageData>? images;
+  List<GalleryImageDetail>? images;
   Authentication? authentication;
   int? distance;
+  List<ProductDetail>? karobarItems;
 
   DetailStaticBusinessModel({
     this.karobarId,
@@ -639,6 +645,7 @@ class DetailStaticBusinessModel {
     this.images,
     this.authentication,
     this.distance,
+    this.karobarItems,
   });
 
   factory DetailStaticBusinessModel.fromJson(Map<String, dynamic> json) => DetailStaticBusinessModel(
@@ -672,11 +679,12 @@ class DetailStaticBusinessModel {
     isVerified: json["isVerified"],
     whatsAppNumber: json["whatsAppNumber"],
     fkCategoryId: json["fkCategoryId"],
-    location: json["location"] == null ? null : Location.fromJson(json["location"]),
+    location: json["location"] == null ? null : LocationModel.fromJson(json["location"]),
     openningHours: json["openningHours"] == null ? [] : List<OpenningHour>.from(json["openningHours"]!.map((x) => OpenningHour.fromJson(x))),
-    images: json["images"] == null ? [] : List<ImageData>.from(json["images"]!.map((x) => ImageData.fromJson(x))),
+    images: json["images"] == null ? [] : List<GalleryImageDetail>.from(json["images"]!.map((x) => GalleryImageDetail.fromJson(x))),
     authentication: json["authentication"] == null ? null : Authentication.fromJson(json["authentication"]),
     distance: json["distance"],
+    karobarItems: json["karobarItems"] == null ? [] : List<ProductDetail>.from(json["karobarItems"]!.map((x) => ProductDetail.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -718,103 +726,4 @@ class DetailStaticBusinessModel {
   };
 }
 
-class Authentication {
-  int? authId;
-  int? fkKarobarId;
-  String? password;
-  String? userType;
-  String? email;
-  String? name;
-  dynamic shortName;
-
-  Authentication({
-    this.authId,
-    this.fkKarobarId,
-    this.password,
-    this.userType,
-    this.email,
-    this.name,
-    this.shortName,
-  });
-
-  factory Authentication.fromJson(Map<String, dynamic> json) => Authentication(
-    authId: json["authId"],
-    fkKarobarId: json["fkKarobarId"],
-    password: json["password"],
-    userType: json["userType"],
-    email: json["email"],
-    name: json["name"],
-    shortName: json["shortName"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "authId": authId,
-    "fkKarobarId": fkKarobarId,
-    "password": password,
-    "userType": userType,
-    "email": email,
-    "name": name,
-    "shortName": shortName,
-  };
-}
-
-class ImageData {
-  int? imageId;
-  int? fkKarobarId;
-  String? imageName;
-  bool? isMainImage;
-  String? karobar;
-
-  ImageData({
-    this.imageId,
-    this.fkKarobarId,
-    this.imageName,
-    this.isMainImage,
-    this.karobar,
-  });
-
-  factory ImageData.fromJson(Map<String, dynamic> json) => ImageData(
-    imageId: json["imageId"],
-    fkKarobarId: json["fkKarobarId"],
-    imageName: json["imageName"],
-    isMainImage: json["isMainImage"],
-    karobar: json["karobar"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "imageId": imageId,
-    "fkKarobarId": fkKarobarId,
-    "imageName": imageName,
-    "isMainImage": isMainImage,
-    "karobar": karobar,
-  };
-}
-
-class Location {
-  int? locationId;
-  dynamic locationName;
-  dynamic locLat;
-  dynamic locLng;
-
-  Location({
-    this.locationId,
-    this.locationName,
-    this.locLat,
-    this.locLng,
-  });
-
-  factory Location.fromJson(Map<String, dynamic> json) => Location(
-    locationId: json["locationId"],
-    locationName: json["locationName"],
-    locLat: json["locLat"],
-    locLng: json["locLng"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "locationId": locationId,
-    "locationName": locationName,
-    "locLat": locLat,
-    "locLng": locLng,
-  };
-}
 

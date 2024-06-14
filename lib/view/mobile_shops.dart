@@ -677,28 +677,28 @@ class _MobileShopsState extends State<MobileShops> {
                                                   TextOverflow.clip,
                                                 ),
                                               ),
-                                              SizedBox(height: 5),
-                                              Row(
-                                                // Change to Row to display icons inline
-                                                children: [
-                                                  Icon(
-                                                    Icons.location_on,
-                                                    color: greenColor2,
-                                                    size: 18,
-                                                  ),
-                                                  // Add clock icon
-                                                  SizedBox(width: 5),
-                                                  // Add spacing between icon and text
-                                                  CustomText(
-                                                    title: "${item.distance} KM away",
-                                                    googleFont: "Jost",
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 08.sp,
-                                                    color: grayColor,
-                                                  ),
-
-                                                ],
-                                              ),
+                                              // SizedBox(height: 5),
+                                              // Row(
+                                              //   // Change to Row to display icons inline
+                                              //   children: [
+                                              //     Icon(
+                                              //       Icons.location_on,
+                                              //       color: greenColor2,
+                                              //       size: 18,
+                                              //     ),
+                                              //     // Add clock icon
+                                              //     SizedBox(width: 5),
+                                              //     // Add spacing between icon and text
+                                              //     CustomText(
+                                              //       title: "${item.distance} KM away",
+                                              //       googleFont: "Jost",
+                                              //       fontWeight: FontWeight.bold,
+                                              //       fontSize: 08.sp,
+                                              //       color: grayColor,
+                                              //     ),
+                                              //
+                                              //   ],
+                                              // ),
                                               SizedBox(height: 5),
                                               Row(
                                                 // Change to Row to display icons inline

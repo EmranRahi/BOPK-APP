@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart' as picker;
 import 'package:image_picker/image_picker.dart';
-import '../Controllers/Api_Controller.dart';
-import '../view/customs_widgets/constant_color.dart';
-import '../view/customs_widgets/custom_button.dart';
-import '../view/customs_widgets/custom_text.dart';
+
+import '../../Controllers/Api_Controller.dart';
+import '../customs_widgets/constant_color.dart';
+import '../customs_widgets/custom_button.dart';
+import '../customs_widgets/custom_text.dart';
 
 class UpdateBanner extends StatefulWidget {
   UpdateBanner(this.fkKarobarId, {super.key});
@@ -119,8 +120,8 @@ class _UpdateBannerState extends State<UpdateBanner> {
                       child: Image.file(
                         File(selectedImagesList![index].path),
                         fit: BoxFit.cover,
-                        width: 150,
-                        height: 200,
+                        width: 250,
+                        height: 300,
                       ),
                     ),
                   );
