@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:businessonlinepk/view/customs_widgets/constant_color.dart';
@@ -962,16 +963,32 @@ class _MobileShopsState extends State<MobileShops> {
       searchBusinessModel.lat=widget.lat;
       searchBusinessModel.lng=widget.long;
       searchBusinessModel.miles=20;
-      futureData = apiController.searchBusiness(searchBusinessModel);
-
-      // futureData = fetchData(widget.categoryId!.toInt(), page, "no");
-      futureData.then((value) {
+      apiController.searchBusiness(searchBusinessModel).then((value) {
         setState(() {
-          _scrollPosition = _scrollController.position.pixels;
-          dataList.addAll(value.data!);
+          if (value.statusCode == 200) {
+            // Successful API call
+            final staticListModel = StaticListModel.fromJson(jsonDecode(value.body));
+            if (staticListModel.data.isEmpty) {
+              _hasMoreData = false; // No more data available
+            } else {
+              dataList.addAll(staticListModel.data);
+              page++; // Increment page number
+            }
+          } else if (value.statusCode == 400) {
+            // Handle specific error case where page number is invalid
+            print("Error 400: ${value.body}");
+            // String errorMessage = _extractErrorMessage(value.body);
+          } else {
+            print('Failed to load data: ${value.statusCode}');
+          }
+          _loading = false;
         });
-        // Restore scroll position
-        _scrollController.jumpTo(_scrollPosition);
+      }).catchError((error) {
+        print('Error in API call: $error');
+        // Handle other errors if needed
+        setState(() {
+          _loading = false;
+        });
       });
     }
   }
@@ -990,15 +1007,43 @@ class _MobileShopsState extends State<MobileShops> {
       searchBusinessModel.miles=20;
       apiController.searchBusiness(searchBusinessModel).then((value) {
         setState(() {
-          if (value.data!.isEmpty) {
-            _hasMoreData = false; // No more data available
+          if (value.statusCode == 200) {
+            // Successful API call
+            final staticListModel = StaticListModel.fromJson(jsonDecode(value.body));
+            if (staticListModel.data.isEmpty) {
+              _hasMoreData = false; // No more data available
+            } else {
+              dataList.addAll(staticListModel.data);
+              page++; // Increment page number
+            }
+          } else if (value.statusCode == 400) {
+            // Handle specific error case where page number is invalid
+            print("Error 400: ${value.body}");
+            // String errorMessage = _extractErrorMessage(value.body);
           } else {
-            dataList.addAll(value.data!);
-            page++; // Increment page number
+            print('Failed to load data: ${value.statusCode}');
           }
           _loading = false;
         });
+      }).catchError((error) {
+        print('Error in API call: $error');
+        // Handle other errors if needed
+        setState(() {
+          _loading = false;
+        });
       });
+
+      // apiController.searchBusiness(searchBusinessModel).then((value) {
+      //   setState(() {
+      //     if (value.data!.isEmpty) {
+      //       _hasMoreData = false; // No more data available
+      //     } else {
+      //       dataList.addAll(value.data!);
+      //       page++; // Increment page number
+      //     }
+      //     _loading = false;
+      //   });
+      // });
     }
   }
   void launchNavigation(

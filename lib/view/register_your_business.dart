@@ -1360,7 +1360,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                         CustomTextFormFieldWidget1(
                           // controller: webController,
                           onChanged: (val) {
-                            // registerYourBusinessModel.weblink = val;
+                             registerYourBusinessModel.weblink = val;
                           },
                           hint: "website link",
                           borderRadius: 10,
@@ -1373,7 +1373,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                         CustomTextFormFieldWidget1(
                           // controller: iOsController,
                           onChanged: (val) {
-                            // registerYourBusinessModel.ios = val;
+                            registerYourBusinessModel.iosUrl = val;
                           },
                           hint: "Optional",
                           borderRadius: 10,
@@ -1386,7 +1386,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                         CustomTextFormFieldWidget1(
                           // controller: androidController,
                           onChanged: (val) {
-                            // registerYourBusinessModel.androidUrl = val;
+                            registerYourBusinessModel.androidUrl = val;
                           },
                           hint: "Optional",
                           borderRadius: 10,
@@ -1399,7 +1399,7 @@ class _RegisterYourBusinessState extends State<RegisterYourBusiness> {
                         CustomTextFormFieldWidget1(
                           // controller: faxController,
                           onChanged: (val) {
-                            // registerYourBusinessModel.faxnumber = val;
+                             registerYourBusinessModel.faxNumber = val;
                           },
                           hint: "Optional",
                           borderRadius: 10,

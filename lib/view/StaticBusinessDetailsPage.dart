@@ -2015,7 +2015,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                             itemCount: specialtyCount,
                             itemBuilder: (context, index) {
                               List<String>? specialties =
-                                  businessModel?.speciality?.split(',');
+                                  businessModel.speciality?.split(',');
                               String? specialty = specialties?[index].trim();
                               if (specialty != null && specialty.isNotEmpty) {
                                 return Padding(
@@ -2052,7 +2052,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                       ),
                       Container(
                         alignment: Alignment.center,
-                        height: businessModel?.karobarItems?.length != null ? 480.0 : null,
+                        height: businessModel.karobarItems?.length != null ? 480.0 : null,
                         // Adjust as needed for products
                         margin: EdgeInsets.symmetric(vertical: 8),
                         decoration: BoxDecoration(

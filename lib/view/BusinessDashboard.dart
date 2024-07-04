@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import '../Controllers/Api_Controller.dart';
 import 'UpdateProfile/UpdateBanner.dart';
+import 'UpdateProfile/UpdateBasicInfo.dart';
 import 'UpdateProfile/UpdateGallery.dart';
 
 class BusinessDashboard extends StatefulWidget {
@@ -106,12 +107,12 @@ class _BusinessDashboardState extends State<BusinessDashboard> {
             onTap: () {
               // Add your logic for editing profile here
               print('Edit Profile tapped');
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => EditProfile(),
-              //   ),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UpdateBasicInfo(widget.fkKarobarId!.toInt()),
+                ),
+              );
             },
           ),
           _buildOption(

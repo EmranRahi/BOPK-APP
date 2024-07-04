@@ -250,14 +250,14 @@ class StaticListModel {
   int? totalPages;
   int? page;
   int? pageSize;
-  List<Datum>? data;
+  List<Datum> data;
 
   StaticListModel({
     this.totalCount,
     this.totalPages,
     this.page,
     this.pageSize,
-    this.data,
+    required this.data,
   });
 
   factory StaticListModel.fromJson(Map<String, dynamic> json) => StaticListModel(

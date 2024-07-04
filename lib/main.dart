@@ -219,6 +219,8 @@ class _CustomSwitchStateState extends State<CustomSwitchState> with SingleTicker
 
 }
 class StackOver extends StatefulWidget {
+  const StackOver({super.key});
+
   @override
   _StackOverState createState() => _StackOverState();
 }
@@ -278,7 +280,7 @@ class _StackOverState extends State<StackOver>
                         indicatorSize: TabBarIndicatorSize.tab, // Ensure indicator size matches tab size
                         tabs: [
                           // first tab [you can add an icon using the icon property]
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width / 3, // Custom width for the tab
                             child: Tab(
                               text: 'Overview',
@@ -286,7 +288,7 @@ class _StackOverState extends State<StackOver>
                           ),
 
                           // second tab [you can add an icon using the icon property]
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width / 3, // Custom width for the tab
                             child: Tab(
                               text: 'User Review',
@@ -294,7 +296,7 @@ class _StackOverState extends State<StackOver>
                           ),
 
                           // third tab
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width / 4, // Custom width for the tab
                             child: Tab(
                               text: 'Contact us',
@@ -302,7 +304,7 @@ class _StackOverState extends State<StackOver>
                           ),
 
                           // fourth tab
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width / 4, // Custom width for the tab
                             child: Tab(
                               text: 'Gallery',
@@ -321,7 +323,7 @@ class _StackOverState extends State<StackOver>
             Expanded(
               child: TabBarView(
                 controller: _tabController,
-                children: [
+                children: const [
                   // first tab bar view widget
                   Center(
                     child: Text(

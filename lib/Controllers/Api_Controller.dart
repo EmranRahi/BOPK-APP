@@ -5,6 +5,7 @@ import 'package:businessonlinepk/model/ContactUs_Model.dart';
 import 'package:businessonlinepk/model/LoginModel.dart';
 import 'package:businessonlinepk/model/OpeningAndClosingTimeModel.dart';
 import 'package:businessonlinepk/model/RegisterReviewRattingModel.dart';
+import 'package:businessonlinepk/model/UpdateProfileModel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -63,24 +64,47 @@ class APIController{
       return null;
     }
   }
-  Future<StaticListModel> searchBusiness(SearchBusinessModel model) async {
-    final createJson = jsonEncode(model.toJson());
-    final response = await http.post(
-      Uri.parse("https://bopkapi.businessonline.pk/Karobar/GetByLocationSearchingPost"),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: createJson,
-    );
 
-    print(createJson);
-    print(response.body);
-    if (response.statusCode == 200) {
-      return StaticListModel.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Failed to load data');
+
+
+  Future<http.Response> searchBusiness(SearchBusinessModel model) async {
+    try {
+      final createJson = jsonEncode(model.toJson());
+      final response = await http.post(
+        Uri.parse("https://bopkapi.businessonline.pk/Karobar/GetByLocationSearchingPost"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: createJson,
+      );
+
+      print('Request JSON: $createJson');
+      print('Response: ${response.statusCode} - ${response.body}');
+
+      return response;
+    } catch (e) {
+      print('Error in searchBusiness: $e');
+      throw Exception('Failed to connect to the server. Please check your internet connection.');
     }
   }
+
+  // String _extractErrorMessage(String responseBody) {
+  //   try {
+  //     // Check if the response body starts with the status code followed by '- '
+  //     if (responseBody.startsWith('400 - ')) {
+  //       // Extract the error message after the status code prefix
+  //       return responseBody.substring('400 - '.length);
+  //     } else {
+  //       // If the response body doesn't match the expected format, return a generic message
+  //       return 'Failed to process request';
+  //     }
+  //   } catch (e) {
+  //     print('Error parsing error message: $e');
+  //     return 'Failed to parse error message';
+  //   }
+  // }
+
+
 
   Future<List<DisplayReviewModel>> fetchReviews(int id) async {
     final response = await http.get(Uri.parse('https://bopkapi.businessonline.pk/KarobarReview?id=$id'));
@@ -204,7 +228,32 @@ print('https://bopkapi.businessonline.pk/KarobarReview?id=$id');
     // Return ApiResponse object with status code and response body
     return ApiResponseReg(statusCode: response.statusCode, responseBody: response.body);
   }
+  Future<ApiResponseReg> updateBasicProfile(UpdateProfileModel updateProfileModel, BuildContext context) async {
+    final createJson = jsonEncode(updateProfileModel);
+    final response = await http.post(
+      Uri.parse('https://bopkapi.businessonline.pk/RegisterBusinesses/UpdateProfile'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: createJson,
+    );
 
+    if (kDebugMode) {
+      print("updateProfile$createJson");
+      print("updateProfileBody${response.body}");
+      print("updateStatusProfile${response.statusCode}");
+    }
+
+    if (response.statusCode == 200) {
+      print("successfully register the business");
+    } else {
+      // Show Snackbar with error message
+      print("field to register the business");
+    }
+
+    // Return ApiResponse object with status code and response body
+    return ApiResponseReg(statusCode: response.statusCode, responseBody: response.body);
+  }
 
 
 

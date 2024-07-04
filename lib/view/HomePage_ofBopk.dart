@@ -455,28 +455,25 @@ class _HomePageState extends State<HomePage> {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          categories[index].mainCategoryName == null
-                              ? SizedBox.shrink()
+                          // Check if mainCategoryName is null or empty
+                          categories[index].mainCategoryName == null || categories[index].categories == null || categories[index].categories!.isEmpty
+                              ? SizedBox.shrink()  // If so, return an empty SizedBox
                               : Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: CustomText(
-                                    title: categories[index].mainCategoryName
-                                            .toString() ??
-                                        "NO ",
-                                    googleFont: 'Jost',
-                                    fontSize: 18,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                          SizedBox(
+                            padding: const EdgeInsets.all(8.0),
+                            child: CustomText(
+                              title: categories[index].mainCategoryName.toString(),
+                              googleFont: 'Jost',
+                              fontSize: 18,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          // Check if categories list is null or empty
+                          categories[index].categories == null || categories[index].categories!.isEmpty
+                              ? SizedBox.shrink()  // If so, return an empty SizedBox
+                              : SizedBox(
                             height: 90,
-                            child: categories[index].categories ==
-                                    null
-                                ? Center(
-                                    child: CircularProgressIndicator(),
-                                  )
-                                : ListView.builder(
+                            child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
                                     keyboardDismissBehavior:
                                         ScrollViewKeyboardDismissBehavior
