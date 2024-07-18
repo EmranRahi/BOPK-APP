@@ -11,6 +11,7 @@ import 'package:businessonlinepk/view/customs_widgets/custom_text.dart';
 import 'package:businessonlinepk/view/customs_widgets/custom_textfield.dart';
 import 'package:businessonlinepk/view/register_your_business.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -161,7 +162,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
         businessModel.lat!.toDouble(),
         businessModel.lng!.toDouble(),
       );
-      if (businessModel?.openningHours == null ||
+      if (businessModel.openningHours == null ||
           businessModel.openningHours!.isEmpty) {
         setDefaultOpenningHours();
         print("gggggggggggggggggg" + openningHours.toString());
@@ -173,21 +174,21 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
           () {}); // Rebuild the widget tree to reflect the updated _center value
 
       // Specialty code
-      specialtyCount = businessModel?.speciality?.split(',').length ?? 0;
+      specialtyCount = businessModel.speciality?.split(',').length ?? 0;
       // double baseHeight =50.0; // Base height for one item, adjust as needed
       // totalHeight = baseHeight * (specialtyCount > 4 ? 4 : specialtyCount);
     } else {
       // Handle the case where businessModel or its properties are null
     }
 
-    List<String>? phoneNumbers = businessModel?.otherNumbers?.split(',');
+    List<String>? phoneNumbers = businessModel.otherNumbers?.split(',');
     if (phoneNumbers != null && phoneNumbers.length >= 2) {
       phoneNumb1 = phoneNumbers[0];
       phoneNumb2 = phoneNumbers[1];
       phoneNumb3 = phoneNumbers[2];
     }
 
-    List<String>? ownerName = businessModel?.contactName?.split(',');
+    List<String>? ownerName = businessModel.contactName?.split(',');
     if (ownerName != null && ownerName.length >= 3) {
       contact1 = ownerName[0];
       contact2 = ownerName[1];
@@ -245,7 +246,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
 
   @override
   Widget build(BuildContext context) {
-    // futureReviews = APIController().fetchReviews(widget.karobarId!.toInt());
+    double itemHeight = MediaQuery.of(context).size.height / 3.6; // Adjust the divisor as needed
     return Scaffold(
       backgroundColor: Color(0xffE4E4E4),
       key: _scaffoldKey,
@@ -389,7 +390,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          businessModel?.whatsAppNumber == ""
+                          businessModel.whatsAppNumber == " " || businessModel.whatsAppNumber == ""
                               ? CustomContainer(
                                   height: 40,
                                   width: 40,
@@ -417,13 +418,13 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                       'assets/images/navigation.png'),
                                 ),
                           SizedBox(width: 5.w),
-                          businessModel?.contactPhone == ""
+                          businessModel?.contactPhone == " " || businessModel.contactPhone == ""
                               ? CustomContainer(
                                   height: 40,
                                   width: 40,
                                   ontap: () {
                                     print(businessModel?.contactPhone);
-                                    if (businessModel?.contactPhone != "") {
+                                    if (businessModel?.contactPhone != " " || businessModel.contactPhone == "") {
                                       String phoneUrl =
                                           'tel:${businessModel.contactPhone}';
                                       launchUrl(Uri.parse(phoneUrl));
@@ -438,7 +439,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   width: 40,
                                   ontap: () {
                                     print(businessModel?.contactPhone);
-                                    if (businessModel?.contactPhone != "") {
+                                    if (businessModel?.contactPhone != " " || businessModel.contactPhone == "") {
                                       String phoneUrl =
                                           'tel:${businessModel?.contactPhone?.replaceAll(',', '')}';
                                       launchUrl(Uri.parse(phoneUrl));
@@ -467,7 +468,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                           //         boxShadow: true,
                           //         child: Image.asset('assets/images/sms.png')),
                           // SizedBox(width: 5.w),
-                          businessModel?.whatsAppNumber == ""
+                          businessModel?.whatsAppNumber == " " || businessModel.whatsAppNumber == ""
                               ? CustomContainer(
                                   height: 40,
                                   width: 40,
@@ -482,7 +483,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   height: 40,
                                   width: 40,
                                   ontap: () {
-                                    if (businessModel?.whatsAppNumber != "") {
+                                    if (businessModel?.whatsAppNumber != " " || businessModel.whatsAppNumber == "") {
                                       String whatsappUrl =
                                           'https://wa.me/${businessModel.whatsAppNumber}';
                                       launchUrl(Uri.parse(whatsappUrl));
@@ -534,7 +535,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                           //   child: Image.asset('assets/media/gallery1.png',
                           //       scale: 3),
                           // ),
-                          businessModel?.email == null
+                          businessModel?.email == " " || businessModel.email == ""
                               ? CustomContainer(
                                   height: 50,
                                   width: 50,
@@ -551,7 +552,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.email != null) {
+                                    if (businessModel?.email != " " || businessModel.email == "") {
                                       launchUrl(Uri.parse(
                                           'mailto:${businessModel.email}'));
                                     }
@@ -575,7 +576,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                           //       scale: 2),
                           // ),
                           /// this is the facebook URL
-                          businessModel?.facebookUrl == null
+                          businessModel?.facebookUrl == " " || businessModel.facebookUrl == ""
                               ? CustomContainer(
                                   height: 50,
                                   width: 50,
@@ -593,7 +594,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.facebookUrl != null) {
+                                    if (businessModel?.facebookUrl != " " || businessModel.facebookUrl == "") {
                                       String facebookUrl =
                                           'https://www.facebook.com/${businessModel.facebookUrl}';
                                       launchUrl(Uri.parse(facebookUrl));
@@ -608,7 +609,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                 ),
 
                           /// this is the YouTube URl
-                          businessModel?.youtubeUrl == null
+                          businessModel?.youtubeUrl == " " || businessModel.youtubeUrl == ""
                               ? CustomContainer(
                                   height: 50,
                                   width: 50,
@@ -625,7 +626,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.youtubeUrl != null) {
+                                    if (businessModel?.youtubeUrl != " " || businessModel.youtubeUrl == "") {
                                       String youtubeUrl =
                                           'https://www.youtube.com/${businessModel.youtubeUrl}';
                                       launchUrl(Uri.parse(youtubeUrl));
@@ -639,7 +640,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                 ),
 
                           /// this is the Twitter URl
-                          businessModel?.twitterUrl == null
+                          businessModel?.twitterUrl == " " || businessModel.twitterUrl == ""
                               ? CustomContainer(
                                   height: 50,
                                   width: 50,
@@ -656,7 +657,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.twitterUrl != null) {
+                                    if (businessModel?.twitterUrl != " " || businessModel.twitterUrl == "") {
                                       String twitterUrl =
                                           'https://twitter.com/${businessModel.twitterUrl}';
                                       launchUrl(Uri.parse(twitterUrl));
@@ -670,7 +671,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                 ),
 
                           /// this is the instagram URL
-                          businessModel?.instagramUrl == null
+                          businessModel?.instagramUrl == "" || businessModel.instagramUrl == " "
                               ? CustomContainer(
                                   height: 50,
                                   width: 50,
@@ -687,7 +688,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.instagramUrl != null) {
+                                    if (businessModel?.instagramUrl != " "|| businessModel.instagramUrl == "") {
                                       String instagramUrl =
                                           'https://www.instagram.com/${businessModel.instagramUrl}';
                                       launchUrl(Uri.parse(instagramUrl));
@@ -696,12 +697,12 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   rd: 100,
                                   color: Colors.transparent,
                                   // boxShadow: true,
-                                  child: Image.asset('assets/media/insta.png',
+                                  child: Image.asset('assets/media/instagram.png',
                                       scale: 2.1),
                                 ),
 
                           /// this is the linkedIn URL
-                          businessModel?.linkedInUrl == null
+                          businessModel?.linkedInUrl == "" || businessModel.linkedInUrl == " "
                               ? CustomContainer(
                                   height: 50,
                                   width: 50,
@@ -718,7 +719,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                   height: 50,
                                   width: 50,
                                   ontap: () {
-                                    if (businessModel?.linkedInUrl != null) {
+                                    if (businessModel?.linkedInUrl != "" || businessModel.linkedInUrl == " ") {
                                       String linkedinUrl =
                                           'https://www.linkedin.com/in/${businessModel.linkedInUrl}';
                                       launchUrl(Uri.parse(linkedinUrl));
@@ -2097,42 +2098,36 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                       child: GridView.builder(
                                         padding: EdgeInsets.all(0.3),
                                         physics: NeverScrollableScrollPhysics(),
-                                        gridDelegate:
-                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisSpacing: 1,
                                           mainAxisSpacing: 4,
                                           crossAxisCount: 2,
+                                          childAspectRatio: (MediaQuery.of(context).size.width / 2) / itemHeight,
                                         ),
                                         itemCount: (businessModel?.karobarItems?.length ?? 0) > 4
                                             ? 4
                                             : (businessModel?.karobarItems?.length ?? 0),
                                         itemBuilder: (context, index) {
                                           final product = businessModel?.karobarItems?[index];
+
+                                          // Generate image URL for the clicked item
+                                          String imageUrl;
+                                          if (product?.images != null && product!.images!.isNotEmpty) {
+                                            imageUrl = "https://businessonline.pk/Image/Business/Items/${product.fkKarobarId}/${product.images![0].imageName}";
+                                          } else {
+                                            // Use placeholder image URL if no images are available
+                                            imageUrl = 'assets/images/prodc.jpg';
+                                          }
+
                                           return Padding(
                                             padding: const EdgeInsets.all(3.0),
                                             child: InkWell(
                                               onTap: () {
-                                                // Create an empty list to hold image URLs
-                                                List<String> imageUrls = [];
-
-// Populate the list with image URLs from the karobarItems
-                                                for (int i = 0; i < (businessModel?.karobarItems?.length ?? 0); i++) {
-                                                  final product = businessModel?.karobarItems?[i];
-                                                  if (product?.images != null && product!.images!.isNotEmpty) {
-                                                    String imageUrl = "https://businessonline.pk/Image/Business/Items/${product.fkKarobarId}/${product.images![0].imageName}";
-                                                    imageUrls.add(imageUrl);
-                                                  } else {
-                                                    // If there are no images for the product, add a placeholder image URL
-                                                    imageUrls.add('assets/images/prodc.jpg');
-                                                  }
-                                                }
-
-// Navigate to the ProductDetailPage and pass the list of image URLs
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                     builder: (context) => ProductDetailPage(
-                                                      imageUrls: imageUrls,
+                                                      imageUrl: imageUrl,
                                                       name: product!.name.toString(),
                                                       price: product.price!.toDouble(),
                                                       description: product.description.toString(),
@@ -2152,7 +2147,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                                   children: [
                                                     SizedBox(
                                                       width: double.infinity, // Adjust the width as needed
-                                                      height: 90, // Adjust the height as needed
+                                                      height: itemHeight * 0.45, // Adjust the height as needed
                                                       child: ClipRRect(
                                                         borderRadius: BorderRadius.circular(8.0),
                                                         child: Image.network(
@@ -2177,14 +2172,35 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                                         color: Colors.grey,
                                                       ),
                                                     ),
+
                                                     SizedBox(height: 2),
-                                                    Padding(
-                                                      padding: const EdgeInsets.only(left: 5),
-                                                      child: CustomText(
-                                                        title: 'Rs.${product?.price}',
-                                                        color: greenColor2,
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(left: 5),
+                                                            child: Text(
+                                                              product?.orignalPrice != null ? '\Rs. ${product!.orignalPrice}' : 'Price not available',
+                                                              style: TextStyle(
+                                                                color: Colors.red, // Choose the color you want for the price
+                                                                decoration: TextDecoration.lineThrough, // Adds the line through the text
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 2),
+                                                        Expanded(
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.only(left: 5),
+                                                            child: CustomText(
+                                                              title: 'Rs.${product?.price}',
+                                                              color: greenColor2,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                     Padding(
                                                       padding: const EdgeInsets.all(5.0),
@@ -2259,7 +2275,7 @@ class _StaticBusinessDetailsPageState extends State<StaticBusinessDetailsPage>
                                                 MaterialPageRoute(
                                                   builder: (context) =>
                                                       AllProductsScreen(
-                                                        products: businessModel,
+                                                        products: businessModel,phoneNumber:businessModel.contactPhone,whatsappNumber:businessModel.contactPhone
                                                       ),
                                                 ),
                                               );

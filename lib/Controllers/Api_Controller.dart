@@ -182,7 +182,6 @@ print('https://bopkapi.businessonline.pk/KarobarReview?id=$id');
     try {
       final response = await http.get(Uri.parse('https://bopkapi.businessonline.pk/Karobar/Details/$karobarId'));
       print("https://bopkapi.businessonline.pk/Karobar/Details/$karobarId");
-
       if (response.statusCode == 200) {
         // Parse the JSON response
         final Map<String, dynamic> jsonData = json.decode(response.body);
